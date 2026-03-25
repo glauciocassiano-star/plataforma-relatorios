@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Exame{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:18px;">Novo Exame</h2>
+
+<div style="margin-bottom:18px;color:#4b5563;">
+  <b>Animal:</b> {{ animal.codigo }} {% if animal.nome %}- {{ animal.nome }}{% endif %}<br>
+  <b>Atendimento:</b> {{ atendimento.id }}
+</div>
+
+<form method="POST" enctype="multipart/form-data" style="
+  max-width:800px;
+  background:#ffffff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 2px 4px rgba(0,0,0,0.04);
+">
+  <div style="margin-bottom:14px;">
+    <label><b>Categoria</b></label><br>
+    <select name="categoria" required style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
+      <option value="">Selecione</option>
+      <option value="laboratorial">Laboratorial</option>
+      <option value="imagem">Imagem</option>
+    </select>
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label><b>Nome do exame</b></label><br>
+    <input type="text" name="nome_exame" required style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label><b>Data do exame</b></label><br>
+    <input type="date" name="data_exame" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;">
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label><b>Resultado / Laudo</b></label><br>
+    <textarea name="resultado" rows="5" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;"></textarea>
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label><b>Observações</b></label><br>
+    <textarea name="observacoes" rows="4" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;"></textarea>
+  </div>
+
+  <div style="margin-bottom:18px;">
+    <label><b>Arquivo do exame</b></label><br>
+    <input type="file" name="arquivo" accept=".pdf,.png,.jpg,.jpeg,.webp">
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button type="submit" class="btn">Salvar exame</button>
+    <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}" class="btn btn-secondary">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

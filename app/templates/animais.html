@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Animais{% endblock %}
+
+{% block content %}
+
+<h2>Animais - {{ propriedade.nome }}</h2>
+
+<div class="animais-acoes-topo" style="
+margin-bottom:16px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+">
+
+  <a class="btn"
+     href="{{ url_for('main.novo_animal', propriedade_id=propriedade.id) }}">
+    + Novo Animal
+  </a>
+
+  <a class="btn btn-secondary"
+     href="{{ url_for('main.propriedades') }}">
+    Voltar
+  </a>
+
+</div>
+
+{% if animais and animais|length > 0 %}
+
+<div class="animais-busca" style="
+margin-bottom:14px;
+max-width:420px;
+">
+  <label for="buscaAnimal" style="display:block; margin-bottom:6px;">
+    Buscar animal
+  </label>
+
+  <input
+    type="text"
+    id="buscaAnimal"
+    placeholder="Buscar por código ou nome..."
+  >
+</div>
+
+<div class="table-wrap">
+
+<table id="tabelaAnimais">
+
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Nome</th>
+      <th>Raça</th>
+      <th>Sexo</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    {% for a in animais %}
+
+    <tr>
+      <td>{{ a.codigo }}</td>
+      <td>{{ a.nome or "-" }}</td>
+      <td>{{ a.raca or "-" }}</td>
+      <td>{{ a.sexo or "-" }}</td>
+
+      <td>
+        <div class="acoes-tabela" style="display:flex; gap:8px; flex-wrap:wrap;">
+
+          <a class="btn"
+             href="{{ url_for('main.prontuario_animal', animal_id=a.id) }}">
+            Prontuário
+          </a>
+
+          <a class="btn btn-secondary"
+             href="{{ url_for('main.editar_animal', animal_id=a.id) }}">
+            Editar
+          </a>
+
+          <a class="btn btn-danger"
+             href="{{ url_for('main.excluir_animal', animal_id=a.id) }}"
+             onclick="return confirm('Tem certeza que deseja excluir este animal?');">
+            Excluir
+          </a>
+
+        </div>
+      </td>
+
+    </tr>
+
+    {% endfor %}
+
+  </tbody>
+
+</table>
+
+</div>
+
+{% else %}
+
+<div style="
+padding:12px;
+border:1px dashed #e5e7eb;
+border-radius:12px;
+color:#6b7280;
+background:#ffffff;">
+Nenhum animal cadastrado ainda.
+</div>
+
+{% endif %}
+
+<style>
+
+@media (max-width:768px){
+
+.animais-acoes-topo{
+flex-direction:column;
+align-items:stretch;
+}
+
+.animais-acoes-topo .btn{
+width:100%;
+}
+
+.animais-busca{
+max-width:100%;
+}
+
+.acoes-tabela{
+flex-direction:column;
+align-items:stretch;
+}
+
+.acoes-tabela .btn{
+width:100%;
+}
+
+}
+
+</style>
+
+<script>
+
+const campoBuscaAnimal = document.getElementById("buscaAnimal");
+
+if (campoBuscaAnimal) {
+
+campoBuscaAnimal.addEventListener("keyup", function () {
+
+const termo = this.value.toLowerCase();
+
+const linhas = document.querySelectorAll("#tabelaAnimais tbody tr");
+
+linhas.forEach(function (linha) {
+
+const codigo = linha.children[0].textContent.toLowerCase();
+const nome = linha.children[1].textContent.toLowerCase();
+
+if (codigo.includes(termo) || nome.includes(termo)) {
+
+linha.style.display = "";
+
+} else {
+
+linha.style.display = "none";
+
+}
+
+});
+
+});
+
+}
+
+</script>
+
+{% endblock %}

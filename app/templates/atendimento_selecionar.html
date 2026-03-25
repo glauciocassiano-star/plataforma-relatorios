@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Atendimentos{% endblock %}
+
+{% block content %}
+<h2>Atendimentos</h2>
+
+<p style="margin-top:0;color:#6b7280;max-width:760px;">
+  Selecione uma propriedade para localizar os animais cadastrados e escolha se deseja
+  abrir o prontuário ou iniciar um novo atendimento.
+</p>
+
+<div style="display:grid;gap:18px;margin-top:14px;">
+
+  <div style="
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:16px;
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  max-width:620px;
+  ">
+    <h3 style="margin:0 0 12px 0;">Buscar por propriedade</h3>
+
+    <form method="GET" style="display:grid;gap:12px;">
+      <div>
+        <label for="propriedade_id">Propriedade</label>
+        <select name="propriedade_id" id="propriedade_id">
+          <option value="">Selecione uma propriedade</option>
+          {% for p in propriedades %}
+            <option value="{{ p.id }}" {% if propriedade_id and p.id == propriedade_id %}selected{% endif %}>
+              {{ p.nome }} - {{ p.produtor }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button type="submit">Buscar animais</button>
+        <a class="btn btn-secondary" href="{{ url_for('main.selecionar_atendimento') }}">
+          Limpar
+        </a>
+      </div>
+    </form>
+  </div>
+
+  {% if propriedade_id %}
+
+    <div style="margin-bottom:4px;color:#4b5563;">
+      <strong>Animais encontrados:</strong> {{ animais_info|length }}
+    </div>
+
+    {% if animais_info %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nome</th>
+              <th>Raça</th>
+              <th>Sexo</th>
+              <th>Último atendimento</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for item in animais_info %}
+              {% set a = item.animal %}
+              {% set ultimo = item.ultimo_atendimento %}
+              <tr>
+                <td>{{ a.codigo }}</td>
+                <td>{{ a.nome or "-" }}</td>
+                <td>{{ a.raca or "-" }}</td>
+                <td>{{ a.sexo or "-" }}</td>
+                <td>
+                  {% if ultimo and ultimo.data_atendimento %}
+                    {{ ultimo.data_atendimento.strftime("%d/%m/%Y") }}
+                  {% else %}
+                    <span style="color:#6b7280;">Sem atendimento</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="acoes-tabela" style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a class="btn btn-secondary"
+                       href="{{ url_for('main.prontuario_animal', animal_id=a.id) }}">
+                      Prontuário
+                    </a>
+
+                    <a class="btn"
+                       href="{{ url_for('main.novo_atendimento', animal_id=a.id) }}">
+                      Novo atendimento
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div style="
+      padding:12px;
+      border:1px dashed #e5e7eb;
+      border-radius:12px;
+      color:#6b7280;
+      max-width:620px;
+      background:#ffffff;
+      ">
+        Nenhum animal cadastrado para esta propriedade.
+      </div>
+    {% endif %}
+
+  {% endif %}
+
+  <p style="margin-top:8px;">
+    <a href="{{ url_for('main.painel') }}">Voltar</a>
+  </p>
+
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    .acoes-tabela {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .acoes-tabela .btn {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}

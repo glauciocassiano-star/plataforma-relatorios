@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Propriedades do usuário{% endblock %}
+
+{% block content %}
+
+<h2>Propriedades vinculadas</h2>
+
+<div style="
+border:1px solid #e5e7eb;
+border-radius:12px;
+padding:16px;
+max-width:560px;
+">
+
+<p style="margin-top:0;margin-bottom:14px;">
+<b>Usuário:</b> {{ usuario.nome }} ({{ usuario.email }})
+</p>
+
+<form method="POST" style="display:grid;gap:8px;">
+
+  {% for p in propriedades %}
+
+  <label style="
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:6px 4px;
+  border-radius:6px;
+  ">
+
+    <input
+      type="checkbox"
+      name="propriedades"
+      value="{{ p.id }}"
+      {% if p.id in vinculadas %}checked{% endif %}
+    >
+
+    <span>
+      <b>{{ p.nome }}</b> — {{ p.produtor }}
+    </span>
+
+  </label>
+
+  {% endfor %}
+
+  <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+    <button type="submit">Salvar vínculos</button>
+
+    <a class="btn btn-secondary"
+       href="{{ url_for('main.admin_usuarios') }}">
+       Voltar
+    </a>
+  </div>
+
+</form>
+
+</div>
+
+{% endblock %}

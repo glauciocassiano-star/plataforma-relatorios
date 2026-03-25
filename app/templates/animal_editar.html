@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Animal{% endblock %}
+
+{% block content %}
+<h2>Editar Animal</h2>
+
+<p style="margin-bottom:16px;color:#6b7280;">
+  Propriedade: <strong>{{ propriedade.nome }}</strong>
+</p>
+
+<form method="POST" style="display:grid;gap:12px;max-width:700px;">
+  <div style="display:grid;gap:6px;">
+    <label for="codigo">Código</label>
+    <input
+      type="text"
+      id="codigo"
+      name="codigo"
+      value="{{ animal.codigo }}"
+      required
+    >
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="nome">Nome</label>
+    <input
+      type="text"
+      id="nome"
+      name="nome"
+      value="{{ animal.nome or '' }}"
+    >
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="data_nascimento">Data de nascimento</label>
+    <input
+      type="date"
+      id="data_nascimento"
+      name="data_nascimento"
+      value="{{ animal.data_nascimento.strftime('%Y-%m-%d') if animal.data_nascimento else '' }}"
+    >
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="especie">Espécie</label>
+    <input
+      type="text"
+      id="especie"
+      name="especie"
+      value="{{ animal.especie or '' }}"
+    >
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="raca">Raça</label>
+    <input
+      type="text"
+      id="raca"
+      name="raca"
+      value="{{ animal.raca or '' }}"
+    >
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="sexo">Sexo</label>
+    <input
+      type="text"
+      id="sexo"
+      name="sexo"
+      value="{{ animal.sexo or '' }}"
+    >
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="perfil_genetico">Perfil genético</label>
+    <input
+      type="text"
+      id="perfil_genetico"
+      name="perfil_genetico"
+      value="{{ animal.perfil_genetico or '' }}"
+    >
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+    <button type="submit">Salvar alterações</button>
+
+    <a
+      class="btn btn-secondary"
+      href="{{ url_for('main.listar_animais', propriedade_id=propriedade.id) }}"
+    >
+      Cancelar
+    </a>
+  </div>
+</form>
+{% endblock %}

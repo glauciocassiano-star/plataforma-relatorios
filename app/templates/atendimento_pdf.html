@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+
+  <style>
+    @page {
+      margin: 22mm 18mm;
+
+      @bottom-right {
+        content: "Página " counter(page) " de " counter(pages);
+        font-size: 11px;
+        color: #6b7280;
+      }
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #1f2937;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .header {
+      display: table;
+      width: 100%;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #1f4f46;
+    }
+
+    .header-left,
+    .header-right {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    .header-right {
+      text-align: right;
+    }
+
+    .logo {
+      max-height: 60px;
+      max-width: 150px;
+    }
+
+    .logo-fallback {
+      display: inline-block;
+      width: 56px;
+      height: 56px;
+      line-height: 56px;
+      text-align: center;
+      border-radius: 50%;
+      background: #eef4f2;
+      color: #1f4f46;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 0 0 4px 0;
+      font-size: 24px;
+      color: #1f4f46;
+    }
+
+    .subtitulo {
+      margin: 0;
+      color: #4b5563;
+      font-size: 13px;
+    }
+
+    .secao {
+      margin-top: 22px;
+      page-break-inside: avoid;
+    }
+
+    .secao h2 {
+      margin: 0 0 10px 0;
+      font-size: 17px;
+      color: #1f4f46;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #d9e2df;
+    }
+
+    .caixa {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .linha {
+      margin-bottom: 6px;
+    }
+
+    .linha:last-child {
+      margin-bottom: 0;
+    }
+
+    .muted {
+      color: #6b7280;
+    }
+
+    .resumo {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: #1f2937;
+      text-align: left;
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    td {
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+      vertical-align: top;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding-top: 10px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef4f2;
+      color: #1f4f46;
+      font-size: 11px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      {% if config_sistema and config_sistema.logo %}
+        <img
+          class="logo"
+          src="{{ url_for('static', filename=config_sistema.logo) }}"
+          alt="Logo"
+        >
+      {% else %}
+        <div class="logo-fallback">🐄</div>
+      {% endif %}
+    </div>
+
+    <div class="header-right">
+      <h1>
+        {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Plataforma de Prontuário Veterinário" }}
+      </h1>
+      <p class="subtitulo">
+        {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else "Monitoramento clínico, epidemiológico e sanitário" }}
+      </p>
+    </div>
+  </div>
+
+  <div class="secao" style="margin-top:0;">
+    <h2>Ficha de Atendimento</h2>
+    <div class="caixa">
+      <div class="linha"><b>ID do atendimento:</b> {{ atendimento.id }}</div>
+      <div class="linha">
+        <b>Data do atendimento:</b>
+        {{ atendimento.data_atendimento.strftime("%d/%m/%Y") if atendimento.data_atendimento else "-" }}
+      </div>
+      <div class="linha">
+        <b>Registrado em:</b>
+        {{ atendimento.criado_em.strftime("%d/%m/%Y às %H:%M") if atendimento.criado_em else "-" }}
+      </div>
+      <div class="linha">
+        <b>Responsável pelo registro:</b>
+        {{ atendimento.tecnico.nome if atendimento.tecnico and atendimento.tecnico.nome else "-" }}
+      </div>
+      <div class="linha">
+        <b>Perfil:</b>
+        {{ atendimento.tecnico.perfil if atendimento.tecnico and atendimento.tecnico.perfil else "-" }}
+      </div>
+
+      {% if atendimento.bloqueado_em %}
+        <div class="linha" style="margin-top:8px;">
+          <span class="tag">Atendimento bloqueado</span>
+          <span class="muted">
+            em {{ atendimento.bloqueado_em.strftime("%d/%m/%Y às %H:%M") }}
+          </span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="secao">
+    <h2>Dados do Animal</h2>
+    <div class="caixa">
+      <div class="linha"><b>Código:</b> {{ animal.codigo }}</div>
+      <div class="linha"><b>Nome:</b> {{ animal.nome or "-" }}</div>
+      <div class="linha">
+        <b>Data de nascimento:</b>
+        {{ animal.data_nascimento.strftime("%d/%m/%Y") if animal.data_nascimento else "-" }}
+      </div>
+      <div class="linha"><b>Espécie:</b> {{ animal.especie or "-" }}</div>
+      <div class="linha"><b>Raça:</b> {{ animal.raca or "-" }}</div>
+      <div class="linha"><b>Sexo:</b> {{ animal.sexo or "-" }}</div>
+      <div class="linha"><b>Perfil genético:</b> {{ animal.perfil_genetico or "-" }}</div>
+      <div class="linha">
+        <b>Propriedade:</b>
+        {{ animal.propriedade.nome if animal.propriedade else "-" }}
+      </div>
+      <div class="linha">
+        <b>Produtor:</b>
+        {{ animal.propriedade.produtor if animal.propriedade and animal.propriedade.produtor else "-" }}
+      </div>
+      <div class="linha">
+        <b>Localização:</b>
+        {% if animal.propriedade %}
+          {{ animal.propriedade.cidade or "-" }}{% if animal.propriedade.estado %} - {{ animal.propriedade.estado }}{% endif %}
+        {% else %}
+          -
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="secao">
+    <h2>Resumo Clínico / Epidemiológico</h2>
+    <div class="resumo">
+      <div class="linha">
+        <b>Diagnóstico principal:</b>
+        {{ atendimento.dados.get('diagnostico_principal', '-') if atendimento.dados else '-' }}
+      </div>
+      <div class="linha">
+        <b>Categoria diagnóstica:</b>
+        {{ atendimento.dados.get('categoria_diagnostico', '-') if atendimento.dados else '-' }}
+      </div>
+      <div class="linha">
+        <b>Desfecho do caso:</b>
+        {{ atendimento.dados.get('desfecho', '-') if atendimento.dados else '-' }}
+      </div>
+    </div>
+  </div>
+
+  <div class="secao">
+    <h2>Dados Completos do Atendimento</h2>
+    <div class="caixa">
+      {% if atendimento.dados %}
+        <ul>
+          {% for chave, valor in atendimento.dados.items() %}
+            <li>
+              <b>{{ chave }}:</b>
+              {% if valor is boolean %}
+                {{ "Sim" if valor else "Não" }}
+              {% else %}
+                {{ valor if valor else "-" }}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">(sem dados registrados)</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="secao">
+    <h2>Exames Vinculados</h2>
+    <div class="caixa">
+      {% if atendimento.exames %}
+        <table>
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Exame</th>
+              <th>Data</th>
+              <th>Resultado / Laudo</th>
+              <th>Observações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ex in atendimento.exames %}
+              <tr>
+                <td>{{ ex.categoria|capitalize }}</td>
+                <td>{{ ex.nome_exame }}</td>
+                <td>{{ ex.data_exame.strftime("%d/%m/%Y") if ex.data_exame else "-" }}</td>
+                <td>{{ ex.resultado or "-" }}</td>
+                <td>{{ ex.observacoes or "-" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="muted">Nenhum exame vinculado a este atendimento.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><b>Gerado em:</b> {{ gerado_em.strftime("%d/%m/%Y %H:%M") }}</p>
+
+    <p>
+      {{ config_sistema.rodape if config_sistema and config_sistema.rodape else "Documento gerado automaticamente pelo sistema de prontuário veterinário." }}
+    </p>
+
+    {% if config_sistema and config_sistema.aviso_sanitario %}
+      <p><b>Aviso sanitário:</b> {{ config_sistema.aviso_sanitario }}</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

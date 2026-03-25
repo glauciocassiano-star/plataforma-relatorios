@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}Painel{% endblock %}
+
+{% block content %}
+
+<div class="painel-topo-grid" style="
+display:grid;
+grid-template-columns:1.4fr 1fr;
+gap:20px;
+margin-bottom:24px;
+align-items:stretch;
+">
+
+  <div class="painel-banner-card" style="
+  background: linear-gradient(135deg, #1f4f46, #173b35);
+  color:#ffffff;
+  border-radius:18px;
+  padding:26px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.08);
+  min-height:220px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  ">
+    <div>
+      <div style="
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      font-size:13px;
+      font-weight:600;
+      margin-bottom:14px;
+      ">
+        Vigilância veterinária e análise sanitária
+      </div>
+
+      <h2 style="margin:0 0 12px 0;font-size:32px;line-height:1.1;border:none;padding:0;color:#ffffff;">
+        {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Plataforma de Prontuário Veterinário" }}
+      </h2>
+
+      <p style="margin:0;color:rgba(255,255,255,0.88);font-size:15px;line-height:1.6;max-width:720px;">
+        {{ config_sistema.texto_banner if config_sistema and config_sistema.texto_banner else "Sistema para acompanhamento clínico, registro de atendimentos, análise epidemiológica e apoio ao monitoramento sanitário em propriedades rurais." }}
+      </p>
+    </div>
+
+    <div class="painel-banner-acoes" style="
+    margin-top:20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    ">
+      <a class="btn btn-secondary" href="{{ url_for('main.selecionar_atendimento') }}">
+        Novo atendimento
+      </a>
+
+      <a class="btn" href="{{ url_for('main.relatorio_epidemiologico') }}">
+        Relatório epidemiológico
+      </a>
+    </div>
+  </div>
+
+  <div class="painel-aviso-card" style="
+  background:#f8faf9;
+  border:1px solid #d9e2df;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.04);
+  ">
+    <h3 style="margin-top:0;margin-bottom:12px;color:#1f4f46;">
+      Aviso sanitário do período
+    </h3>
+
+    <p style="margin:0 0 10px 0;line-height:1.6;color:#374151;">
+      {{ config_sistema.aviso_sanitario if config_sistema and config_sistema.aviso_sanitario else "Em períodos de maior umidade e calor, recomenda-se reforçar a vigilância para ocorrências parasitárias, doenças infecciosas e alterações reprodutivas." }}
+    </p>
+
+    <p style="margin:0 0 10px 0;line-height:1.6;color:#374151;">
+      Mantenha os atendimentos atualizados e registre corretamente diagnóstico,
+      categoria diagnóstica e desfecho para fortalecer a qualidade analítica do sistema.
+    </p>
+
+    <div style="
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:12px;
+    background:#ecfdf3;
+    border:1px solid #bbf7d0;
+    color:#166534;
+    font-size:14px;
+    font-weight:600;
+    ">
+      Campanha recomendada: reforço de prevenção, monitoramento clínico e registro padronizado dos casos.
+    </div>
+  </div>
+
+</div>
+
+<div class="painel-indicadores-grid" style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:16px;
+margin-bottom:26px;
+">
+
+  <div class="painel-indicador-card" style="
+  padding:18px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  ">
+    <div style="font-size:14px;color:#6b7280;margin-bottom:6px;">Propriedades</div>
+    <div style="font-size:32px;font-weight:700;color:#1f2937;">{{ total_propriedades }}</div>
+  </div>
+
+  <div class="painel-indicador-card" style="
+  padding:18px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  ">
+    <div style="font-size:14px;color:#6b7280;margin-bottom:6px;">Animais cadastrados</div>
+    <div style="font-size:32px;font-weight:700;color:#1f2937;">{{ total_animais }}</div>
+  </div>
+
+  <div class="painel-indicador-card" style="
+  padding:18px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  ">
+    <div style="font-size:14px;color:#6b7280;margin-bottom:6px;">Atendimentos registrados</div>
+    <div style="font-size:32px;font-weight:700;color:#1f2937;">{{ total_atendimentos }}</div>
+  </div>
+
+  <div class="painel-indicador-card" style="
+  padding:18px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  ">
+    <div style="font-size:14px;color:#6b7280;margin-bottom:6px;">Diagnóstico mais frequente</div>
+
+    {% if diagnostico_mais_comum %}
+      <div style="font-size:22px;font-weight:700;color:#1f2937;line-height:1.3;">
+        {{ diagnostico_mais_comum }}
+      </div>
+    {% else %}
+      <div style="font-size:16px;color:#6b7280;">Sem dados</div>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="painel-base-grid" style="
+display:grid;
+grid-template-columns:1.5fr 1fr;
+gap:20px;
+margin-bottom:26px;
+">
+
+  <div class="painel-grafico-card" style="
+  padding:20px;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  ">
+    <h3 style="margin-top:0;margin-bottom:14px;">Casos por mês</h3>
+
+    {% if contagem_mensal %}
+      <div style="height:340px;">
+        <canvas id="graficoMensalPainel"></canvas>
+      </div>
+    {% else %}
+      <p style="margin:0;color:#6b7280;">Sem dados suficientes para exibir o gráfico.</p>
+    {% endif %}
+  </div>
+
+  <div class="painel-acesso-card" style="
+  padding:20px;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  ">
+    <h3 style="margin-top:0;margin-bottom:14px;">Acesso rápido</h3>
+
+    <div class="painel-acesso-botoes" style="display:grid;gap:10px;">
+      <a class="btn" href="{{ url_for('main.propriedades') }}">Gerenciar propriedades</a>
+      <a class="btn" href="{{ url_for('main.selecionar_atendimento') }}">Registrar atendimento</a>
+      <a class="btn" href="{{ url_for('main.relatorio_epidemiologico') }}">Abrir relatório epidemiológico</a>
+
+      {% if session.get("perfil") == "admin" %}
+        <a class="btn btn-secondary" href="{{ url_for('main.admin_formularios') }}">
+          Administrar formulários
+        </a>
+
+        <a class="btn btn-secondary" href="{{ url_for('main.admin_configuracoes') }}">
+          Configurações do sistema
+        </a>
+      {% endif %}
+    </div>
+
+    <div style="
+    margin-top:18px;
+    padding:14px;
+    border-radius:12px;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    ">
+      <div style="font-size:14px;font-weight:700;color:#1f2937;margin-bottom:6px;">
+        Orientação de uso
+      </div>
+      <div style="font-size:14px;line-height:1.6;color:#4b5563;">
+        Registros completos e padronizados fortalecem a análise clínica e melhoram a qualidade dos indicadores epidemiológicos.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  @media (max-width: 900px) {
+    .painel-topo-grid,
+    .painel-base-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .painel-topo-grid,
+    .painel-base-grid,
+    .painel-indicadores-grid {
+      grid-template-columns: 1fr !important;
+      gap: 16px !important;
+    }
+
+    .painel-banner-card,
+    .painel-aviso-card,
+    .painel-indicador-card,
+    .painel-grafico-card,
+    .painel-acesso-card {
+      padding: 18px !important;
+      border-radius: 16px !important;
+    }
+
+    .painel-banner-card h2 {
+      font-size: 24px !important;
+    }
+
+    .painel-banner-acoes {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .painel-banner-acoes .btn {
+      width: 100%;
+    }
+
+    .painel-acesso-botoes .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script id="dados-mensais-painel" type="application/json">{{ contagem_mensal|tojson }}</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const mensaisPainel = JSON.parse(
+    document.getElementById("dados-mensais-painel").textContent
+  );
+
+  const canvasPainel = document.getElementById("graficoMensalPainel");
+
+  if (canvasPainel && Object.keys(mensaisPainel).length > 0) {
+    new Chart(canvasPainel, {
+      type: "bar",
+      data: {
+        labels: Object.keys(mensaisPainel),
+        datasets: [
+          {
+            label: "Casos por mês",
+            data: Object.values(mensaisPainel)
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0,
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+  }
+</script>
+
+{% endblock %}

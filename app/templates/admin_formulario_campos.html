@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Campos{% endblock %}
+{% block content %}
+
+<h2>Campos do formulário: {{ formulario.nome }}</h2>
+
+<form method="POST" class="form-layout" style="max-width:620px;">
+
+  <div class="form-field">
+    <label for="rotulo">Rótulo (o que aparece na tela)</label>
+    <input
+      id="rotulo"
+      name="rotulo"
+      placeholder="Ex: Temperatura"
+      required
+    >
+  </div>
+
+  <div class="form-field">
+    <label for="nome_chave">nome_chave (vai no JSON)</label>
+    <input
+      id="nome_chave"
+      name="nome_chave"
+      placeholder="Ex: temperatura"
+      required
+    >
+  </div>
+
+  <div class="form-field">
+    <label for="tipo">Tipo</label>
+    <select id="tipo" name="tipo">
+      <option value="text">Texto</option>
+      <option value="textarea">Texto longo</option>
+      <option value="number">Número</option>
+      <option value="checkbox">Checkbox</option>
+      <option value="select">Seleção (select)</option>
+      <option value="date">Data</option>
+    </select>
+  </div>
+
+  <div class="form-field">
+    <label for="opcoes">Opções (só para select)</label>
+    <input
+      id="opcoes"
+      name="opcoes"
+      placeholder='Ex: "op1,op2,op3" ou ["op1","op2"]'
+    >
+  </div>
+
+  <div class="form-field">
+    <label for="ordem">Ordem</label>
+    <input
+      id="ordem"
+      name="ordem"
+      type="number"
+      value="0"
+    >
+  </div>
+
+  <div class="checkbox-field">
+    <input type="checkbox" name="obrigatorio" id="obrigatorio">
+    <label for="obrigatorio">Obrigatório</label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit">Adicionar Campo</button>
+  </div>
+
+</form>
+
+<hr style="margin:20px 0;">
+
+{% if campos %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ordem</th>
+          <th>Rótulo</th>
+          <th>Chave</th>
+          <th>Tipo</th>
+          <th>Obrigatório</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for c in campos %}
+        <tr>
+          <td>{{ c.ordem }}</td>
+          <td>{{ c.rotulo }}</td>
+          <td>{{ c.nome_chave }}</td>
+          <td>{{ c.tipo }}</td>
+          <td>{{ "Sim" if c.obrigatorio else "Não" }}</td>
+          <td>
+            <div class="acoes-tabela" style="display:flex;gap:6px;flex-wrap:wrap;">
+              <a
+                class="btn btn-secondary"
+                href="{{ url_for('main.admin_editar_campo', campo_id=c.id) }}"
+              >
+                Editar
+              </a>
+
+              <a
+                class="btn btn-danger"
+                href="{{ url_for('main.admin_excluir_campo', campo_id=c.id) }}"
+                onclick="return confirm('Deseja realmente excluir este campo?');"
+              >
+                Excluir
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p style="color:#6b7280;">Nenhum campo cadastrado ainda.</p>
+{% endif %}
+
+<p style="margin-top:14px;">
+  <a href="{{ url_for('main.admin_formularios') }}">← Voltar</a>
+</p>
+
+<style>
+  @media (max-width: 768px) {
+    .acoes-tabela {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .acoes-tabela .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+{% endblock %}

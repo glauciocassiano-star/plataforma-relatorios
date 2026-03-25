@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Configurações do Sistema{% endblock %}
+
+{% block content %}
+
+<h2>Configurações do Sistema</h2>
+
+<form method="POST" enctype="multipart/form-data" style="display:grid;gap:12px;max-width:700px;">
+
+  <div>
+    <label>Nome da plataforma</label>
+    <input name="nome_plataforma" value="{{ config.nome_plataforma or '' }}">
+  </div>
+
+  <div>
+    <label>Subtítulo</label>
+    <input name="subtitulo" value="{{ config.subtitulo or '' }}">
+  </div>
+
+  <div>
+    <label>Texto do banner</label>
+    <textarea name="texto_banner" rows="4">{{ config.texto_banner or '' }}</textarea>
+  </div>
+
+  <div>
+    <label>Aviso sanitário</label>
+    <textarea name="aviso_sanitario" rows="4">{{ config.aviso_sanitario or '' }}</textarea>
+  </div>
+
+  <div>
+    <label>Rodapé</label>
+    <textarea name="rodape" rows="4">{{ config.rodape or '' }}</textarea>
+  </div>
+
+  <div>
+    <label>Logo do sistema</label>
+    <input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp">
+
+    {% if config.logo %}
+      <div style="margin-top:10px;">
+        <div style="margin-bottom:6px;color:#6b7280;font-size:14px;">Logo atual:</div>
+        <img
+          src="{{ url_for('static', filename=config.logo) }}"
+          alt="Logo do sistema"
+          style="max-height:90px;max-width:240px;border:1px solid #e5e7eb;border-radius:10px;padding:8px;background:#ffffff;"
+        >
+      </div>
+    {% endif %}
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button type="submit">Salvar configurações</button>
+    <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">Voltar</a>
+  </div>
+
+</form>
+{% endblock %}

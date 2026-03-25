@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Relatório{% endblock %}
+
+{% block content %}
+
+<h2>Relatório para {{ envio.destinatario.nome }}</h2>
+
+{% if prazo_expirado %}
+    <p class="erro">Prazo para edição encerrado.</p>
+{% endif %}
+
+<form method="POST">
+
+    <label>Observação:</label><br>
+    <textarea name="texto_observacao" rows="4" style="width:100%;"
+        {% if prazo_expirado %}disabled{% endif %}>
+{{ relatorio.texto_observacao if relatorio else '' }}
+    </textarea>
+    <br><br>
+
+    <label>Número de Referência:</label><br>
+    <input type="text" name="numero_referencia"
+        value="{{ relatorio.numero_referencia if relatorio else '' }}"
+        {% if prazo_expirado %}disabled{% endif %}>
+    <br><br>
+
+    <label>
+        <input type="checkbox" name="checkbox_febre"
+        {% if relatorio and relatorio.checkbox_febre %}checked{% endif %}
+        {% if prazo_expirado %}disabled{% endif %}>
+        Febre
+    </label>
+    <br>
+
+    <label>
+        <input type="checkbox" name="checkbox_alteracao"
+        {% if relatorio and relatorio.checkbox_alteracao %}checked{% endif %}
+        {% if prazo_expirado %}disabled{% endif %}>
+        Alteração clínica
+    </label>
+
+    <br><br>
+
+    <button type="submit" {% if prazo_expirado %}disabled{% endif %}>
+        Enviar Relatório
+    </button>
+
+</form>
+
+{% endblock %}

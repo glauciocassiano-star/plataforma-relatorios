@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mooo | Login</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<!-- Fonte moderna semelhante à Now -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+  margin:0;
+  font-family:'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif;
+}
+
+.login-titulo{
+  font-size:32px;
+  font-weight:600;
+  text-align:center;
+  margin-bottom:6px;
+  color:#1f4f46;
+}
+
+.login-subtitulo{
+  font-size:13px;
+  text-align:center;
+  color:#6b7280;
+  margin-bottom:22px;
+}
+
+.login-box form{
+  display:flex;
+  flex-direction:column;
+}
+
+.login-box label{
+  font-size:13px;
+  font-weight:500;
+  margin-bottom:4px;
+  color:#374151;
+}
+
+.login-box input{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  margin-bottom:14px;
+  font-size:14px;
+}
+
+.login-box input:focus{
+  outline:none;
+  border-color:#1f4f46;
+  box-shadow:0 0 0 3px rgba(31,79,70,0.15);
+}
+
+.login-box button{
+  margin-top:4px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#1f4f46;
+  color:white;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.login-box button:hover{
+  background:#173b35;
+}
+
+.login-footer{
+  text-align:center;
+  font-size:11px;
+  color:#9ca3af;
+  margin-top:16px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-page">
+
+  <div class="login-overlay"></div>
+
+  <div class="login-box">
+
+    <div class="login-titulo">Mooo</div>
+
+    <div class="login-subtitulo">
+      Monitoramento clínico, epidemiológico e sanitário
+    </div>
+
+    <form method="POST">
+
+      <label for="email">Usuário</label>
+      <input type="text" name="email" id="email" required>
+
+      <label for="senha">Senha</label>
+      <input type="password" name="senha" id="senha" required>
+
+      <button type="submit">Entrar</button>
+
+    </form>
+
+    <div class="login-footer">
+      Sistema técnico para propriedades rurais
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

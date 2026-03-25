@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Administração{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:18px;">Painel Administrativo</h2>
+
+<p style="margin-top:0;color:#4b5563;line-height:1.6;">
+  Área restrita para gerenciamento avançado do sistema.
+</p>
+
+<div style="
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
+  margin-top:20px;
+">
+
+  <a href="{{ url_for('main.admin_usuarios') }}" style="
+    display:block;
+    padding:18px;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    background:#ffffff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.04);
+    transition:0.2s ease;
+  ">
+    <div style="font-size:20px;font-weight:700;color:#1f2937;margin-bottom:8px;">
+      👥 Usuários
+    </div>
+    <div style="color:#6b7280;line-height:1.5;">
+      Gerencie usuários, perfis e vínculos de acesso às propriedades.
+    </div>
+  </a>
+
+  <a href="{{ url_for('main.admin_formularios') }}" style="
+    display:block;
+    padding:18px;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    background:#ffffff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.04);
+    transition:0.2s ease;
+  ">
+    <div style="font-size:20px;font-weight:700;color:#1f2937;margin-bottom:8px;">
+      📝 Formulários
+    </div>
+    <div style="color:#6b7280;line-height:1.5;">
+      Configure os formulários clínicos e epidemiológicos usados nos atendimentos.
+    </div>
+  </a>
+
+  <a href="{{ url_for('main.admin_configuracoes') }}" style="
+    display:block;
+    padding:18px;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    background:#ffffff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.04);
+    transition:0.2s ease;
+  ">
+    <div style="font-size:20px;font-weight:700;color:#1f2937;margin-bottom:8px;">
+      ⚙️ Configurações
+    </div>
+    <div style="color:#6b7280;line-height:1.5;">
+      Ajuste identidade visual, informações gerais do sistema e parâmetros institucionais.
+    </div>
+  </a>
+
+  <a href="{{ url_for('main.admin_backup') }}" style="
+    display:block;
+    padding:18px;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    background:#ffffff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.04);
+    transition:0.2s ease;
+  ">
+    <div style="font-size:20px;font-weight:700;color:#1f2937;margin-bottom:8px;">
+      💾 Backup
+    </div>
+    <div style="color:#6b7280;line-height:1.5;">
+      Gere backups compactados do banco de dados para segurança e restauração futura.
+    </div>
+  </a>
+
+</div>
+
+<div style="margin-top:22px;">
+  <a class="btn btn-secondary" href="{{ url_for('main.painel') }}">
+    Voltar ao painel principal
+  </a>
+</div>
+{% endblock %}

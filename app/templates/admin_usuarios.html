@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Usuários{% endblock %}
+
+{% block content %}
+<h2>Usuários</h2>
+
+<div style="display:grid;grid-template-columns:1fr;gap:18px;margin-top:14px;">
+
+  <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;">
+    <h3 style="margin-bottom:8px;">Novo usuário</h3>
+
+    <form method="POST" style="display:grid;gap:10px;max-width:520px;">
+
+      <div>
+        <label>Nome *</label>
+        <input name="nome" required>
+      </div>
+
+      <div>
+        <label>Email *</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div>
+        <label>Senha *</label>
+        <input type="password" name="senha" required>
+      </div>
+
+      <div>
+        <label>Perfil *</label>
+        <select name="perfil">
+          <option value="tecnico">Técnico</option>
+          <option value="veterinario">Veterinário</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button type="submit">Salvar</button>
+        <a class="btn btn-secondary" href="{{ url_for('main.painel') }}">Voltar</a>
+      </div>
+
+    </form>
+  </div>
+
+  <div>
+    <h3 style="margin-bottom:10px;">Lista</h3>
+
+    {% if usuarios %}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Perfil</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in usuarios %}
+          <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.nome }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.perfil }}</td>
+            <td>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+
+                <a class="btn"
+                   href="{{ url_for('main.admin_usuario_propriedades', usuario_id=u.id) }}">
+                  Propriedades
+                </a>
+
+                <a class="btn btn-secondary"
+                   href="{{ url_for('main.admin_editar_usuario', usuario_id=u.id) }}">
+                  Editar
+                </a>
+
+                <a
+                  class="btn btn-danger"
+                  href="{{ url_for('main.admin_excluir_usuario', usuario_id=u.id) }}"
+                  onclick="return confirm('Tem certeza que deseja excluir este usuário?');"
+                >
+                  Excluir
+                </a>
+
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div style="padding:12px;border:1px dashed #e5e7eb;border-radius:12px;color:#6b7280;">
+        Nenhum usuário cadastrado ainda.
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

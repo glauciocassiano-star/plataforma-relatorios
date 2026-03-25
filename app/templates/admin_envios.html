@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Painel Administrativo{% endblock %}
+
+{% block content %}
+
+<h2>Painel Administrativo - Envios</h2>
+
+<table border="1" width="100%" cellpadding="6" cellspacing="0">
+    <tr>
+        <th>Destinatário</th>
+        <th>Lote</th>
+        <th>Enviado em</th>
+        <th>Pode editar até</th>
+        <th>Status</th>
+        <th>Ação</th>
+    </tr>
+
+    {% for envio in envios %}
+    <tr>
+        <td>{{ envio.destinatario.nome }}</td>
+        <td>{{ envio.lote.nome_lote }}</td>
+        <td>{{ envio.enviado_em }}</td>
+        <td>{{ envio.pode_editar_ate }}</td>
+
+        <td>
+            {% if agora > envio.pode_editar_ate %}
+                🔴 Expirado
+            {% else %}
+                🟢 Ativo
+            {% endif %}
+        </td>
+
+        <td>
+            <a href="{{ url_for('main.relatorio', token=envio.token) }}">
+                Abrir
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}

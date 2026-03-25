@@ -1,0 +1,131 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("/static/img/veterinaria-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 20px;
+}
+
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.login-box {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 28px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.login-box h2 {
+  margin: 0 0 18px 0;
+  color: #1f4f46;
+  font-size: 28px;
+  text-align: center;
+  border: none;
+  padding: 0;
+}
+
+.login-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #1f4f46;
+  box-shadow: 0 0 0 3px rgba(31, 79, 70, 0.12);
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background: #1f4f46;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #173b35;
+}
+
+@media (max-width:768px){
+
+input,
+select,
+textarea{
+font-size:16px;
+padding:12px;
+}
+
+label{
+font-size:15px;
+}
+
+}
+
+@media (max-width:768px){
+
+.acoes-tabela{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.acoes-tabela .btn{
+width:100%;
+}
+
+}
+
+@media (max-width:768px){
+
+.nav-link{
+font-size:15px;
+padding:12px;
+}
+
+}
+
+/* =========================
+   AJUSTES MOBILE
+========================= */
+
+@media (max-width:768px){
+
+.cards-home{
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+
+.card-home{
+width:100%;
+}
+
+}

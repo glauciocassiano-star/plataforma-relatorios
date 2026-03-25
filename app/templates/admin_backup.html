@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Backup{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:18px;">Backup do Sistema</h2>
+
+<p style="margin-top:0;color:#4b5563;line-height:1.6;">
+  Gere uma cópia de segurança do banco de dados e gerencie os arquivos de backup já existentes.
+</p>
+
+<div style="
+  margin-top:20px;
+  padding:18px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#ffffff;
+  box-shadow:0 2px 6px rgba(0,0,0,0.04);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  max-width:520px;
+">
+  <div style="color:#374151;line-height:1.5;">
+    <b>Recomendação:</b> gere backups regularmente antes de alterações importantes no sistema.
+  </div>
+
+  <form method="POST" action="{{ url_for('main.gerar_backup') }}">
+    <button type="submit" class="btn">
+      💾 Gerar backup em ZIP
+    </button>
+  </form>
+</div>
+
+<div style="
+  margin-top:24px;
+  padding:18px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  background:#ffffff;
+  box-shadow:0 2px 6px rgba(0,0,0,0.04);
+">
+  <h3 style="margin-top:0;margin-bottom:12px;">Backups disponíveis</h3>
+
+  {% if backups %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Arquivo</th>
+            <th>Data</th>
+            <th>Tamanho</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in backups %}
+            <tr>
+              <td>{{ item.nome }}</td>
+              <td>{{ item.modificado_em.strftime("%d/%m/%Y %H:%M") }}</td>
+              <td>{{ item.tamanho_mb }} MB</td>
+              <td>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <a
+                    class="btn btn-secondary"
+                    href="{{ url_for('main.baixar_backup', nome_arquivo=item.nome) }}"
+                  >
+                    ⬇ Baixar
+                  </a>
+
+                  <form
+                    method="POST"
+                    action="{{ url_for('main.excluir_backup', nome_arquivo=item.nome) }}"
+                    onsubmit="return confirm('Tem certeza que deseja excluir este backup?');"
+                    style="margin:0;"
+                  >
+                    <button type="submit" class="btn btn-danger">
+                      🗑 Excluir
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="margin:0;color:#6b7280;">
+      Nenhum backup encontrado ainda.
+    </p>
+  {% endif %}
+</div>
+
+<div style="margin-top:24px;">
+  <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">
+    Voltar à administração
+  </a>
+</div>
+
+{% endblock %}

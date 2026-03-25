@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Editar Usuário{% endblock %}
+
+{% block content %}
+<h2>Editar Usuário</h2>
+
+<form method="POST" style="display:grid;gap:12px;max-width:520px;">
+  <div>
+    <label>Email *</label>
+    <input type="email" name="email" value="{{ usuario.email }}" required>
+  </div>
+
+  <div>
+    <label>Nova senha</label>
+    <input type="password" name="senha" placeholder="Deixe em branco para manter a senha atual">
+  </div>
+
+  <div>
+    <label>Perfil *</label>
+    <select name="perfil">
+      <option value="tecnico" {% if usuario.perfil == "tecnico" %}selected{% endif %}>Técnico</option>
+      <option value="veterinario" {% if usuario.perfil == "veterinario" %}selected{% endif %}>Veterinário</option>
+      <option value="admin" {% if usuario.perfil == "admin" %}selected{% endif %}>Admin</option>
+    </select>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button type="submit">Salvar alterações</button>
+    <a class="btn btn-secondary" href="{{ url_for('main.admin_usuarios') }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

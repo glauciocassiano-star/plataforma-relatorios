@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="margin-bottom:18px;">Novo Animal - {{ propriedade.nome }}</h2>
+
+<form method="POST" style="
+  display:grid;
+  gap:12px;
+  max-width:520px;
+  padding:16px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#ffffff;
+  box-shadow:0 2px 4px rgba(0,0,0,0.04);
+">
+  <div style="display:grid;gap:6px;">
+    <label for="codigo"><b>Código do animal *</b></label>
+    <input
+      type="text"
+      name="codigo"
+      id="codigo"
+      placeholder="Ex: 00123"
+      required
+    />
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="especie"><b>Espécie *</b></label>
+    <select name="especie" id="especie" required>
+      <option value="bovino" selected>Bovino</option>
+      <option value="equino">Equino</option>
+      <option value="ovino">Ovino</option>
+      <option value="caprino">Caprino</option>
+      <option value="suino">Suíno</option>
+      <option value="aves">Aves</option>
+      <option value="outros">Outros</option>
+    </select>
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="data_nascimento">Data de nascimento</label>
+    <input type="date" name="data_nascimento" id="data_nascimento" />
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="nome">Nome</label>
+    <input
+      type="text"
+      name="nome"
+      id="nome"
+      placeholder="Nome (opcional)"
+    />
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="raca">Raça</label>
+    <input
+      type="text"
+      name="raca"
+      id="raca"
+      placeholder="Raça (opcional)"
+    />
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="sexo">Sexo</label>
+    <select name="sexo" id="sexo">
+      <option value="">Selecione (opcional)</option>
+      <option value="M">Macho</option>
+      <option value="F">Fêmea</option>
+    </select>
+  </div>
+
+  <div style="display:grid;gap:6px;">
+    <label for="perfil_genetico">Perfil genético</label>
+    <input
+      type="text"
+      name="perfil_genetico"
+      id="perfil_genetico"
+      placeholder="Perfil genético (opcional)"
+    />
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button type="submit">Salvar</button>
+
+    <button type="button" onclick="salvarOffline()" class="btn btn-secondary">
+      💾 Salvar offline
+    </button>
+  </div>
+</form>
+
+<p style="margin-top:15px;">
+  <a href="{{ url_for('main.listar_animais', propriedade_id=propriedade.id) }}">
+    Voltar
+  </a>
+</p>
+{% endblock %}

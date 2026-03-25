@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Sucesso{% endblock %}
+
+{% block content %}
+
+<h2 class="sucesso">Relatório enviado com sucesso!</h2>
+
+<p><strong>Destinatário:</strong> {{ envio.destinatario.nome }}</p>
+
+<p><strong>Prazo para edição até:</strong><br>
+{{ envio.pode_editar_ate }}
+</p>
+
+{% if not prazo_expirado %}
+    <a href="{{ url_for('main.relatorio', token=envio.token) }}">
+        <button>Editar novamente</button>
+    </a>
+{% else %}
+    <p class="erro">Prazo de edição encerrado.</p>
+{% endif %}
+
+{% endblock %}

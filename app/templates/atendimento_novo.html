@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if modo_edicao %}
+    Editar Atendimento
+  {% else %}
+    Novo Atendimento
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<h2>
+  {% if modo_edicao %}
+    Editar Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
+  {% else %}
+    Novo Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
+  {% endif %}
+</h2>
+
+<form method="POST" enctype="multipart/form-data" class="form-layout" style="max-width:700px;" id="formAtendimento">
+
+  <div class="form-field">
+    <label for="data_atendimento">Data do atendimento</label>
+    <input
+      type="date"
+      name="data_atendimento"
+      id="data_atendimento"
+      required
+      value="{{ atendimento.data_atendimento.strftime('%Y-%m-%d') if modo_edicao and atendimento and atendimento.data_atendimento else '' }}"
+    >
+  </div>
+
+  {% for c in campos %}
+    {% if c.tipo == "checkbox" %}
+      <div class="checkbox-field">
+        <input
+          type="checkbox"
+          name="{{ c.nome_chave }}"
+          id="{{ c.nome_chave }}"
+          {% if modo_edicao and atendimento and atendimento.dados and atendimento.dados.get(c.nome_chave) %}
+            checked
+          {% endif %}
+        >
+        <label for="{{ c.nome_chave }}">{{ c.rotulo }}</label>
+      </div>
+    {% else %}
+      <div class="form-field">
+        <label for="{{ c.nome_chave }}">{{ c.rotulo }}</label>
+
+        {% if c.tipo == "textarea" %}
+          <textarea
+            name="{{ c.nome_chave }}"
+            id="{{ c.nome_chave }}"
+            {% if c.obrigatorio %}required{% endif %}
+            style="min-height:110px;"
+          >{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}</textarea>
+
+        {% elif c.tipo == "number" %}
+          <input
+            type="number"
+            name="{{ c.nome_chave }}"
+            id="{{ c.nome_chave }}"
+            step="any"
+            {% if c.obrigatorio %}required{% endif %}
+            value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
+          >
+
+        {% elif c.tipo == "select" %}
+          <select
+            name="{{ c.nome_chave }}"
+            id="{{ c.nome_chave }}"
+            {% if c.obrigatorio %}required{% endif %}
+          >
+            <option value="">Selecione</option>
+            {% for op in c.opcoes %}
+              <option
+                value="{{ op }}"
+                {% if modo_edicao and atendimento and atendimento.dados.get(c.nome_chave) == op %}
+                  selected
+                {% endif %}
+              >
+                {{ op }}
+              </option>
+            {% endfor %}
+          </select>
+
+        {% elif c.tipo == "date" %}
+          <input
+            type="date"
+            name="{{ c.nome_chave }}"
+            id="{{ c.nome_chave }}"
+            {% if c.obrigatorio %}required{% endif %}
+            value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
+          >
+
+        {% else %}
+          <input
+            type="text"
+            name="{{ c.nome_chave }}"
+            id="{{ c.nome_chave }}"
+            {% if c.obrigatorio %}required{% endif %}
+            value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
+          >
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  <div class="form-field">
+    <label for="imagens">Imagens do atendimento</label>
+    <input
+      type="file"
+      name="imagens"
+      id="imagens"
+      accept=".jpg,.jpeg,.png,.webp"
+      multiple
+    >
+    <small class="form-help">
+      Você pode enviar uma ou mais imagens clínicas deste atendimento.
+    </small>
+  </div>
+
+  <div class="form-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button type="submit">
+      {% if modo_edicao %}
+        Salvar alterações
+      {% else %}
+        Salvar atendimento
+      {% endif %}
+    </button>
+
+    <button type="button" onclick="salvarOffline()" class="btn btn-secondary">
+      💾 Salvar offline
+    </button>
+  </div>
+
+</form>
+
+<p style="margin-top:15px;">
+  <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}">Voltar</a>
+</p>
+
+<script>
+function salvarOffline() {
+  const form = document.getElementById("formAtendimento");
+
+  const formData = new FormData(form);
+  const dados = {};
+
+  formData.forEach((value, key) => {
+    if (value instanceof File) return; // ignorar imagens
+    dados[key] = value;
+  });
+
+  // checkbox manual (IMPORTANTE)
+  function salvarOffline() {
+  const form = document.getElementById("formAtendimento");
+
+  const formData = new FormData(form);
+  const dados = {};
+
+  // pega todos os campos normais
+  formData.forEach((value, key) => {
+    if (value instanceof File) return;
+    dados[key] = value;
+  });
+
+  // 🔥 pega TODOS os checkboxes corretamente
+  const checkboxes = form.querySelectorAll("input[type='checkbox']");
+
+  checkboxes.forEach(cb => {
+    dados[cb.name] = cb.checked;
+  });
+
+  // metadados
+  dados._offline_id = crypto.randomUUID();
+  dados._salvo_em = new Date().toISOString();
+  dados._animal_id = "{{ animal.id }}";
+  dados._formulario_id = "{{ formulario.id if formulario else '' }}";
+
+  let lista = JSON.parse(localStorage.getItem("atendimentos_offline") || "[]");
+  lista.push(dados);
+
+  localStorage.setItem("atendimentos_offline", JSON.stringify(lista));
+
+  alert("Atendimento salvo offline com sucesso!");
+}
+
+  dados._offline_id = crypto.randomUUID();
+  dados._salvo_em = new Date().toISOString();
+  dados._animal_id = "{{ animal.id }}";
+  dados._formulario_id = "{{ formulario.id if formulario else '' }}";
+
+  let lista = JSON.parse(localStorage.getItem("atendimentos_offline") || "[]");
+  lista.push(dados);
+
+  localStorage.setItem("atendimentos_offline", JSON.stringify(lista));
+
+  alert("Atendimento salvo offline com sucesso!");
+}
+</script>
+
+{% endblock %}

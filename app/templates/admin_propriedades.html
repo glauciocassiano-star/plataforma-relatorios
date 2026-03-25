@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Propriedades{% endblock %}
+
+{% block content %}
+
+<h2>Propriedades</h2>
+
+<form method="POST" style="max-width:500px; margin-bottom:20px;">
+
+    <label>Nome da propriedade</label>
+    <input type="text" name="nome" required>
+
+    <label>Produtor</label>
+    <input type="text" name="produtor" required>
+
+    <label>Cidade</label>
+    <input type="text" name="cidade">
+
+    <label>Estado</label>
+    <input type="text" name="estado">
+
+    <button type="submit">Salvar</button>
+
+</form>
+
+<hr>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Propriedade</th>
+            <th>Produtor</th>
+            <th>Cidade</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for p in propriedades %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.nome }}</td>
+            <td>{{ p.produtor }}</td>
+            <td>{{ p.cidade }} / {{ p.estado }}</td>
+            <td>
+                <a class="btn" href="{{ url_for('main.listar_animais', propriedade_id=p.id) }}">
+                    Animais
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

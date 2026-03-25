@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+
+<style>
+  @page {
+    margin: 24mm 18mm;
+
+    @bottom-right {
+      content: "Página " counter(page) " de " counter(pages);
+      font-size: 11px;
+      color: #6b7280;
+    }
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1f2937;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .header {
+    display: table;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #1f4f46;
+  }
+
+  .header-left,
+  .header-right {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .header-right {
+    text-align: right;
+  }
+
+  .logo {
+    max-height: 64px;
+    max-width: 160px;
+  }
+
+  .logo-fallback {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    text-align: center;
+    border-radius: 50%;
+    background: #eef4f2;
+    color: #1f4f46;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  h1 {
+    margin: 0 0 4px 0;
+    font-size: 26px;
+    color: #1f4f46;
+  }
+
+  .subtitulo {
+    margin: 0;
+    color: #4b5563;
+    font-size: 13px;
+  }
+
+  .secao-titulo {
+    font-size: 18px;
+    color: #1f4f46;
+    margin: 26px 0 12px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d9e2df;
+    page-break-after: avoid;
+  }
+
+  h2 {
+    font-size: 17px;
+    color: #1f4f46;
+    margin: 0 0 10px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d9e2df;
+    page-break-after: avoid;
+  }
+
+  .info-box {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    page-break-inside: avoid;
+  }
+
+  .info-box p {
+    margin: 4px 0;
+  }
+
+  .alerta-filtro {
+    margin-bottom: 18px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #ecfdf5;
+    border: 1px solid #86efac;
+    color: #065f46;
+    font-weight: 600;
+    page-break-inside: avoid;
+  }
+
+  .resumo-grid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 18px;
+  }
+
+  .resumo-item {
+    display: table-cell;
+    width: 25%;
+    vertical-align: top;
+    padding: 0 6px;
+  }
+
+  .resumo-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 12px 10px;
+    text-align: center;
+    min-height: 88px;
+    page-break-inside: avoid;
+  }
+
+  .resumo-label {
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 6px;
+  }
+
+  .resumo-valor {
+    font-size: 17px;
+    font-weight: bold;
+    color: #1f4f46;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  .painel-duplo {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 18px;
+    page-break-inside: avoid;
+  }
+
+  .painel-coluna {
+    display: table-cell;
+    width: 50%;
+    vertical-align: top;
+  }
+
+  .painel-coluna-esquerda {
+    padding-right: 8px;
+  }
+
+  .painel-coluna-direita {
+    padding-left: 8px;
+  }
+
+  .bloco {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    background: #ffffff;
+    page-break-inside: avoid;
+  }
+
+  .grafico-img {
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .muted {
+    color: #6b7280;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 12px;
+    page-break-inside: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  th {
+    background: #f1f5f9;
+    color: #1f2937;
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+  }
+
+  td {
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    vertical-align: top;
+  }
+
+  .num {
+    text-align: center;
+  }
+
+  .risco-baixo {
+    color: #166534;
+    font-weight: bold;
+  }
+
+  .risco-moderado {
+    color: #b45309;
+    font-weight: bold;
+  }
+
+  .risco-alto {
+    color: #b91c1c;
+    font-weight: bold;
+  }
+
+  .tendencia-subindo {
+    color: #dc2626;
+    font-weight: bold;
+  }
+
+  .tendencia-estavel {
+    color: #ca8a04;
+    font-weight: bold;
+  }
+
+  .tendencia-caindo {
+    color: #16a34a;
+    font-weight: bold;
+  }
+
+  .taxa-alta {
+    color: #166534;
+    font-weight: bold;
+  }
+
+  .taxa-media {
+    color: #b45309;
+    font-weight: bold;
+  }
+
+  .taxa-baixa {
+    color: #b91c1c;
+    font-weight: bold;
+  }
+
+  .prob-alta {
+    color: #b91c1c;
+    font-weight: bold;
+  }
+
+  .prob-media {
+    color: #b45309;
+    font-weight: bold;
+  }
+
+  .prob-baixa {
+    color: #166534;
+    font-weight: bold;
+  }
+
+  .footer {
+    margin-top: 28px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 11px;
+    color: #6b7280;
+    page-break-inside: avoid;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+</style>
+</head>
+
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      {% if config_sistema and config_sistema.logo %}
+        <img
+          class="logo"
+          src="{{ url_for('static', filename=config_sistema.logo) }}"
+          alt="Logo"
+        >
+      {% else %}
+        <div class="logo-fallback">🐄</div>
+      {% endif %}
+    </div>
+
+    <div class="header-right">
+      <h1>
+        {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Plataforma de Prontuário Veterinário" }}
+      </h1>
+      <p class="subtitulo">
+        {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else "Monitoramento clínico, epidemiológico e sanitário" }}
+      </p>
+    </div>
+  </div>
+
+  <div class="secao-titulo" style="margin-top:0;">Relatório Epidemiológico</div>
+
+  <div class="info-box">
+    <p><b>Gerado em:</b> {{ gerado_em.strftime("%d/%m/%Y %H:%M") }}</p>
+
+    <p>
+      <b>Escopo:</b>
+      {% if propriedade_selecionada %}
+        {{ propriedade_selecionada.nome }}
+      {% else %}
+        Todas as propriedades disponíveis
+      {% endif %}
+    </p>
+
+    <p>
+      <b>Período:</b>
+      {% if data_inicio or data_fim %}
+        {{ data_inicio or "início aberto" }} até {{ data_fim or "fim aberto" }}
+      {% else %}
+        Todos os períodos disponíveis
+      {% endif %}
+    </p>
+
+    <p><b>Total de atendimentos analisados:</b> {{ total_atendimentos }}</p>
+  </div>
+
+  {% if somente_confirmados %}
+    <div class="alerta-filtro">
+      Exibindo apenas casos confirmados por exame
+    </div>
+  {% endif %}
+
+  <div class="secao-titulo">Resumo executivo</div>
+
+  <div class="resumo-grid">
+    <div class="resumo-item">
+      <div class="resumo-card">
+        <div class="resumo-label">Total de atendimentos</div>
+        <div class="resumo-valor">{{ total_atendimentos }}</div>
+      </div>
+    </div>
+
+    <div class="resumo-item">
+      <div class="resumo-card">
+        <div class="resumo-label">Diagnóstico mais frequente</div>
+        <div class="resumo-valor">{{ diagnostico_top if diagnostico_top else "—" }}</div>
+      </div>
+    </div>
+
+    <div class="resumo-item">
+      <div class="resumo-card">
+        <div class="resumo-label">Propriedade com mais casos</div>
+        <div class="resumo-valor">{{ propriedade_top if propriedade_top else "—" }}</div>
+      </div>
+    </div>
+
+    <div class="resumo-item">
+      <div class="resumo-card">
+        <div class="resumo-label">Perfil genético mais associado</div>
+        <div class="resumo-valor">{{ genetica_top if genetica_top else "—" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="secao-titulo">Painel epidemiológico visual</div>
+
+  <div class="painel-duplo">
+    <div class="painel-coluna painel-coluna-esquerda">
+      <div class="bloco">
+        <h2>Diagnósticos principais</h2>
+
+        {% if grafico_diagnostico_img %}
+          <img
+            class="grafico-img"
+            src="{{ grafico_diagnostico_img }}"
+            alt="Gráfico de diagnósticos principais"
+          >
+        {% else %}
+          <p class="muted">Gráfico não disponível.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="painel-coluna painel-coluna-direita">
+      <div class="bloco">
+        <h2>Evolução temporal dos casos</h2>
+
+        {% if grafico_mensal_img %}
+          <img
+            class="grafico-img"
+            src="{{ grafico_mensal_img }}"
+            alt="Gráfico de evolução temporal"
+          >
+        {% else %}
+          <p class="muted">Gráfico não disponível.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <div class="secao-titulo" style="margin-top:0;">Tabelas analíticas</div>
+
+  <div class="bloco">
+    <h2>Diagnósticos principais</h2>
+
+    {% if contagem_diagnostico %}
+      <table>
+        <thead>
+          <tr>
+            <th>Diagnóstico</th>
+            <th class="num">Total</th>
+            <th class="num">Confirmados</th>
+            <th class="num">% confirmação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nome, total in contagem_diagnostico.items() %}
+          {% set confirmados = contagem_confirmados.get(nome, 0) %}
+          <tr>
+            <td>{{ nome }}</td>
+            <td class="num">{{ total }}</td>
+            <td class="num">{{ confirmados }}</td>
+            <td class="num">
+              {% if total > 0 %}
+                {% set perc = ((confirmados / total) * 100) | round(1) %}
+                {% if perc >= 70 %}
+                  <span class="taxa-alta">{{ perc }}%</span>
+                {% elif perc >= 40 %}
+                  <span class="taxa-media">{{ perc }}%</span>
+                {% else %}
+                  <span class="taxa-baixa">{{ perc }}%</span>
+                {% endif %}
+              {% else %}
+                0%
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhum diagnóstico principal registrado.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Evolução temporal dos casos</h2>
+
+    {% if contagem_mensal %}
+      <table>
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mes, total in contagem_mensal.items() %}
+          <tr>
+            <td>{{ mes }}</td>
+            <td class="num">{{ total }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhum dado temporal disponível.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Categorias diagnósticas</h2>
+
+    {% if contagem_categoria %}
+      <table>
+        <thead>
+          <tr>
+            <th>Categoria</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nome, total in contagem_categoria.items() %}
+          <tr>
+            <td>{{ nome }}</td>
+            <td class="num">{{ total }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhuma categoria diagnóstica registrada.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Desfechos dos casos</h2>
+
+    {% if contagem_desfecho %}
+      <table>
+        <thead>
+          <tr>
+            <th>Desfecho</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nome, total in contagem_desfecho.items() %}
+          <tr>
+            <td>{{ nome }}</td>
+            <td class="num">{{ total }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhum desfecho registrado.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Ranking de propriedades por atendimentos</h2>
+
+    {% if contagem_propriedade %}
+      <table>
+        <thead>
+          <tr>
+            <th>Propriedade</th>
+            <th class="num">Total de atendimentos</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nome, total in contagem_propriedade.items() %}
+          <tr>
+            <td>{{ nome }}</td>
+            <td class="num">{{ total }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhum dado por propriedade disponível.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Correlação genética por diagnóstico</h2>
+
+    {% if correlacao_genetica_resumo %}
+      <table>
+        <thead>
+          <tr>
+            <th>Diagnóstico</th>
+            <th class="num">Total</th>
+            <th>Perfil mais associado</th>
+            <th class="num">% do perfil líder</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for diagnostico, info in correlacao_genetica_resumo.items() %}
+          <tr>
+            <td>{{ diagnostico }}</td>
+            <td class="num">{{ info.total }}</td>
+            <td>{{ info.perfil_top if info.perfil_top else "—" }}</td>
+            <td class="num">{{ info.percentual_top }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhuma correlação genética disponível.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Probabilidade observada por perfil genético</h2>
+
+    {% if probabilidade_ocorrencia %}
+      {% for diagnostico, linhas in probabilidade_ocorrencia.items() %}
+        <div style="
+          margin-bottom:14px;
+          padding:12px;
+          border:1px solid #e5e7eb;
+          border-radius:10px;
+          background:#f9fafb;
+        ">
+          <div style="font-weight:700;color:#1f2937;margin-bottom:10px;">
+            {{ diagnostico }}
+          </div>
+
+          {% if linhas %}
+            <table>
+              <thead>
+                <tr>
+                  <th>Perfil genético</th>
+                  <th class="num">Casos</th>
+                  <th class="num">Total de animais</th>
+                  <th class="num">Probabilidade (%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in linhas %}
+                <tr>
+                  <td>{{ item.perfil }}</td>
+                  <td class="num">{{ item.casos }}</td>
+                  <td class="num">{{ item.total_animais }}</td>
+                  <td class="num">
+                    {% if item.probabilidade >= 20 %}
+                      <span class="prob-alta">{{ item.probabilidade }}%</span>
+                    {% elif item.probabilidade >= 10 %}
+                      <span class="prob-media">{{ item.probabilidade }}%</span>
+                    {% else %}
+                      <span class="prob-baixa">{{ item.probabilidade }}%</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="muted">Sem dados para este diagnóstico.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="muted">Nenhuma probabilidade observada disponível.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Diagnósticos por perfil genético</h2>
+
+    {% if contagem_genetica %}
+      <table>
+        <thead>
+          <tr>
+            <th>Perfil genético e diagnóstico</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for chave, total in contagem_genetica.items() %}
+          <tr>
+            <td>{{ chave }}</td>
+            <td class="num">{{ total }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhum dado genético disponível.</p>
+    {% endif %}
+  </div>
+
+  <div class="bloco">
+    <h2>Risco epidemiológico por propriedade</h2>
+
+    {% if risco_propriedades %}
+      <table>
+        <thead>
+          <tr>
+            <th>Propriedade</th>
+            <th class="num">Animais</th>
+            <th class="num">Atendimentos</th>
+            <th class="num">Taxa (%)</th>
+            <th class="num">Classificação</th>
+            <th class="num">Tendência</th>
+            <th class="num">30d / 30d</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in risco_propriedades %}
+          <tr>
+            <td>{{ item.nome }}</td>
+            <td class="num">{{ item.total_animais }}</td>
+            <td class="num">{{ item.total_atendimentos }}</td>
+            <td class="num">{{ item.taxa }}</td>
+            <td class="num">
+              {% if item.classificacao == "Baixo" %}
+                <span class="risco-baixo">Baixo</span>
+              {% elif item.classificacao == "Moderado" %}
+                <span class="risco-moderado">Moderado</span>
+              {% else %}
+                <span class="risco-alto">Alto</span>
+              {% endif %}
+            </td>
+            <td class="num">
+              {% if item.tendencia == "Subindo" %}
+                <span class="tendencia-subindo">🔴 Subindo</span>
+              {% elif item.tendencia == "Caindo" %}
+                <span class="tendencia-caindo">🟢 Caindo</span>
+              {% else %}
+                <span class="tendencia-estavel">🟡 Estável</span>
+              {% endif %}
+            </td>
+            <td class="num">{{ item.ultimos_30 }} / {{ item.anteriores_30 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">Nenhum dado de risco disponível.</p>
+    {% endif %}
+  </div>
+
+  <div class="footer">
+    <p>Relatório gerado automaticamente pelo sistema.</p>
+
+    <p>
+      {{ config_sistema.rodape if config_sistema and config_sistema.rodape else "Plataforma voltada ao registro de prontuário veterinário, acompanhamento clínico e apoio à análise epidemiológica em propriedades rurais." }}
+    </p>
+
+    {% if config_sistema and config_sistema.aviso_sanitario %}
+      <p><b>Aviso sanitário:</b> {{ config_sistema.aviso_sanitario }}</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

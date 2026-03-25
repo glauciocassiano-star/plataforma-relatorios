@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+
+{% block title %}Prontuário - {{ animal.codigo }}{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:18px;">Prontuário do Animal</h2>
+
+<div style="
+  margin-bottom:18px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:16px;
+  background:#ffffff;
+  box-shadow:0 2px 4px rgba(0,0,0,0.04);
+">
+  <div style="margin-bottom:6px;"><b>Código:</b> {{ animal.codigo }}</div>
+  <div style="margin-bottom:6px;"><b>Nome:</b> {{ animal.nome or "-" }}</div>
+  <div style="margin-bottom:6px;"><b>Data de nascimento:</b> {{ animal.data_nascimento.strftime("%d/%m/%Y") if animal.data_nascimento else "-" }}</div>
+  <div style="margin-bottom:6px;"><b>Espécie:</b> {{ animal.especie or "-" }}</div>
+  <div style="margin-bottom:6px;"><b>Raça:</b> {{ animal.raca or "-" }}</div>
+  <div style="margin-bottom:6px;"><b>Sexo:</b> {{ animal.sexo or "-" }}</div>
+  <div><b>Perfil genético:</b> {{ animal.perfil_genetico or "-" }}</div>
+</div>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 20px 0;">
+  <a class="btn" href="{{ url_for('main.novo_atendimento', animal_id=animal.id) }}">+ Novo atendimento</a>
+  <a class="btn btn-secondary" href="{{ url_for('main.listar_animais', propriedade_id=animal.propriedade_id) }}">Voltar aos animais</a>
+</div>
+
+<hr style="margin:18px 0;"/>
+
+<h3 style="margin-bottom:16px;">Atendimentos</h3>
+
+{% if not atendimentos %}
+  <div style="
+    border:1px dashed #d1d5db;
+    border-radius:12px;
+    padding:16px;
+    background:#f9fafb;
+    color:#4b5563;
+  ">
+    Nenhum atendimento registrado ainda.
+  </div>
+{% else %}
+  {% for a in atendimentos %}
+    <div style="
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:16px;
+      margin-bottom:16px;
+      background:#ffffff;
+      box-shadow:0 2px 4px rgba(0,0,0,0.04);
+    ">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:14px;
+        flex-wrap:wrap;
+      ">
+        <div>
+          <div style="font-size:18px;font-weight:600;color:#1f2937;margin-bottom:6px;">
+            Atendimento
+          </div>
+
+          <div style="margin-bottom:4px;">
+            <b>Data do atendimento:</b>
+            {{ a.data_atendimento.strftime("%d/%m/%Y") if a.data_atendimento else "-" }}
+          </div>
+
+          <div style="margin-bottom:4px;color:#4b5563;">
+            <b>Registrado em:</b>
+            {{ a.criado_em.strftime("%d/%m/%Y às %H:%M") if a.criado_em else "-" }}
+          </div>
+
+          <div style="color:#6b7280;">
+            <b>ID:</b> {{ a.id }}
+          </div>
+        </div>
+
+        <!-- BOTÕES -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a
+            href="{{ url_for('main.exportar_atendimento_pdf', id=a.id) }}"
+            class="btn btn-secondary"
+            target="_blank"
+          >
+            📄 Exportar PDF
+          </a>
+
+          {% if not a.bloqueado_em %}
+
+            <a
+              href="{{ url_for('main.editar_atendimento', id=a.id) }}"
+              class="btn btn-secondary"
+            >
+              Editar atendimento
+            </a>
+
+            {% if session.get("perfil") in ["admin", "veterinario"] %}
+
+              <a
+                href="{{ url_for('main.excluir_atendimento', id=a.id) }}"
+                class="btn btn-danger"
+                onclick="return confirm('Tem certeza que deseja excluir este atendimento?');"
+              >
+                Excluir atendimento
+              </a>
+
+              <a
+                href="{{ url_for('main.novo_exame', id=a.id) }}"
+                class="btn btn-secondary"
+              >
+                + Exame
+              </a>
+
+              <a
+                href="{{ url_for('main.bloquear_atendimento', id=a.id) }}"
+                class="btn"
+                onclick="return confirm('Deseja bloquear este atendimento? Depois disso ele não poderá mais ser editado.');"
+              >
+                🔒 Bloquear
+              </a>
+
+            {% endif %}
+
+          {% else %}
+
+            {% if session.get("perfil") == "admin" %}
+
+              <a
+                href="{{ url_for('main.desbloquear_atendimento', id=a.id) }}"
+                class="btn btn-secondary"
+                onclick="return confirm('Deseja desbloquear este atendimento?');"
+              >
+                🔓 Desbloquear
+              </a>
+
+            {% else %}
+
+              <span style="
+                display:inline-block;
+                padding:8px 12px;
+                border-radius:8px;
+                background:#f3f4f6;
+                color:#374151;
+                border:1px solid #d1d5db;
+                font-weight:600;
+              ">
+                🔒 Atendimento bloqueado
+              </span>
+
+            {% endif %}
+
+          {% endif %}
+        </div>
+      </div>
+
+      {% if a.bloqueado_em %}
+        <div style="
+          margin-top:12px;
+          padding:10px 12px;
+          border-radius:8px;
+          background:#fef2f2;
+          color:#991b1b;
+          border:1px solid #fecaca;
+        ">
+          <b>Atendimento bloqueado em:</b>
+          {{ a.bloqueado_em.strftime("%d/%m/%Y %H:%M") }}
+        </div>
+      {% endif %}
+
+      <div style="
+        margin-top:16px;
+        padding:12px;
+        border-radius:10px;
+        background:#f9fafb;
+        border:1px solid #e5e7eb;
+      ">
+        <div style="font-weight:600;margin-bottom:10px;color:#1f2937;">
+          Resumo clínico / epidemiológico
+        </div>
+
+        <div style="margin-bottom:6px;">
+          <b>Diagnóstico principal:</b>
+          {{ a.dados.get('diagnostico_principal', '-') if a.dados else '-' }}
+        </div>
+
+        <div style="margin-bottom:6px;">
+          <b>Categoria diagnóstica:</b>
+          {{ a.dados.get('categoria_diagnostico', '-') if a.dados else '-' }}
+        </div>
+
+        <div>
+          <b>Desfecho do caso:</b>
+          {{ a.dados.get('desfecho', '-') if a.dados else '-' }}
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <div style="font-weight:600;margin-bottom:8px;color:#1f2937;">
+          Dados completos do atendimento
+        </div>
+
+        {% if a.dados %}
+          <ul style="margin:0 0 0 18px;padding:0;">
+            {% for k, v in a.dados.items() %}
+              <li style="margin-bottom:6px;line-height:1.5;">
+                <b>{{ k }}:</b> {{ v if v else "-" }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p style="margin:0;color:#6b7280;">(sem dados)</p>
+        {% endif %}
+      </div>
+
+      {% if a.exames %}
+        <div style="margin-top:16px;">
+          <div style="font-weight:600;margin-bottom:10px;color:#1f2937;">
+            Exames vinculados
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            {% for ex in a.exames %}
+              <div style="
+                border:1px solid #e5e7eb;
+                border-radius:10px;
+                padding:12px;
+                background:#f9fafb;
+              ">
+                <div style="margin-bottom:6px;">
+                  <b>Categoria:</b> {{ ex.categoria|capitalize }}
+                </div>
+
+                <div style="margin-bottom:6px;">
+                  <b>Exame:</b> {{ ex.nome_exame }}
+                </div>
+
+                <div style="margin-bottom:6px;">
+                  <b>Data:</b> {{ ex.data_exame.strftime("%d/%m/%Y") if ex.data_exame else "-" }}
+                </div>
+
+                <div style="margin-bottom:6px;">
+                  <b>Resultado / Laudo:</b> {{ ex.resultado or "-" }}
+                </div>
+
+                <div style="margin-bottom:6px;">
+                  <b>Observações:</b> {{ ex.observacoes or "-" }}
+                </div>
+
+                {% if ex.arquivo %}
+                  <div>
+                    <a href="{{ url_for('static', filename=ex.arquivo) }}" target="_blank">
+                      Ver arquivo do exame
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if a.imagens %}
+        <div style="margin-top:16px;">
+          <div style="font-weight:600;margin-bottom:10px;color:#1f2937;">
+            Imagens do atendimento
+          </div>
+
+          <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+            gap:12px;
+          ">
+            {% for img in a.imagens %}
+              <div style="
+                border:1px solid #e5e7eb;
+                border-radius:12px;
+                background:#ffffff;
+                padding:10px;
+                box-shadow:0 2px 6px rgba(0,0,0,0.04);
+              ">
+                <a
+                  href="{{ url_for('static', filename=img.caminho_arquivo) }}"
+                  target="_blank"
+                  style="display:block;"
+                >
+                  <img
+                    src="{{ url_for('static', filename=img.caminho_arquivo) }}"
+                    alt="{{ img.nome_arquivo }}"
+                    style="
+                      width:100%;
+                      height:180px;
+                      object-fit:cover;
+                      border-radius:10px;
+                      margin-bottom:8px;
+                    "
+                  >
+                </a>
+
+                <div style="
+                  font-size:12px;
+                  color:#6b7280;
+                  word-break:break-word;
+                  line-height:1.4;
+                ">
+                  {{ img.nome_arquivo }}
+                </div>
+
+                {% if img.descricao %}
+                  <div style="
+                    margin-top:6px;
+                    font-size:12px;
+                    color:#374151;
+                    line-height:1.4;
+                  ">
+                    {{ img.descricao }}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% endblock %}
