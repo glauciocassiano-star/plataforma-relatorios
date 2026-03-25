@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>
+<h2 style="margin-bottom:16px;">
   {% if modo_edicao %}
     Editar Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
   {% else %}
@@ -17,10 +17,11 @@
   {% endif %}
 </h2>
 
-<form method="POST" enctype="multipart/form-data" class="form-layout" style="max-width:700px;" id="formAtendimento">
+<form method="POST" enctype="multipart/form-data" class="form-layout" id="formAtendimento">
 
+  <!-- BLOCO: DATA -->
   <div class="form-field">
-    <label for="data_atendimento">Data do atendimento</label>
+    <label for="data_atendimento">📅 Data do atendimento</label>
     <input
       type="date"
       name="data_atendimento"
@@ -30,9 +31,10 @@
     >
   </div>
 
+  <!-- BLOCO: CAMPOS DINÂMICOS -->
   {% for c in campos %}
     {% if c.tipo == "checkbox" %}
-      <div class="checkbox-field">
+      <div class="checkbox-field" style="margin-top:8px;">
         <input
           type="checkbox"
           name="{{ c.nome_chave }}"
@@ -43,8 +45,9 @@
         >
         <label for="{{ c.nome_chave }}">{{ c.rotulo }}</label>
       </div>
+
     {% else %}
-      <div class="form-field">
+      <div class="form-field" style="margin-top:8px;">
         <label for="{{ c.nome_chave }}">{{ c.rotulo }}</label>
 
         {% if c.tipo == "textarea" %}
@@ -52,7 +55,7 @@
             name="{{ c.nome_chave }}"
             id="{{ c.nome_chave }}"
             {% if c.obrigatorio %}required{% endif %}
-            style="min-height:110px;"
+            style="min-height:120px;"
           >{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}</textarea>
 
         {% elif c.tipo == "number" %}
@@ -106,8 +109,9 @@
     {% endif %}
   {% endfor %}
 
-  <div class="form-field">
-    <label for="imagens">Imagens do atendimento</label>
+  <!-- BLOCO: IMAGENS -->
+  <div class="form-field" style="margin-top:14px;">
+    <label for="imagens">📷 Imagens do atendimento</label>
     <input
       type="file"
       name="imagens"
@@ -120,7 +124,8 @@
     </small>
   </div>
 
-  <div class="form-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+  <!-- BLOCO: AÇÕES -->
+  <div class="form-actions" style="margin-top:18px;">
     <button type="submit">
       {% if modo_edicao %}
         Salvar alterações
@@ -136,8 +141,8 @@
 
 </form>
 
-<p style="margin-top:15px;">
-  <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}">Voltar</a>
+<p style="margin-top:18px;">
+  <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}">← Voltar</a>
 </p>
 
 <script>
@@ -147,45 +152,19 @@ function salvarOffline() {
   const formData = new FormData(form);
   const dados = {};
 
-  formData.forEach((value, key) => {
-    if (value instanceof File) return; // ignorar imagens
-    dados[key] = value;
-  });
-
-  // checkbox manual (IMPORTANTE)
-  function salvarOffline() {
-  const form = document.getElementById("formAtendimento");
-
-  const formData = new FormData(form);
-  const dados = {};
-
-  // pega todos os campos normais
+  // Campos normais
   formData.forEach((value, key) => {
     if (value instanceof File) return;
     dados[key] = value;
   });
 
-  // 🔥 pega TODOS os checkboxes corretamente
+  // Checkboxes
   const checkboxes = form.querySelectorAll("input[type='checkbox']");
-
   checkboxes.forEach(cb => {
     dados[cb.name] = cb.checked;
   });
 
-  // metadados
-  dados._offline_id = crypto.randomUUID();
-  dados._salvo_em = new Date().toISOString();
-  dados._animal_id = "{{ animal.id }}";
-  dados._formulario_id = "{{ formulario.id if formulario else '' }}";
-
-  let lista = JSON.parse(localStorage.getItem("atendimentos_offline") || "[]");
-  lista.push(dados);
-
-  localStorage.setItem("atendimentos_offline", JSON.stringify(lista));
-
-  alert("Atendimento salvo offline com sucesso!");
-}
-
+  // Metadados
   dados._offline_id = crypto.randomUUID();
   dados._salvo_em = new Date().toISOString();
   dados._animal_id = "{{ animal.id }}";
