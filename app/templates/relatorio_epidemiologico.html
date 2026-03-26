@@ -33,21 +33,47 @@
     -webkit-appearance: none;
     appearance: none;
   }
+
+  .filtro-relatorio-form {
+    width: 100%;
+    max-width: 1020px;
+    margin: 0 auto 20px auto;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    display: grid;
+    gap: 14px;
+    box-sizing: border-box;
+  }
+
+  .filtro-relatorio-grupo {
+    display: grid;
+    gap: 6px;
+  }
+
+  .filtro-relatorio-duplo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .filtro-relatorio-form {
+      padding: 14px;
+      max-width: 100%;
+    }
+
+    .filtro-relatorio-duplo {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
-<form method="GET" style="
-  margin-bottom:20px;
-  padding:16px;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  background:#ffffff;
-  box-shadow:0 2px 4px rgba(0,0,0,0.04);
-  display:grid;
-  gap:14px;
-  max-width:560px;
-">
+<form method="GET" class="filtro-relatorio-form">
 
-  <div style="display:grid;gap:6px;">
+  <div class="filtro-relatorio-grupo">
     <label for="propriedade_id"><b>Filtrar por propriedade</b></label>
     <select name="propriedade_id" id="propriedade_id" class="campo-padrao">
       <option value="">Todas as propriedades</option>
@@ -59,12 +85,8 @@
     </select>
   </div>
 
-  <div style="
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:12px;
-  ">
-    <div style="display:grid;gap:6px;">
+  <div class="filtro-relatorio-duplo">
+    <div class="filtro-relatorio-grupo">
       <label for="data_inicio"><b>Data inicial</b></label>
       <input
         type="date"
@@ -75,7 +97,7 @@
       >
     </div>
 
-    <div style="display:grid;gap:6px;">
+    <div class="filtro-relatorio-grupo">
       <label for="data_fim"><b>Data final</b></label>
       <input
         type="date"
