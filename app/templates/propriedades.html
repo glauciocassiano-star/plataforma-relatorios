@@ -18,6 +18,12 @@
     appearance: none;
   }
 
+  /* 🔥 ajuste desktop do formulário */
+  .propriedades-form {
+    max-width: 720px;
+    width: 100%;
+  }
+
   @media (max-width: 768px) {
     .propriedades-form-card,
     .propriedades-lista-card {
@@ -77,6 +83,7 @@
   max-width:100%;
 ">
 
+  <!-- FORM -->
   <div class="propriedades-form-card" style="
     border:1px solid #e5e7eb;
     border-radius:14px;
@@ -92,46 +99,25 @@
     <form method="POST" class="propriedades-form" style="
       display:grid;
       gap:14px;
-      max-width:520px;
-      width:100%;
     ">
       <div>
         <label style="display:block;margin-bottom:6px;">Nome *</label>
-        <input
-          class="campo-padrao"
-          name="nome"
-          placeholder="Ex: Fazenda Boa Vista"
-          required
-        />
+        <input class="campo-padrao" name="nome" placeholder="Ex: Fazenda Boa Vista" required />
       </div>
 
       <div>
         <label style="display:block;margin-bottom:6px;">Produtor *</label>
-        <input
-          class="campo-padrao"
-          name="produtor"
-          placeholder="Ex: João da Silva"
-          required
-        />
+        <input class="campo-padrao" name="produtor" placeholder="Ex: João da Silva" required />
       </div>
 
       <div>
         <label style="display:block;margin-bottom:6px;">Cidade</label>
-        <input
-          class="campo-padrao"
-          name="cidade"
-          placeholder="Ex: Belo Horizonte"
-        />
+        <input class="campo-padrao" name="cidade" placeholder="Ex: Belo Horizonte" />
       </div>
 
       <div>
         <label style="display:block;margin-bottom:6px;">Estado (UF)</label>
-        <input
-          class="campo-padrao"
-          name="estado"
-          placeholder="Ex: MG"
-          maxlength="2"
-        />
+        <input class="campo-padrao" name="estado" placeholder="Ex: MG" maxlength="2" />
       </div>
 
       <div class="propriedades-form-acoes" style="
@@ -147,6 +133,7 @@
     </form>
   </div>
 
+  <!-- LISTA -->
   <div class="propriedades-lista-card" style="
     border:1px solid #e5e7eb;
     border-radius:14px;
@@ -190,11 +177,9 @@
                     Ver animais
                   </a>
 
-                  <a
-                    class="btn btn-danger"
-                    href="{{ url_for('main.excluir_propriedade', propriedade_id=p.id) }}"
-                    onclick="return confirm('Tem certeza que deseja excluir esta propriedade?');"
-                  >
+                  <a class="btn btn-danger"
+                     href="{{ url_for('main.excluir_propriedade', propriedade_id=p.id) }}"
+                     onclick="return confirm('Tem certeza que deseja excluir esta propriedade?');">
                     Excluir
                   </a>
                 </div>
