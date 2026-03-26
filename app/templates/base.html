@@ -224,14 +224,18 @@
       padding: 0 24px;
     }
 
-    .content-card {
-      background: var(--cor-card);
-      border: 1px solid var(--cor-borda);
-      border-radius: 18px;
-      box-shadow: var(--sombra);
-      padding: 28px;
-      overflow: hidden;
-    }
+   .content-card {
+  background: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: 18px;
+  box-shadow: var(--sombra);
+  padding: 28px;
+  overflow: hidden;
+
+  width: 100%;
+  max-width: 1100px;   /* 🔥 controla a largura no notebook */
+  margin: 0 auto;      /* 🔥 centraliza */
+}
 
     .flash-messages {
       display: grid;
@@ -563,9 +567,8 @@
       }
 
       .content-card {
-        padding: 16px;
-        border-radius: 16px;
-      }
+        padding: 18px;
+    }
 
       .flash {
         padding: 12px 14px;
