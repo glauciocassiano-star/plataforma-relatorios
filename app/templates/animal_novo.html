@@ -43,21 +43,20 @@
 
 <h2 style="margin-bottom:18px;">Novo Animal - {{ propriedade.nome }}</h2>
 
-<form
-  method="POST"
-  id="formAnimal"
-  class="animal-form-card"
-  style="
-    display:grid;
-    gap:14px;
-    max-width:520px;
-    padding:16px;
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    background:#ffffff;
-    box-shadow:0 2px 4px rgba(0,0,0,0.04);
-  "
->
+.animal-form-card {
+  display: grid;
+  gap: 14px;
+
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
   <div style="display:grid;gap:6px;">
     <label for="codigo"><b>Código do animal *</b></label>
     <input
