@@ -19,6 +19,22 @@
   </div>
 {% endif %}
 
+<style>
+  .campo-padrao {
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8d5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2937;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+</style>
+
 <form method="GET" style="
   margin-bottom:20px;
   padding:16px;
@@ -30,9 +46,10 @@
   gap:14px;
   max-width:560px;
 ">
+
   <div style="display:grid;gap:6px;">
     <label for="propriedade_id"><b>Filtrar por propriedade</b></label>
-    <select name="propriedade_id" id="propriedade_id">
+    <select name="propriedade_id" id="propriedade_id" class="campo-padrao">
       <option value="">Todas as propriedades</option>
       {% for p in propriedades %}
         <option value="{{ p.id }}" {% if propriedade_id == p.id %}selected{% endif %}>
@@ -53,6 +70,7 @@
         type="date"
         id="data_inicio"
         name="data_inicio"
+        class="campo-padrao"
         value="{{ request.args.get('data_inicio', '') }}"
       >
     </div>
@@ -63,6 +81,7 @@
         type="date"
         id="data_fim"
         name="data_fim"
+        class="campo-padrao"
         value="{{ request.args.get('data_fim', '') }}"
       >
     </div>
@@ -124,6 +143,7 @@
       Exportar PDF
     </button>
   </div>
+
 </form>
 
 <form
