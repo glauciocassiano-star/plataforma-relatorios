@@ -3,16 +3,86 @@
 {% block title %}Editar Animal{% endblock %}
 
 {% block content %}
-<h2>Editar Animal</h2>
 
-<p style="margin-bottom:16px;color:#6b7280;">
+<style>
+  .animal-form-card {
+    display: grid;
+    gap: 14px;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
+  .campo-grupo {
+    display: grid;
+    gap: 6px;
+  }
+
+  .campo-padrao {
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8d5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2937;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input[type="date"].campo-padrao {
+    display: block;
+  }
+
+  .animal-form-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .animal-form-acoes .btn,
+  .animal-form-acoes button {
+    min-height: 44px;
+  }
+
+  @media (max-width: 768px) {
+    .animal-form-card {
+      padding: 14px;
+      max-width: 100%;
+    }
+
+    .animal-form-acoes {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .animal-form-acoes .btn,
+    .animal-form-acoes button {
+      width: 100%;
+    }
+  }
+</style>
+
+<h2 style="margin-bottom:8px;">Editar Animal</h2>
+
+<p style="margin-bottom:16px; color:#6b7280; text-align:center;">
   Propriedade: <strong>{{ propriedade.nome }}</strong>
 </p>
 
-<form method="POST" style="display:grid;gap:12px;max-width:700px;">
-  <div style="display:grid;gap:6px;">
-    <label for="codigo">Código</label>
+<form method="POST" class="animal-form-card">
+  <div class="campo-grupo">
+    <label for="codigo"><b>Código</b></label>
     <input
+      class="campo-padrao"
       type="text"
       id="codigo"
       name="codigo"
@@ -21,9 +91,10 @@
     >
   </div>
 
-  <div style="display:grid;gap:6px;">
-    <label for="nome">Nome</label>
+  <div class="campo-grupo">
+    <label for="nome"><b>Nome</b></label>
     <input
+      class="campo-padrao"
       type="text"
       id="nome"
       name="nome"
@@ -31,9 +102,10 @@
     >
   </div>
 
-  <div style="display:grid;gap:6px;">
-    <label for="data_nascimento">Data de nascimento</label>
+  <div class="campo-grupo">
+    <label for="data_nascimento"><b>Data de nascimento</b></label>
     <input
+      class="campo-padrao"
       type="date"
       id="data_nascimento"
       name="data_nascimento"
@@ -41,9 +113,10 @@
     >
   </div>
 
-  <div style="display:grid;gap:6px;">
-    <label for="especie">Espécie</label>
+  <div class="campo-grupo">
+    <label for="especie"><b>Espécie</b></label>
     <input
+      class="campo-padrao"
       type="text"
       id="especie"
       name="especie"
@@ -51,9 +124,10 @@
     >
   </div>
 
-  <div style="display:grid;gap:6px;">
-    <label for="raca">Raça</label>
+  <div class="campo-grupo">
+    <label for="raca"><b>Raça</b></label>
     <input
+      class="campo-padrao"
       type="text"
       id="raca"
       name="raca"
@@ -61,9 +135,10 @@
     >
   </div>
 
-  <div style="display:grid;gap:6px;">
-    <label for="sexo">Sexo</label>
+  <div class="campo-grupo">
+    <label for="sexo"><b>Sexo</b></label>
     <input
+      class="campo-padrao"
       type="text"
       id="sexo"
       name="sexo"
@@ -71,9 +146,10 @@
     >
   </div>
 
-  <div style="display:grid;gap:6px;">
-    <label for="perfil_genetico">Perfil genético</label>
+  <div class="campo-grupo">
+    <label for="perfil_genetico"><b>Perfil genético</b></label>
     <input
+      class="campo-padrao"
       type="text"
       id="perfil_genetico"
       name="perfil_genetico"
@@ -81,7 +157,7 @@
     >
   </div>
 
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+  <div class="animal-form-acoes">
     <button type="submit">Salvar alterações</button>
 
     <a
@@ -92,4 +168,5 @@
     </a>
   </div>
 </form>
+
 {% endblock %}
