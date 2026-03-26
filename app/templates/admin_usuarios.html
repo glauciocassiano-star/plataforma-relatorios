@@ -2,40 +2,149 @@
 {% block title %}Usuários{% endblock %}
 
 {% block content %}
+
+<style>
+  .admin-usuarios-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 14px;
+  }
+
+  .admin-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    box-sizing: border-box;
+  }
+
+  .admin-form-card {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    max-width: 1020px;
+    margin: 0 auto;
+  }
+
+  .admin-form-grupo {
+    display: grid;
+    gap: 6px;
+  }
+
+  .campo-padrao {
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8d5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2937;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .admin-form-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .admin-tabela-acoes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .admin-vazio {
+    padding: 12px;
+    border: 1px dashed #e5e7eb;
+    border-radius: 12px;
+    color: #6b7280;
+    background: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    .admin-card {
+      padding: 14px;
+    }
+
+    .admin-form-card {
+      max-width: 100%;
+    }
+
+    .admin-form-acoes {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .admin-form-acoes .btn,
+    .admin-form-acoes button {
+      width: 100%;
+    }
+
+    .admin-tabela-acoes {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .admin-tabela-acoes .btn {
+      width: 100%;
+    }
+
+    table th,
+    table td {
+      padding: 10px 8px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    table th,
+    table td {
+      font-size: 12px;
+    }
+  }
+</style>
+
 <h2>Usuários</h2>
 
-<div style="display:grid;grid-template-columns:1fr;gap:18px;margin-top:14px;">
+<div class="admin-usuarios-layout">
 
-  <div style="border:1px solid #e5e7eb;border-radius:12px;padding:14px;">
+  <div class="admin-card">
     <h3 style="margin-bottom:8px;">Novo usuário</h3>
 
-    <form method="POST" style="display:grid;gap:10px;max-width:520px;">
+    <form method="POST" class="admin-form-card">
 
-      <div>
-        <label>Nome *</label>
-        <input name="nome" required>
+      <div class="admin-form-grupo">
+        <label for="nome"><b>Nome *</b></label>
+        <input class="campo-padrao" id="nome" name="nome" required>
       </div>
 
-      <div>
-        <label>Email *</label>
-        <input type="email" name="email" required>
+      <div class="admin-form-grupo">
+        <label for="email"><b>Email *</b></label>
+        <input class="campo-padrao" type="email" id="email" name="email" required>
       </div>
 
-      <div>
-        <label>Senha *</label>
-        <input type="password" name="senha" required>
+      <div class="admin-form-grupo">
+        <label for="senha"><b>Senha *</b></label>
+        <input class="campo-padrao" type="password" id="senha" name="senha" required>
       </div>
 
-      <div>
-        <label>Perfil *</label>
-        <select name="perfil">
+      <div class="admin-form-grupo">
+        <label for="perfil"><b>Perfil *</b></label>
+        <select class="campo-padrao" id="perfil" name="perfil">
           <option value="tecnico">Técnico</option>
           <option value="veterinario">Veterinário</option>
           <option value="admin">Admin</option>
         </select>
       </div>
 
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <div class="admin-form-acoes">
         <button type="submit">Salvar</button>
         <a class="btn btn-secondary" href="{{ url_for('main.painel') }}">Voltar</a>
       </div>
@@ -43,56 +152,58 @@
     </form>
   </div>
 
-  <div>
+  <div class="admin-card">
     <h3 style="margin-bottom:10px;">Lista</h3>
 
     {% if usuarios %}
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>Perfil</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for u in usuarios %}
-          <tr>
-            <td>{{ u.id }}</td>
-            <td>{{ u.nome }}</td>
-            <td>{{ u.email }}</td>
-            <td>{{ u.perfil }}</td>
-            <td>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Perfil</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in usuarios %}
+            <tr>
+              <td>{{ u.id }}</td>
+              <td>{{ u.nome }}</td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.perfil }}</td>
+              <td>
+                <div class="admin-tabela-acoes">
 
-                <a class="btn"
-                   href="{{ url_for('main.admin_usuario_propriedades', usuario_id=u.id) }}">
-                  Propriedades
-                </a>
+                  <a class="btn"
+                     href="{{ url_for('main.admin_usuario_propriedades', usuario_id=u.id) }}">
+                    Propriedades
+                  </a>
 
-                <a class="btn btn-secondary"
-                   href="{{ url_for('main.admin_editar_usuario', usuario_id=u.id) }}">
-                  Editar
-                </a>
+                  <a class="btn btn-secondary"
+                     href="{{ url_for('main.admin_editar_usuario', usuario_id=u.id) }}">
+                    Editar
+                  </a>
 
-                <a
-                  class="btn btn-danger"
-                  href="{{ url_for('main.admin_excluir_usuario', usuario_id=u.id) }}"
-                  onclick="return confirm('Tem certeza que deseja excluir este usuário?');"
-                >
-                  Excluir
-                </a>
+                  <a
+                    class="btn btn-danger"
+                    href="{{ url_for('main.admin_excluir_usuario', usuario_id=u.id) }}"
+                    onclick="return confirm('Tem certeza que deseja excluir este usuário?');"
+                  >
+                    Excluir
+                  </a>
 
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     {% else %}
-      <div style="padding:12px;border:1px dashed #e5e7eb;border-radius:12px;color:#6b7280;">
+      <div class="admin-vazio">
         Nenhum usuário cadastrado ainda.
       </div>
     {% endif %}
