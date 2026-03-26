@@ -4,56 +4,122 @@
 
 {% block content %}
 
+<style>
+  .admin-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 18px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    max-width: 820px;
+    width: 100%;
+    margin: 14px auto 0 auto;
+  }
+
+  .admin-subinfo {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #4b5563;
+    line-height: 1.5;
+  }
+
+  .admin-vinculos-form {
+    display: grid;
+    gap: 10px;
+  }
+
+  .admin-checkbox-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .admin-checkbox-item:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+  }
+
+  .admin-checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #1f4f46;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .admin-checkbox-item span {
+    color: #1f2937;
+    line-height: 1.4;
+  }
+
+  .admin-form-acoes {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .admin-card {
+      padding: 14px;
+      border-radius: 14px;
+      max-width: 100%;
+    }
+
+    .admin-form-acoes {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .admin-form-acoes .btn,
+    .admin-form-acoes button {
+      width: 100%;
+    }
+  }
+</style>
+
 <h2>Propriedades vinculadas</h2>
 
-<div style="
-border:1px solid #e5e7eb;
-border-radius:12px;
-padding:16px;
-max-width:560px;
-">
+<div class="admin-card">
 
-<p style="margin-top:0;margin-bottom:14px;">
-<b>Usuário:</b> {{ usuario.nome }} ({{ usuario.email }})
-</p>
+  <p class="admin-subinfo">
+    <b>Usuário:</b> {{ usuario.nome }} ({{ usuario.email }})
+  </p>
 
-<form method="POST" style="display:grid;gap:8px;">
+  <form method="POST" class="admin-vinculos-form">
 
-  {% for p in propriedades %}
+    {% for p in propriedades %}
+      <label class="admin-checkbox-item">
+        <input
+          type="checkbox"
+          name="propriedades"
+          value="{{ p.id }}"
+          {% if p.id in vinculadas %}checked{% endif %}
+        >
 
-  <label style="
-  display:flex;
-  gap:8px;
-  align-items:center;
-  padding:6px 4px;
-  border-radius:6px;
-  ">
+        <span>
+          <b>{{ p.nome }}</b> — {{ p.produtor }}
+        </span>
+      </label>
+    {% endfor %}
 
-    <input
-      type="checkbox"
-      name="propriedades"
-      value="{{ p.id }}"
-      {% if p.id in vinculadas %}checked{% endif %}
-    >
+    <div class="admin-form-acoes">
+      <button type="submit">Salvar vínculos</button>
 
-    <span>
-      <b>{{ p.nome }}</b> — {{ p.produtor }}
-    </span>
+      <a class="btn btn-secondary"
+         href="{{ url_for('main.admin_usuarios') }}">
+         Voltar
+      </a>
+    </div>
 
-  </label>
-
-  {% endfor %}
-
-  <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-    <button type="submit">Salvar vínculos</button>
-
-    <a class="btn btn-secondary"
-       href="{{ url_for('main.admin_usuarios') }}">
-       Voltar
-    </a>
-  </div>
-
-</form>
+  </form>
 
 </div>
 
