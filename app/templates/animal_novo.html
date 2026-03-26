@@ -1,21 +1,67 @@
 {% extends "base.html" %}
 
+{% block title %}Novo Animal{% endblock %}
+
 {% block content %}
+
+<style>
+  .campo-padrao {
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8d5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2937;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input[type="date"].campo-padrao {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .animal-form-card {
+      padding: 14px !important;
+      max-width: 100% !important;
+    }
+
+    .animal-form-acoes {
+      flex-direction: column;
+      align-items: stretch !important;
+    }
+
+    .animal-form-acoes .btn,
+    .animal-form-acoes button {
+      width: 100%;
+    }
+  }
+</style>
+
 <h2 style="margin-bottom:18px;">Novo Animal - {{ propriedade.nome }}</h2>
 
-<form method="POST" style="
-  display:grid;
-  gap:12px;
-  max-width:520px;
-  padding:16px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#ffffff;
-  box-shadow:0 2px 4px rgba(0,0,0,0.04);
-">
+<form
+  method="POST"
+  id="formAnimal"
+  class="animal-form-card"
+  style="
+    display:grid;
+    gap:14px;
+    max-width:520px;
+    padding:16px;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    background:#ffffff;
+    box-shadow:0 2px 4px rgba(0,0,0,0.04);
+  "
+>
   <div style="display:grid;gap:6px;">
     <label for="codigo"><b>Código do animal *</b></label>
     <input
+      class="campo-padrao"
       type="text"
       name="codigo"
       id="codigo"
@@ -26,7 +72,7 @@
 
   <div style="display:grid;gap:6px;">
     <label for="especie"><b>Espécie *</b></label>
-    <select name="especie" id="especie" required>
+    <select class="campo-padrao" name="especie" id="especie" required>
       <option value="bovino" selected>Bovino</option>
       <option value="equino">Equino</option>
       <option value="ovino">Ovino</option>
@@ -39,12 +85,18 @@
 
   <div style="display:grid;gap:6px;">
     <label for="data_nascimento">Data de nascimento</label>
-    <input type="date" name="data_nascimento" id="data_nascimento" />
+    <input
+      class="campo-padrao"
+      type="date"
+      name="data_nascimento"
+      id="data_nascimento"
+    />
   </div>
 
   <div style="display:grid;gap:6px;">
     <label for="nome">Nome</label>
     <input
+      class="campo-padrao"
       type="text"
       name="nome"
       id="nome"
@@ -55,6 +107,7 @@
   <div style="display:grid;gap:6px;">
     <label for="raca">Raça</label>
     <input
+      class="campo-padrao"
       type="text"
       name="raca"
       id="raca"
@@ -64,7 +117,7 @@
 
   <div style="display:grid;gap:6px;">
     <label for="sexo">Sexo</label>
-    <select name="sexo" id="sexo">
+    <select class="campo-padrao" name="sexo" id="sexo">
       <option value="">Selecione (opcional)</option>
       <option value="M">Macho</option>
       <option value="F">Fêmea</option>
@@ -74,6 +127,7 @@
   <div style="display:grid;gap:6px;">
     <label for="perfil_genetico">Perfil genético</label>
     <input
+      class="campo-padrao"
       type="text"
       name="perfil_genetico"
       id="perfil_genetico"
@@ -81,7 +135,10 @@
     />
   </div>
 
-  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+  <div
+    class="animal-form-acoes"
+    style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;"
+  >
     <button type="submit">Salvar</button>
 
     <button type="button" onclick="salvarOffline()" class="btn btn-secondary">
@@ -95,4 +152,29 @@
     Voltar
   </a>
 </p>
+
+<script>
+  function salvarOffline() {
+    const form = document.getElementById("formAnimal");
+    const formData = new FormData(form);
+    const dados = {};
+
+    formData.forEach((value, key) => {
+      dados[key] = value;
+    });
+
+    dados._offline_id = crypto.randomUUID();
+    dados._salvo_em = new Date().toISOString();
+    dados._tipo = "animal";
+    dados._propriedade_id = "{{ propriedade.id }}";
+
+    let lista = JSON.parse(localStorage.getItem("animais_offline") || "[]");
+    lista.push(dados);
+
+    localStorage.setItem("animais_offline", JSON.stringify(lista));
+
+    alert("Animal salvo offline com sucesso!");
+  }
+</script>
+
 {% endblock %}
