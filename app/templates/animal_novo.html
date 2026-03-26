@@ -5,6 +5,20 @@
 {% block content %}
 
 <style>
+  .animal-form-card {
+    display: grid;
+    gap: 14px;
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
   .campo-padrao {
     min-height: 56px;
     padding: 12px 14px;
@@ -19,19 +33,31 @@
     appearance: none;
   }
 
+  .campo-grupo {
+    display: grid;
+    gap: 6px;
+  }
+
+  .animal-form-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
   input[type="date"].campo-padrao {
     display: block;
   }
 
   @media (max-width: 768px) {
     .animal-form-card {
-      padding: 14px !important;
-      max-width: 100% !important;
+      padding: 14px;
+      max-width: 100%;
     }
 
     .animal-form-acoes {
       flex-direction: column;
-      align-items: stretch !important;
+      align-items: stretch;
     }
 
     .animal-form-acoes .btn,
@@ -43,21 +69,12 @@
 
 <h2 style="margin-bottom:18px;">Novo Animal - {{ propriedade.nome }}</h2>
 
-.animal-form-card {
-  display: grid;
-  gap: 14px;
-
-  max-width: 720px;
-  width: 100%;
-  margin: 0 auto;
-
-  padding: 20px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-  <div style="display:grid;gap:6px;">
+<form
+  method="POST"
+  id="formAnimal"
+  class="animal-form-card"
+>
+  <div class="campo-grupo">
     <label for="codigo"><b>Código do animal *</b></label>
     <input
       class="campo-padrao"
@@ -69,7 +86,7 @@
     />
   </div>
 
-  <div style="display:grid;gap:6px;">
+  <div class="campo-grupo">
     <label for="especie"><b>Espécie *</b></label>
     <select class="campo-padrao" name="especie" id="especie" required>
       <option value="bovino" selected>Bovino</option>
@@ -82,7 +99,7 @@
     </select>
   </div>
 
-  <div style="display:grid;gap:6px;">
+  <div class="campo-grupo">
     <label for="data_nascimento">Data de nascimento</label>
     <input
       class="campo-padrao"
@@ -92,7 +109,7 @@
     />
   </div>
 
-  <div style="display:grid;gap:6px;">
+  <div class="campo-grupo">
     <label for="nome">Nome</label>
     <input
       class="campo-padrao"
@@ -103,7 +120,7 @@
     />
   </div>
 
-  <div style="display:grid;gap:6px;">
+  <div class="campo-grupo">
     <label for="raca">Raça</label>
     <input
       class="campo-padrao"
@@ -114,7 +131,7 @@
     />
   </div>
 
-  <div style="display:grid;gap:6px;">
+  <div class="campo-grupo">
     <label for="sexo">Sexo</label>
     <select class="campo-padrao" name="sexo" id="sexo">
       <option value="">Selecione (opcional)</option>
@@ -123,7 +140,7 @@
     </select>
   </div>
 
-  <div style="display:grid;gap:6px;">
+  <div class="campo-grupo">
     <label for="perfil_genetico">Perfil genético</label>
     <input
       class="campo-padrao"
@@ -134,10 +151,7 @@
     />
   </div>
 
-  <div
-    class="animal-form-acoes"
-    style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;"
-  >
+  <div class="animal-form-acoes">
     <button type="submit">Salvar</button>
 
     <button type="button" onclick="salvarOffline()" class="btn btn-secondary">
