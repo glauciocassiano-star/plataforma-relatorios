@@ -11,6 +11,25 @@
 {% block content %}
 
 <style>
+  .atendimento-form-card {
+    display: grid;
+    gap: 14px;
+    max-width: 1020px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
+  .form-field {
+    display: grid;
+    gap: 6px;
+  }
+
   .campo-padrao {
     min-height: 56px;
     padding: 12px 14px;
@@ -25,14 +44,54 @@
     appearance: none;
   }
 
+  textarea.campo-padrao {
+    min-height: 120px;
+    resize: vertical;
+  }
+
   input[type="date"].campo-padrao {
     display: block;
   }
 
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .form-help {
+    color: #6b7280;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .atendimento-form-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  .atendimento-form-acoes .btn,
+  .atendimento-form-acoes button {
+    min-height: 44px;
+  }
+
   @media (max-width: 1020px) {
+    .atendimento-form-card {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .atendimento-form-card {
+      padding: 14px;
+    }
+
     .atendimento-form-acoes {
       flex-direction: column;
-      align-items: stretch !important;
+      align-items: stretch;
     }
 
     .atendimento-form-acoes .btn,
@@ -50,7 +109,7 @@
   {% endif %}
 </h2>
 
-<form method="POST" enctype="multipart/form-data" class="form-layout" id="formAtendimento">
+<form method="POST" enctype="multipart/form-data" class="atendimento-form-card" id="formAtendimento">
 
   <!-- BLOCO: DATA -->
   <div class="form-field">
@@ -68,7 +127,7 @@
   <!-- BLOCO: CAMPOS DINÂMICOS -->
   {% for c in campos %}
     {% if c.tipo == "checkbox" %}
-      <div class="checkbox-field" style="margin-top:8px;">
+      <div class="checkbox-field">
         <input
           type="checkbox"
           name="{{ c.nome_chave }}"
@@ -90,7 +149,6 @@
             name="{{ c.nome_chave }}"
             id="{{ c.nome_chave }}"
             {% if c.obrigatorio %}required{% endif %}
-            style="min-height:120px;"
           >{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}</textarea>
 
         {% elif c.tipo == "number" %}
@@ -164,7 +222,7 @@
   </div>
 
   <!-- BLOCO: AÇÕES -->
-  <div class="form-actions atendimento-form-acoes" style="margin-top:18px;">
+  <div class="form-actions atendimento-form-acoes">
     <button type="submit">
       {% if modo_edicao %}
         Salvar alterações
