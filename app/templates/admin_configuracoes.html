@@ -3,55 +3,192 @@
 
 {% block content %}
 
+<style>
+  .admin-config-card {
+    width: 100%;
+    max-width: 1020px;
+    margin: 14px auto 0 auto;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+  }
+
+  .admin-config-form {
+    display: grid;
+    gap: 14px;
+  }
+
+  .admin-form-grupo {
+    display: grid;
+    gap: 6px;
+  }
+
+  .admin-form-grupo label {
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .campo-padrao {
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8d5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2937;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  textarea.campo-padrao {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .admin-logo-preview {
+    margin-top: 10px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #f9fafb;
+  }
+
+  .admin-logo-label {
+    margin-bottom: 8px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .admin-logo-imagem {
+    max-height: 90px;
+    max-width: 240px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 8px;
+    background: #ffffff;
+    display: block;
+  }
+
+  .admin-form-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .admin-config-card {
+      max-width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+    }
+
+    .admin-form-acoes {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .admin-form-acoes .btn,
+    .admin-form-acoes button {
+      width: 100%;
+    }
+
+    .admin-logo-imagem {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+</style>
+
 <h2>Configurações do Sistema</h2>
 
-<form method="POST" enctype="multipart/form-data" style="display:grid;gap:12px;max-width:700px;">
+<div class="admin-config-card">
+  <form method="POST" enctype="multipart/form-data" class="admin-config-form">
 
-  <div>
-    <label>Nome da plataforma</label>
-    <input name="nome_plataforma" value="{{ config.nome_plataforma or '' }}">
-  </div>
+    <div class="admin-form-grupo">
+      <label for="nome_plataforma">Nome da plataforma</label>
+      <input
+        class="campo-padrao"
+        id="nome_plataforma"
+        name="nome_plataforma"
+        value="{{ config.nome_plataforma or '' }}"
+      >
+    </div>
 
-  <div>
-    <label>Subtítulo</label>
-    <input name="subtitulo" value="{{ config.subtitulo or '' }}">
-  </div>
+    <div class="admin-form-grupo">
+      <label for="subtitulo">Subtítulo</label>
+      <input
+        class="campo-padrao"
+        id="subtitulo"
+        name="subtitulo"
+        value="{{ config.subtitulo or '' }}"
+      >
+    </div>
 
-  <div>
-    <label>Texto do banner</label>
-    <textarea name="texto_banner" rows="4">{{ config.texto_banner or '' }}</textarea>
-  </div>
+    <div class="admin-form-grupo">
+      <label for="texto_banner">Texto do banner</label>
+      <textarea
+        class="campo-padrao"
+        id="texto_banner"
+        name="texto_banner"
+        rows="4"
+      >{{ config.texto_banner or '' }}</textarea>
+    </div>
 
-  <div>
-    <label>Aviso sanitário</label>
-    <textarea name="aviso_sanitario" rows="4">{{ config.aviso_sanitario or '' }}</textarea>
-  </div>
+    <div class="admin-form-grupo">
+      <label for="aviso_sanitario">Aviso sanitário</label>
+      <textarea
+        class="campo-padrao"
+        id="aviso_sanitario"
+        name="aviso_sanitario"
+        rows="4"
+      >{{ config.aviso_sanitario or '' }}</textarea>
+    </div>
 
-  <div>
-    <label>Rodapé</label>
-    <textarea name="rodape" rows="4">{{ config.rodape or '' }}</textarea>
-  </div>
+    <div class="admin-form-grupo">
+      <label for="rodape">Rodapé</label>
+      <textarea
+        class="campo-padrao"
+        id="rodape"
+        name="rodape"
+        rows="4"
+      >{{ config.rodape or '' }}</textarea>
+    </div>
 
-  <div>
-    <label>Logo do sistema</label>
-    <input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp">
+    <div class="admin-form-grupo">
+      <label for="logo">Logo do sistema</label>
+      <input
+        class="campo-padrao"
+        type="file"
+        id="logo"
+        name="logo"
+        accept=".png,.jpg,.jpeg,.webp"
+      >
 
-    {% if config.logo %}
-      <div style="margin-top:10px;">
-        <div style="margin-bottom:6px;color:#6b7280;font-size:14px;">Logo atual:</div>
-        <img
-          src="{{ url_for('static', filename=config.logo) }}"
-          alt="Logo do sistema"
-          style="max-height:90px;max-width:240px;border:1px solid #e5e7eb;border-radius:10px;padding:8px;background:#ffffff;"
-        >
-      </div>
-    {% endif %}
-  </div>
+      {% if config.logo %}
+        <div class="admin-logo-preview">
+          <div class="admin-logo-label">Logo atual:</div>
+          <img
+            src="{{ url_for('static', filename=config.logo) }}"
+            alt="Logo do sistema"
+            class="admin-logo-imagem"
+          >
+        </div>
+      {% endif %}
+    </div>
 
-  <div style="display:flex;gap:10px;flex-wrap:wrap;">
-    <button type="submit">Salvar configurações</button>
-    <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">Voltar</a>
-  </div>
+    <div class="admin-form-acoes">
+      <button type="submit">Salvar configurações</button>
+      <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">Voltar</a>
+    </div>
 
-</form>
+  </form>
+</div>
+
 {% endblock %}
