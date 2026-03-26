@@ -9,6 +9,39 @@
 {% endblock %}
 
 {% block content %}
+
+<style>
+  .campo-padrao {
+    min-height: 56px;
+    padding: 12px 14px;
+    border: 1px solid #cfd8d5;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #1f2937;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input[type="date"].campo-padrao {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .atendimento-form-acoes {
+      flex-direction: column;
+      align-items: stretch !important;
+    }
+
+    .atendimento-form-acoes .btn,
+    .atendimento-form-acoes button {
+      width: 100%;
+    }
+  }
+</style>
+
 <h2 style="margin-bottom:16px;">
   {% if modo_edicao %}
     Editar Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
@@ -23,6 +56,7 @@
   <div class="form-field">
     <label for="data_atendimento">📅 Data do atendimento</label>
     <input
+      class="campo-padrao"
       type="date"
       name="data_atendimento"
       id="data_atendimento"
@@ -52,6 +86,7 @@
 
         {% if c.tipo == "textarea" %}
           <textarea
+            class="campo-padrao"
             name="{{ c.nome_chave }}"
             id="{{ c.nome_chave }}"
             {% if c.obrigatorio %}required{% endif %}
@@ -60,6 +95,7 @@
 
         {% elif c.tipo == "number" %}
           <input
+            class="campo-padrao"
             type="number"
             name="{{ c.nome_chave }}"
             id="{{ c.nome_chave }}"
@@ -70,6 +106,7 @@
 
         {% elif c.tipo == "select" %}
           <select
+            class="campo-padrao"
             name="{{ c.nome_chave }}"
             id="{{ c.nome_chave }}"
             {% if c.obrigatorio %}required{% endif %}
@@ -89,6 +126,7 @@
 
         {% elif c.tipo == "date" %}
           <input
+            class="campo-padrao"
             type="date"
             name="{{ c.nome_chave }}"
             id="{{ c.nome_chave }}"
@@ -98,6 +136,7 @@
 
         {% else %}
           <input
+            class="campo-padrao"
             type="text"
             name="{{ c.nome_chave }}"
             id="{{ c.nome_chave }}"
@@ -125,7 +164,7 @@
   </div>
 
   <!-- BLOCO: AÇÕES -->
-  <div class="form-actions" style="margin-top:18px;">
+  <div class="form-actions atendimento-form-acoes" style="margin-top:18px;">
     <button type="submit">
       {% if modo_edicao %}
         Salvar alterações
