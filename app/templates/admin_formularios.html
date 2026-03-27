@@ -17,10 +17,12 @@
     background: #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     box-sizing: border-box;
+    min-width: 0;
   }
 
   .admin-card-form {
     max-width: 720px;
+    width: 100%;
   }
 
   .admin-titulo-secao {
@@ -28,22 +30,26 @@
     font-size: 1.15rem;
     font-weight: 700;
     color: #1f2937;
+    line-height: 1.3;
   }
 
   .admin-form-card {
     display: grid;
     gap: 12px;
     width: 100%;
+    min-width: 0;
   }
 
   .admin-form-grupo {
     display: grid;
     gap: 6px;
+    min-width: 0;
   }
 
   .admin-form-grupo label {
     font-weight: 600;
     color: #374151;
+    line-height: 1.35;
   }
 
   .campo-padrao {
@@ -71,6 +77,8 @@
     color: #1f2937;
     font-weight: 600;
     width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .checkbox-inline input[type="checkbox"] {
@@ -79,6 +87,7 @@
     accent-color: #1f4f46;
     cursor: pointer;
     margin: 0;
+    flex-shrink: 0;
   }
 
   .admin-form-acoes {
@@ -90,12 +99,14 @@
 
   .table-wrap {
     overflow-x: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
   }
 
   .admin-tabela {
     width: 100%;
     border-collapse: collapse;
-    min-width: 900px;
+    min-width: 820px;
   }
 
   .admin-tabela thead th {
@@ -105,6 +116,7 @@
     color: #1f2937;
     font-weight: 700;
     border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
   }
 
   .admin-tabela tbody td {
@@ -121,6 +133,7 @@
   .admin-item-titulo {
     font-weight: 700;
     color: #1f2937;
+    line-height: 1.35;
   }
 
   .admin-alerta {
@@ -128,6 +141,7 @@
     font-size: 12px;
     color: #b91c1c;
     font-weight: 700;
+    line-height: 1.35;
   }
 
   .badge-perfil {
@@ -140,6 +154,7 @@
     background: #f3f4f6;
     color: #374151;
     border: 1px solid #e5e7eb;
+    white-space: nowrap;
   }
 
   .badge-status {
@@ -150,6 +165,7 @@
     font-size: 0.9rem;
     font-weight: 700;
     border: 1px solid transparent;
+    white-space: nowrap;
   }
 
   .badge-status.ativo {
@@ -193,6 +209,27 @@
       max-width: 100%;
     }
 
+    .admin-titulo-secao {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+    }
+
+    .admin-form-card {
+      gap: 10px;
+    }
+
+    .campo-padrao {
+      min-height: 50px;
+      padding: 10px 12px;
+      font-size: 15px;
+    }
+
+    .checkbox-inline {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 10px 12px;
+    }
+
     .admin-form-acoes {
       flex-direction: column;
       align-items: stretch;
@@ -203,13 +240,43 @@
       width: 100%;
     }
 
+    .admin-tabela {
+      min-width: 700px;
+    }
+
+    .admin-tabela thead th,
+    .admin-tabela tbody td {
+      padding: 10px 8px;
+      font-size: 13px;
+    }
+
     .acoes-tabela {
       grid-template-columns: 1fr;
-      min-width: 150px;
+      min-width: 140px;
     }
 
     .acoes-tabela .btn-danger {
       grid-column: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .admin-card {
+      padding: 12px;
+      border-radius: 12px;
+    }
+
+    .campo-padrao {
+      font-size: 14px;
+    }
+
+    .admin-tabela {
+      min-width: 640px;
+    }
+
+    .admin-tabela thead th,
+    .admin-tabela tbody td {
+      font-size: 12px;
     }
   }
 </style>

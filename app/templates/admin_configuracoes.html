@@ -24,6 +24,7 @@
   .admin-form-grupo {
     display: grid;
     gap: 6px;
+    min-width: 0;
   }
 
   .admin-form-grupo label {
@@ -50,12 +51,21 @@
     resize: vertical;
   }
 
+  input[type="file"].campo-padrao {
+    min-height: auto;
+    padding: 10px 12px;
+    line-height: 1.4;
+    overflow: hidden;
+  }
+
   .admin-logo-preview {
     margin-top: 10px;
     padding: 14px;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     background: #f9fafb;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .admin-logo-label {
@@ -85,8 +95,33 @@
   @media (max-width: 768px) {
     .admin-config-card {
       max-width: 100%;
+      margin-top: 10px;
       padding: 14px;
       border-radius: 14px;
+    }
+
+    .admin-config-form {
+      gap: 12px;
+    }
+
+    .admin-form-grupo label {
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .campo-padrao {
+      min-height: 50px;
+      padding: 10px 12px;
+      font-size: 15px;
+    }
+
+    textarea.campo-padrao {
+      min-height: 110px;
+    }
+
+    input[type="file"].campo-padrao {
+      padding: 8px 10px;
+      font-size: 14px;
     }
 
     .admin-form-acoes {
@@ -99,9 +134,29 @@
       width: 100%;
     }
 
+    .admin-logo-preview {
+      padding: 12px;
+    }
+
     .admin-logo-imagem {
       max-width: 100%;
+      max-height: none;
       height: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .admin-config-card {
+      padding: 12px;
+      border-radius: 12px;
+    }
+
+    .campo-padrao {
+      font-size: 14px;
+    }
+
+    .admin-logo-label {
+      font-size: 13px;
     }
   }
 </style>
