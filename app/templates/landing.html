@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetData</title>
+  <style>
+    :root {
+      --cor-primaria: #1f8774;
+      --cor-primaria-escura: #1d4c44;
+      --cor-secundaria: #2f855a;
+      --cor-fundo: #f4f7f6;
+      --cor-card: #ffffff;
+      --cor-borda: #d9e2df;
+      --cor-texto: #1f2937;
+      --cor-texto-suave: #6b7280;
+      --cor-destaque: #ecfdf5;
+      --sombra: 0 10px 28px rgba(0, 0, 0, 0.08);
+      --radius: 18px;
+      --container: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cor-fundo);
+      color: var(--cor-texto);
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .topbar-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--cor-primaria), var(--cor-primaria-escura));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      box-shadow: var(--sombra);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: grid;
+      gap: 2px;
+    }
+
+    .brand-text strong {
+      font-size: 18px;
+    }
+
+    .brand-text span {
+      font-size: 12px;
+      color: var(--cor-texto-suave);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn,
+    .btn-outline {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s ease;
+      text-align: center;
+    }
+
+    .btn {
+      background: var(--cor-primaria);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(31, 135, 116, 0.18);
+    }
+
+    .btn:hover {
+      background: var(--cor-primaria-escura);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: var(--cor-texto);
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-outline:hover {
+      background: #f9fafb;
+    }
+
+    .hero {
+      padding: 72px 0 52px 0;
+      background:
+        radial-gradient(circle at top left, rgba(31,135,116,0.12), transparent 30%),
+        radial-gradient(circle at top right, rgba(47,133,90,0.10), transparent 28%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 34px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cor-destaque);
+      color: var(--cor-primaria-escura);
+      border: 1px solid #bbf7d0;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 16px 0;
+      font-size: 48px;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 18px;
+      color: var(--cor-texto-suave);
+      max-width: 700px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .hero-points {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .hero-point {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    .hero-point strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .hero-point span {
+      color: var(--cor-texto-suave);
+      font-size: 14px;
+    }
+
+    .hero-card {
+      background: #ffffff;
+      border: 1px solid var(--cor-borda);
+      border-radius: 22px;
+      box-shadow: var(--sombra);
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .hero-card-header {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .hero-card-header span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d1d5db;
+    }
+
+    .hero-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .mini-card {
+      border: 1px solid #e5e7eb;
+      background: #fafafa;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .mini-card .label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cor-texto-suave);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .mini-card .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--cor-texto);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .section-header {
+      max-width: 760px;
+      margin-bottom: 22px;
+    }
+
+    .section-header h2 {
+      margin: 0 0 10px 0;
+      font-size: 34px;
+      line-height: 1.12;
+    }
+
+    .section-header p {
+      margin: 0;
+      color: var(--cor-texto-suave);
+      font-size: 17px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+      min-width: 0;
+    }
+
+    .card-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: #ecfdf5;
+      color: var(--cor-primaria-escura);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--cor-texto-suave);
+      font-size: 15px;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .list-box {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+    }
+
+    .list-box h3 {
+      margin: 0 0 14px 0;
+      font-size: 20px;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: var(--cor-texto);
+    }
+
+    .feature-list li span {
+      color: var(--cor-primaria);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .cta {
+      padding: 44px 0 70px 0;
+    }
+
+    .cta-card {
+      background: linear-gradient(135deg, var(--cor-primaria), var(--cor-primaria-escura));
+      color: #ffffff;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 18px 40px rgba(29, 76, 68, 0.22);
+    }
+
+    .cta-card h2 {
+      margin: 0 0 10px 0;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .cta-card p {
+      margin: 0;
+      max-width: 760px;
+      color: rgba(255,255,255,0.88);
+      font-size: 17px;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .cta-card .btn {
+      background: #ffffff;
+      color: var(--cor-primaria-escura);
+      box-shadow: none;
+    }
+
+    .cta-card .btn:hover {
+      background: #f3f4f6;
+    }
+
+    .cta-card .btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .cta-card .btn-outline:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .footer {
+      border-top: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+
+    .footer-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--cor-texto-suave);
+      font-size: 14px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      padding-bottom: 18px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .split,
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+
+      .topbar-inner {
+        min-height: auto;
+        padding: 14px 0;
+        align-items: flex-start;
+      }
+
+      .topbar-actions {
+        width: 100%;
+      }
+
+      .topbar-actions .btn,
+      .topbar-actions .btn-outline,
+      .hero-actions .btn,
+      .hero-actions .btn-outline,
+      .cta-actions .btn,
+      .cta-actions .btn-outline {
+        width: 100%;
+      }
+
+      .hero {
+        padding: 50px 0 34px 0;
+      }
+
+      .hero h1 {
+        font-size: 33px;
+      }
+
+      .hero p,
+      .section-header p,
+      .cta-card p {
+        font-size: 16px;
+      }
+
+      .hero-points,
+      .mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .section {
+        padding: 28px 0;
+      }
+
+      .section-header h2,
+      .cta-card h2 {
+        font-size: 28px;
+      }
+
+      .cta-card {
+        padding: 22px;
+        border-radius: 20px;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">🐄</div>
+        <div class="brand-text">
+          <strong>VetData</strong>
+          <span>Plataforma de gestão clínica e inteligência epidemiológica</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <a class="btn-outline" href="#funcionalidades">Funcionalidades</a>
+        <a class="btn" href="{{ url_for('main.login') }}">Acessar sistema</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-badge">Plataforma veterinária para uso técnico em campo</div>
+
+        <h1>
+          Gestão clínica e análise epidemiológica
+          para propriedades rurais
+        </h1>
+
+        <p>
+          O VetData organiza prontuários veterinários, atendimentos clínicos e indicadores epidemiológicos
+          em um único ambiente, apoiando decisões mais rápidas, seguras e estratégicas.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="{{ url_for('main.login') }}">Entrar no sistema</a>
+          <a class="btn-outline" href="#contato">Solicitar apresentação</a>
+        </div>
+
+        <div class="hero-points">
+          <div class="hero-point">
+            <strong>Prontuário por animal</strong>
+            <span>Histórico clínico organizado e acessível.</span>
+          </div>
+
+          <div class="hero-point">
+            <strong>Formulários dinâmicos</strong>
+            <span>Coleta estruturada para técnico e veterinário.</span>
+          </div>
+
+          <div class="hero-point">
+            <strong>Relatórios epidemiológicos</strong>
+            <span>Visualização de padrões, frequência e tendência.</span>
+          </div>
+
+          <div class="hero-point">
+            <strong>Uso em campo</strong>
+            <span>Base pronta para operação prática e evolução offline.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span></span><span></span><span></span>
+        </div>
+
+        <div class="hero-panel">
+          <div class="mini-card">
+            <div class="label">Visão do sistema</div>
+            <div class="value">Prontuário + epidemiologia</div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini-card">
+              <div class="label">Módulo</div>
+              <div class="value">Animais</div>
+            </div>
+
+            <div class="mini-card">
+              <div class="label">Módulo</div>
+              <div class="value">Atendimentos</div>
+            </div>
+
+            <div class="mini-card">
+              <div class="label">Módulo</div>
+              <div class="value">Relatórios</div>
+            </div>
+
+            <div class="mini-card">
+              <div class="label">Módulo</div>
+              <div class="value">Administração</div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <div class="label">Diferencial</div>
+            <div class="value" style="font-size:18px;">
+              Informação clínica estruturada para apoiar vigilância sanitária e tomada de decisão
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="problema">
+    <div class="container">
+      <div class="section-header">
+        <h2>O problema não está apenas no registro. Está na falta de inteligência sobre os dados.</h2>
+        <p>
+          Registros dispersos, anotações manuais e dificuldade para acompanhar histórico clínico
+          reduzem a capacidade de resposta técnica e sanitária. O VetData organiza essa rotina
+          e transforma informação em apoio real para decisão.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="funcionalidades">
+    <div class="container">
+      <div class="section-header">
+        <h2>Funcionalidades centrais do produto</h2>
+        <p>
+          Estruturado para a prática veterinária em propriedades rurais, com foco em organização,
+          rastreabilidade e evolução analítica.
+        </p>
+      </div>
+
+      <div class="grid-4">
+        <div class="card">
+          <div class="card-icon">🏡</div>
+          <h3>Gestão por propriedade</h3>
+          <p>Cadastro e organização de múltiplas propriedades com acesso estruturado por usuário.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🐄</div>
+          <h3>Cadastro de animais</h3>
+          <p>Controle individual por código, espécie, raça, sexo, perfil genético e histórico clínico.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🩺</div>
+          <h3>Atendimentos clínicos</h3>
+          <p>Registro padronizado por data, imagens, formulários e evolução por animal.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h3>Relatórios epidemiológicos</h3>
+          <p>Análise de diagnósticos, frequência, distribuição temporal e indicadores de risco.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div class="list-box">
+        <h3>O que o VetData ajuda a resolver</h3>
+        <ul class="feature-list">
+          <li><span>✓</span><div>Centralização do histórico clínico por animal e por propriedade.</div></li>
+          <li><span>✓</span><div>Padronização da coleta de dados em campo com formulários estruturados.</div></li>
+          <li><span>✓</span><div>Visualização mais clara dos principais diagnósticos e padrões de ocorrência.</div></li>
+          <li><span>✓</span><div>Apoio à gestão sanitária, à extensão rural e à pesquisa aplicada.</div></li>
+        </ul>
+      </div>
+
+      <div class="list-box">
+        <h3>Diferenciais estratégicos</h3>
+        <ul class="feature-list">
+          <li><span>✓</span><div>Integra registro clínico com leitura epidemiológica dos dados.</div></li>
+          <li><span>✓</span><div>Permite evolução para análises probabilísticas e correlação genética.</div></li>
+          <li><span>✓</span><div>Base preparada para uso técnico, acadêmico e institucional.</div></li>
+          <li><span>✓</span><div>Produto orientado à realidade da rotina veterinária em campo.</div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="contato">
+    <div class="container">
+      <div class="cta-card">
+        <h2>Leve mais organização, rastreabilidade e inteligência para a rotina veterinária.</h2>
+        <p>
+          O VetData foi pensado para transformar dados clínicos em uma base sólida de acompanhamento,
+          monitoramento sanitário e tomada de decisão.
+        </p>
+
+        <div class="cta-actions">
+          <a class="btn" href="{{ url_for('main.login') }}">Acessar sistema</a>
+          <a class="btn-outline" href="mailto:contato@vetdata.com.br">Solicitar apresentação</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>VetData • Plataforma de gestão clínica e inteligência epidemiológica veterinária</div>
+      <div>Uso técnico, acadêmico e institucional</div>
+    </div>
+  </footer>
+
+</body>
+</html>

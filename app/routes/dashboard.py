@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect, url_for, session
 
 from .base import main
 from ..helpers.auth import obter_usuario_logado
@@ -8,6 +8,13 @@ from ..services.propriedade_service import listar_propriedades_do_usuario
 
 
 @main.route("/")
+def index():
+    if session.get("usuario_id"):
+        return redirect(url_for("main.painel"))
+    return render_template("landing.html")
+
+
+@main.route("/painel")
 @login_obrigatorio
 def painel():
     usuario = obter_usuario_logado()
