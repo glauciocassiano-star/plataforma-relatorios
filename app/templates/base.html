@@ -39,12 +39,12 @@
     }
 
     body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--cor-fundo);
-  color: var(--cor-texto);
-  overflow-x: hidden;
-}
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cor-fundo);
+      color: var(--cor-texto);
+      overflow-x: hidden;
+    }
 
     a {
       text-decoration: none;
@@ -224,18 +224,17 @@
       padding: 0 24px;
     }
 
-   .content-card {
-  background: var(--cor-card);
-  border: 1px solid var(--cor-borda);
-  border-radius: 18px;
-  box-shadow: var(--sombra);
-  padding: 28px;
-  overflow: hidden;
-
-  width: 100%;
-  max-width: 1100px;   /* 🔥 controla a largura no notebook */
-  margin: 0 auto;      /* 🔥 centraliza */
-}
+    .content-card {
+      background: var(--cor-card);
+      border: 1px solid var(--cor-borda);
+      border-radius: 18px;
+      box-shadow: var(--sombra);
+      padding: 28px;
+      overflow: hidden;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
 
     .flash-messages {
       display: grid;
@@ -568,7 +567,7 @@
 
       .content-card {
         padding: 18px;
-    }
+      }
 
       .flash {
         padding: 12px 14px;
@@ -609,6 +608,116 @@
         padding: 12px 16px;
         font-size: 12px;
       }
+
+      /* ===== AJUSTES GLOBAIS DO ADMIN NO MOBILE ===== */
+
+      .admin-card,
+      .admin-config-card,
+      .admin-card-form,
+      .admin-form-card,
+      .admin-backup-card,
+      .admin-usuarios-card,
+      .admin-config-form,
+      .admin-formularios-layout,
+      .admin-campos-layout,
+      .admin-editar-campo-layout,
+      .admin-usuarios-layout,
+      .admin-backup-layout,
+      .admin-config-card,
+      .admin-card-compacto {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .admin-card,
+      .admin-config-card,
+      .admin-card-form,
+      .admin-card-compacto {
+        padding: 14px !important;
+        border-radius: 14px !important;
+      }
+
+      .admin-form-acoes,
+      .admin-rodape-acoes,
+      .admin-tabela-acoes,
+      .acoes-tabela,
+      .acoes-busca,
+      .acoes-filtro-relatorio,
+      .animal-form-acoes,
+      .atendimento-form-acoes,
+      .admin-acoes-inline {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+      }
+
+      .admin-form-acoes .btn,
+      .admin-form-acoes button,
+      .admin-rodape-acoes .btn,
+      .admin-rodape-acoes button,
+      .admin-tabela-acoes .btn,
+      .admin-tabela-acoes button,
+      .acoes-tabela .btn,
+      .acoes-tabela button,
+      .acoes-busca .btn,
+      .acoes-busca button,
+      .acoes-filtro-relatorio .btn,
+      .acoes-filtro-relatorio button,
+      .animal-form-acoes .btn,
+      .animal-form-acoes button,
+      .atendimento-form-acoes .btn,
+      .atendimento-form-acoes button,
+      .admin-acoes-inline .btn,
+      .admin-acoes-inline button {
+        width: 100% !important;
+      }
+
+      .admin-tabela-wrap,
+      .table-wrap {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .admin-tabela,
+      table {
+        min-width: 680px !important;
+      }
+
+      .admin-tabela th,
+      .admin-tabela td,
+      table th,
+      table td {
+        padding: 10px 8px !important;
+        font-size: 13px !important;
+      }
+
+      .checkbox-inline,
+      .checkbox-field,
+      .checkbox-confirmados,
+      .admin-checkbox-item {
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .campo-padrao,
+      input,
+      select,
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .filtro-relatorio-duplo,
+      .grafico-duplo {
+        grid-template-columns: 1fr !important;
+      }
+
+      .grid-resumo {
+        grid-template-columns: 1fr !important;
+      }
     }
 
     @media (max-width: 480px) {
@@ -635,6 +744,18 @@
       .footer p,
       .footer li {
         font-size: 13px;
+      }
+
+      .admin-tabela,
+      table {
+        min-width: 620px !important;
+      }
+
+      .admin-tabela th,
+      .admin-tabela td,
+      table th,
+      table td {
+        font-size: 12px !important;
       }
     }
   </style>
@@ -675,19 +796,19 @@
 
   <nav class="navbar">
     <div class="navbar-shell">
-  <div class="navbar-top">
+      <div class="navbar-top">
 
-    <button
-      type="button"
-      class="menu-toggle"
-      id="menu-toggle"
-      aria-expanded="false"
-      aria-controls="navbar-inner"
-    >
-      ☰ Menu
-    </button>
+        <button
+          type="button"
+          class="menu-toggle"
+          id="menu-toggle"
+          aria-expanded="false"
+          aria-controls="navbar-inner"
+        >
+          ☰ Menu
+        </button>
 
-  </div>
+      </div>
 
       <div class="navbar-inner" id="navbar-inner">
         <a class="nav-link" href="{{ url_for('main.painel') }}">Painel</a>
