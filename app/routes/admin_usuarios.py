@@ -1,17 +1,55 @@
+import re
+
 from flask import flash, redirect, render_template, request, url_for
 
 from .base import main
 from .. import db
 from ..helpers.auth import obter_usuario_logado
-from ..models import Atendimento, Propriedade, Usuario, UsuarioPropriedade
+from ..helpers.decorators import admin_cliente_ou_master_obrigatorio
+from ..helpers.permissoes import (
+    usuario_eh_admin_master,
+    usuario_eh_admin_cliente,
+    usuario_pode_editar_usuario,
+    usuario_pode_excluir_usuario,
+    usuario_pode_gerenciar_propriedades_usuario,
+)
+from ..models import Atendimento, Cliente, Propriedade, Usuario, UsuarioPropriedade
+
+
+def senha_forte_valida(senha: str) -> bool:
+    """
+    Regras:
+    - mínimo de 6 caracteres
+    - pelo menos 1 letra maiúscula
+    - sem espaços
+    - pelo menos 5 caracteres alfanuméricos no total
+    - pelo menos 1 caractere especial
+    """
+    if not senha:
+        return False
+
+    if len(senha) < 6:
+        return False
+
+    if any(ch.isspace() for ch in senha):
+        return False
+
+    if not re.search(r"[A-Z]", senha):
+        return False
+
+    if len(re.findall(r"[A-Za-z0-9]", senha)) < 5:
+        return False
+
+    if not re.search(r"[^A-Za-z0-9]", senha):
+        return False
+
+    return True
 
 
 @main.route("/admin/usuarios", methods=["GET", "POST"])
+@admin_cliente_ou_master_obrigatorio
 def admin_usuarios():
-    usuario = obter_usuario_logado()
-    if not usuario or usuario.perfil != "admin":
-        flash("Acesso restrito ao admin.", "error")
-        return redirect(url_for("main.painel"))
+    usuario_logado = obter_usuario_logado()
 
     if request.method == "POST":
         nome = (request.form.get("nome") or "").strip()
@@ -23,12 +61,53 @@ def admin_usuarios():
             flash("Nome, email e senha são obrigatórios.", "error")
             return redirect(request.url)
 
+        if not senha_forte_valida(senha):
+            flash(
+                "A senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, "
+                "sem espaços, pelo menos 5 letras ou números e 1 caractere especial.",
+                "error",
+            )
+            return redirect(request.url)
+
+        if usuario_eh_admin_cliente(usuario_logado):
+            if perfil not in ["tecnico", "veterinario"]:
+                flash(
+                    "Você só pode criar usuários com perfil técnico ou veterinário.",
+                    "error",
+                )
+                return redirect(request.url)
+
         usuario_existente = Usuario.query.filter_by(email=email).first()
         if usuario_existente:
             flash("Já existe um usuário com esse email.", "error")
             return redirect(request.url)
 
-        novo_usuario = Usuario(nome=nome, email=email, perfil=perfil)
+        if usuario_eh_admin_master(usuario_logado):
+            cliente_id_raw = request.form.get("cliente_id")
+
+            if not cliente_id_raw:
+                flash("Selecione o cliente do usuário.", "error")
+                return redirect(request.url)
+
+            cliente = db.session.get(Cliente, int(cliente_id_raw))
+            if not cliente:
+                flash("Cliente inválido.", "error")
+                return redirect(request.url)
+
+            cliente_id = cliente.id
+            criado_por_id = None
+        else:
+            cliente_id = usuario_logado.cliente_id
+            criado_por_id = usuario_logado.id
+
+        novo_usuario = Usuario(
+            nome=nome,
+            email=email,
+            perfil=perfil,
+            cliente_id=cliente_id,
+            ativo=True,
+            criado_por_id=criado_por_id,
+        )
         novo_usuario.set_password(senha)
 
         db.session.add(novo_usuario)
@@ -37,19 +116,61 @@ def admin_usuarios():
         flash("Usuário criado com sucesso.", "success")
         return redirect(url_for("main.admin_usuarios"))
 
-    usuarios = Usuario.query.order_by(Usuario.id.desc()).all()
-    return render_template("admin_usuarios.html", usuarios=usuarios)
+    if usuario_eh_admin_master(usuario_logado):
+        usuarios = Usuario.query.order_by(Usuario.id.desc()).all()
+        clientes = Cliente.query.order_by(Cliente.nome.asc()).all()
+    else:
+        usuarios = (
+            Usuario.query
+            .filter(
+                Usuario.cliente_id == usuario_logado.cliente_id,
+                Usuario.perfil.in_(["tecnico", "veterinario"]),
+                Usuario.criado_por_id == usuario_logado.id,
+            )
+            .order_by(Usuario.id.desc())
+            .all()
+        )
+        clientes = []
+
+    return render_template(
+        "admin_usuarios.html",
+        usuarios=usuarios,
+        clientes=clientes,
+        usuario_logado=usuario_logado,
+    )
 
 
 @main.route("/admin/usuarios/<int:usuario_id>/propriedades", methods=["GET", "POST"])
+@admin_cliente_ou_master_obrigatorio
 def admin_usuario_propriedades(usuario_id):
     usuario_logado = obter_usuario_logado()
-    if not usuario_logado or usuario_logado.perfil != "admin":
-        flash("Acesso restrito ao admin.", "error")
-        return redirect(url_for("main.painel"))
-
     usuario = Usuario.query.get_or_404(usuario_id)
-    propriedades = Propriedade.query.order_by(Propriedade.nome.asc()).all()
+
+    if not usuario_pode_gerenciar_propriedades_usuario(usuario_logado, usuario):
+        flash("Você não tem permissão para gerenciar propriedades desse usuário.", "error")
+        return redirect(url_for("main.admin_usuarios"))
+
+    if usuario_eh_admin_master(usuario_logado):
+        propriedades = (
+            Propriedade.query
+            .filter(Propriedade.cliente_id == usuario.cliente_id)
+            .order_by(Propriedade.nome.asc())
+            .all()
+        )
+    else:
+        propriedades = (
+            Propriedade.query
+            .join(
+                UsuarioPropriedade,
+                UsuarioPropriedade.propriedade_id == Propriedade.id
+            )
+            .filter(
+                UsuarioPropriedade.usuario_id == usuario_logado.id,
+                Propriedade.cliente_id == usuario_logado.cliente_id
+            )
+            .order_by(Propriedade.nome.asc())
+            .all()
+        )
 
     if request.method == "POST":
         selecionadas = request.form.getlist("propriedades")
@@ -57,9 +178,25 @@ def admin_usuario_propriedades(usuario_id):
         UsuarioPropriedade.query.filter_by(usuario_id=usuario.id).delete()
 
         for prop_id in selecionadas:
+            prop = db.session.get(Propriedade, int(prop_id))
+            if not prop:
+                continue
+
+            if prop.cliente_id != usuario.cliente_id:
+                continue
+
+            if usuario_eh_admin_cliente(usuario_logado):
+                vinculo_admin = UsuarioPropriedade.query.filter_by(
+                    usuario_id=usuario_logado.id,
+                    propriedade_id=prop.id,
+                ).first()
+
+                if not vinculo_admin:
+                    continue
+
             vinculo = UsuarioPropriedade(
                 usuario_id=usuario.id,
-                propriedade_id=int(prop_id)
+                propriedade_id=prop.id,
             )
             db.session.add(vinculo)
 
@@ -77,41 +214,74 @@ def admin_usuario_propriedades(usuario_id):
         "admin_usuario_propriedades.html",
         usuario=usuario,
         propriedades=propriedades,
-        vinculadas=vinculadas
+        vinculadas=vinculadas,
     )
 
 
 @main.route("/admin/usuarios/<int:usuario_id>/editar", methods=["GET", "POST"])
+@admin_cliente_ou_master_obrigatorio
 def admin_editar_usuario(usuario_id):
     usuario_logado = obter_usuario_logado()
-    if not usuario_logado or usuario_logado.perfil != "admin":
-        flash("Acesso restrito ao admin.", "error")
-        return redirect(url_for("main.painel"))
-
     usuario = Usuario.query.get_or_404(usuario_id)
 
+    if not usuario_pode_editar_usuario(usuario_logado, usuario):
+        flash("Você não tem permissão para editar esse usuário.", "error")
+        return redirect(url_for("main.admin_usuarios"))
+
     if request.method == "POST":
+        nome = (request.form.get("nome") or "").strip()
         email = (request.form.get("email") or "").strip().lower()
         perfil = (request.form.get("perfil") or "tecnico").strip()
         senha = (request.form.get("senha") or "").strip()
 
-        if not email:
-            flash("Email é obrigatório.", "error")
+        if not nome or not email:
+            flash("Nome e email são obrigatórios.", "error")
             return redirect(request.url)
+
+        if usuario_eh_admin_cliente(usuario_logado):
+            if perfil not in ["tecnico", "veterinario"]:
+                flash("Você só pode definir perfis técnico ou veterinário.", "error")
+                return redirect(request.url)
 
         usuario_existente = Usuario.query.filter(
             Usuario.email == email,
-            Usuario.id != usuario.id
+            Usuario.id != usuario.id,
         ).first()
 
         if usuario_existente:
             flash("Já existe outro usuário com esse email.", "error")
             return redirect(request.url)
 
+        usuario.nome = nome
         usuario.email = email
         usuario.perfil = perfil
 
+        if usuario_eh_admin_master(usuario_logado):
+            cliente_id_raw = request.form.get("cliente_id")
+
+            if not cliente_id_raw:
+                flash("Selecione o cliente do usuário.", "error")
+                return redirect(request.url)
+
+            cliente = db.session.get(Cliente, int(cliente_id_raw))
+            if not cliente:
+                flash("Cliente inválido.", "error")
+                return redirect(request.url)
+
+            if usuario.cliente_id != cliente.id:
+                usuario.cliente_id = cliente.id
+                usuario.criado_por_id = None
+                UsuarioPropriedade.query.filter_by(usuario_id=usuario.id).delete()
+
         if senha:
+            if not senha_forte_valida(senha):
+                flash(
+                    "A nova senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, "
+                    "sem espaços, pelo menos 5 letras ou números e 1 caractere especial.",
+                    "error",
+                )
+                return redirect(request.url)
+
             usuario.set_password(senha)
 
         db.session.commit()
@@ -119,25 +289,38 @@ def admin_editar_usuario(usuario_id):
         flash("Usuário atualizado com sucesso.", "success")
         return redirect(url_for("main.admin_usuarios"))
 
-    return render_template("admin_usuario_editar.html", usuario=usuario)
+    clientes = []
+    if usuario_eh_admin_master(usuario_logado):
+        clientes = Cliente.query.order_by(Cliente.nome.asc()).all()
+
+    return render_template(
+        "admin_usuario_editar.html",
+        usuario=usuario,
+        clientes=clientes,
+        usuario_logado=usuario_logado,
+    )
 
 
 @main.route("/admin/usuarios/<int:usuario_id>/excluir")
+@admin_cliente_ou_master_obrigatorio
 def admin_excluir_usuario(usuario_id):
     usuario_logado = obter_usuario_logado()
-    if not usuario_logado or usuario_logado.perfil != "admin":
-        flash("Acesso restrito ao admin.", "error")
-        return redirect(url_for("main.painel"))
-
     usuario = Usuario.query.get_or_404(usuario_id)
 
     if usuario.id == usuario_logado.id:
         flash("Você não pode excluir seu próprio usuário.", "error")
         return redirect(url_for("main.admin_usuarios"))
 
+    if not usuario_pode_excluir_usuario(usuario_logado, usuario):
+        flash("Você não tem permissão para excluir esse usuário.", "error")
+        return redirect(url_for("main.admin_usuarios"))
+
     atendimentos = Atendimento.query.filter_by(tecnico_id=usuario.id).count()
     if atendimentos > 0:
-        flash("Não é possível excluir este usuário porque existem atendimentos vinculados.", "error")
+        flash(
+            "Não é possível excluir este usuário porque existem atendimentos vinculados.",
+            "error",
+        )
         return redirect(url_for("main.admin_usuarios"))
 
     UsuarioPropriedade.query.filter_by(usuario_id=usuario.id).delete()

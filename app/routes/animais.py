@@ -95,6 +95,7 @@ def editar_animal(animal_id):
 @acesso_animal
 def excluir_animal(animal_id):
     animal = Animal.query.get_or_404(animal_id)
+    propriedade_id = animal.propriedade_id
 
     atendimentos = Atendimento.query.filter_by(animal_id=animal.id).count()
 
@@ -103,11 +104,7 @@ def excluir_animal(animal_id):
             "Não é possível excluir o animal porque existem atendimentos vinculados.",
             "error",
         )
-        return redirect(
-            url_for("main.listar_animais", propriedade_id=animal.propriedade_id)
-        )
-
-    propriedade_id = animal.propriedade_id
+        return redirect(url_for("main.listar_animais", propriedade_id=propriedade_id))
 
     db.session.delete(animal)
     db.session.commit()

@@ -39,7 +39,8 @@ def novo_atendimento(animal_id: int):
 
     perfil = (usuario.perfil or "tecnico").strip()
 
-    if perfil == "admin":
+    # Apenas admin_master pode simular outro perfil pela query string
+    if perfil == "admin_master":
         perfil = (request.args.get("perfil") or "veterinario").strip()
 
     formulario = (
@@ -135,7 +136,7 @@ def selecionar_atendimento():
     if propriedade_id:
         propriedades_ids = [p.id for p in propriedades]
 
-        if usuario.perfil != "admin" and propriedade_id not in propriedades_ids:
+        if propriedade_id not in propriedades_ids:
             flash("Você não tem acesso a essa propriedade.", "error")
             return redirect(url_for("main.propriedades"))
 
@@ -246,7 +247,7 @@ def editar_atendimento(id):
 def excluir_atendimento(id):
     usuario = obter_usuario_logado()
 
-    if usuario.perfil not in ["admin", "veterinario"]:
+    if usuario.perfil not in ["admin_master", "veterinario"]:
         flash("Você não tem permissão para excluir atendimentos.", "error")
         return redirect(url_for("main.painel"))
 
@@ -266,7 +267,7 @@ def excluir_atendimento(id):
 def bloquear_atendimento(id):
     usuario = obter_usuario_logado()
 
-    if usuario.perfil not in ["admin", "veterinario"]:
+    if usuario.perfil not in ["admin_master", "veterinario"]:
         flash("Você não tem permissão para bloquear atendimentos.", "error")
         return redirect(url_for("main.painel"))
 
@@ -290,8 +291,8 @@ def bloquear_atendimento(id):
 def desbloquear_atendimento(id):
     usuario = obter_usuario_logado()
 
-    if usuario.perfil != "admin":
-        flash("Somente o administrador pode desbloquear atendimentos.", "error")
+    if usuario.perfil != "admin_master":
+        flash("Somente o administrador principal pode desbloquear atendimentos.", "error")
         return redirect(url_for("main.painel"))
 
     atendimento = Atendimento.query.get_or_404(id)

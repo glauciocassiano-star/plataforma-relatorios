@@ -12,9 +12,19 @@ def login():
 
         usuario = Usuario.query.filter_by(email=email).first()
 
-        if usuario and usuario.check_password(senha):
+        if not usuario:
+            flash("Email ou senha inválidos.", "error")
+            return redirect(url_for("main.login"))
+
+        if not usuario.ativo:
+            flash("Usuário inativo. Entre em contato com o administrador.", "error")
+            return redirect(url_for("main.login"))
+
+        if usuario.check_password(senha):
             session["usuario_id"] = usuario.id
             session["perfil"] = usuario.perfil
+            session["cliente_id"] = usuario.cliente_id
+
             return redirect(url_for("main.painel"))
 
         flash("Email ou senha inválidos.", "error")

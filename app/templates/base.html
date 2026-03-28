@@ -811,22 +811,21 @@
       </div>
 
       <div class="navbar-inner" id="navbar-inner">
-        <a class="nav-link" href="{{ url_for('main.painel') }}">Painel</a>
-        <a class="nav-link" href="{{ url_for('main.propriedades') }}">Propriedades</a>
-        <a class="nav-link" href="{{ url_for('main.selecionar_atendimento') }}">Atendimentos</a>
-        <a class="nav-link" href="{{ url_for('main.relatorio_epidemiologico') }}">Relatórios</a>
+  <a class="nav-link" href="{{ url_for('main.painel') }}">Painel</a>
+  <a class="nav-link" href="{{ url_for('main.propriedades') }}">Propriedades</a>
+  <a class="nav-link" href="{{ url_for('main.selecionar_atendimento') }}">Atendimentos</a>
+  <a class="nav-link" href="{{ url_for('main.relatorio_epidemiologico') }}">Relatórios</a>
 
-        {% if session.get("usuario_id") and session.get("perfil") == "admin" %}
-          <a class="nav-link" href="{{ url_for('main.admin_painel') }}">Administração</a>
-        {% endif %}
+  {% if session.get("usuario_id") and session.get("perfil") in ["admin_master", "admin_cliente"] %}
+    <a class="nav-link" href="{{ url_for('main.admin_painel') }}">Administração</a>
+  {% endif %}
 
-        {% if session.get("usuario_id") %}
-          <a class="nav-link secondary" href="{{ url_for('main.logout') }}">Sair</a>
-        {% else %}
-          <a class="nav-link secondary" href="{{ url_for('main.login') }}">Entrar</a>
-        {% endif %}
-      </div>
-    </div>
+  {% if session.get("usuario_id") %}
+    <a class="nav-link secondary" href="{{ url_for('main.logout') }}">Sair</a>
+  {% else %}
+    <a class="nav-link secondary" href="{{ url_for('main.login') }}">Entrar</a>
+  {% endif %}
+</div>
   </nav>
 
   <div class="offline-tools">

@@ -21,7 +21,7 @@
     margin-top: 0;
     margin-bottom: 16px;
     color: #4b5563;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   .admin-vinculos-form {
@@ -59,6 +59,14 @@
     line-height: 1.4;
   }
 
+  .admin-vazio {
+    padding: 14px;
+    border: 1px dashed #e5e7eb;
+    border-radius: 12px;
+    color: #6b7280;
+    background: #ffffff;
+  }
+
   .admin-form-acoes {
     margin-top: 14px;
     display: flex;
@@ -91,24 +99,43 @@
 
   <p class="admin-subinfo">
     <b>Usuário:</b> {{ usuario.nome }} ({{ usuario.email }})
+    <br>
+    <b>Perfil:</b>
+    {% if usuario.perfil == "admin_master" %}
+      Administrador principal
+    {% elif usuario.perfil == "admin_cliente" %}
+      Administrador do cliente
+    {% elif usuario.perfil == "tecnico" %}
+      Técnico
+    {% elif usuario.perfil == "veterinario" %}
+      Veterinário
+    {% else %}
+      {{ usuario.perfil }}
+    {% endif %}
   </p>
 
   <form method="POST" class="admin-vinculos-form">
 
-    {% for p in propriedades %}
-      <label class="admin-checkbox-item">
-        <input
-          type="checkbox"
-          name="propriedades"
-          value="{{ p.id }}"
-          {% if p.id in vinculadas %}checked{% endif %}
-        >
+    {% if propriedades %}
+      {% for p in propriedades %}
+        <label class="admin-checkbox-item">
+          <input
+            type="checkbox"
+            name="propriedades"
+            value="{{ p.id }}"
+            {% if p.id in vinculadas %}checked{% endif %}
+          >
 
-        <span>
-          <b>{{ p.nome }}</b> — {{ p.produtor }}
-        </span>
-      </label>
-    {% endfor %}
+          <span>
+            <b>{{ p.nome }}</b> — {{ p.produtor }}
+          </span>
+        </label>
+      {% endfor %}
+    {% else %}
+      <div class="admin-vazio">
+        Nenhuma propriedade disponível para vinculação.
+      </div>
+    {% endif %}
 
     <div class="admin-form-acoes">
       <button type="submit">Salvar vínculos</button>

@@ -4,7 +4,6 @@ from .base import main
 from .. import db
 from ..helpers.auth import obter_usuario_logado
 from ..helpers.decorators import login_obrigatorio, acesso_propriedade
-from ..helpers.permissoes import usuario_tem_acesso_propriedade
 from ..models import Animal, Propriedade, UsuarioPropriedade
 from ..services.propriedade_service import listar_propriedades_do_usuario
 
@@ -29,15 +28,17 @@ def propriedades():
             produtor=produtor,
             cidade=cidade or None,
             estado=estado or None,
+            cliente_id=usuario.cliente_id,
         )
         db.session.add(prop)
-        db.session.commit()
+        db.session.flush()
 
         vinculo = UsuarioPropriedade(
             usuario_id=usuario.id,
             propriedade_id=prop.id,
         )
         db.session.add(vinculo)
+
         db.session.commit()
 
         flash("Propriedade criada com sucesso!", "success")

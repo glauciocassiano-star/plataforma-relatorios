@@ -6,10 +6,10 @@ from .auth import obter_usuario_logado
 from .permissoes import (
     usuario_tem_acesso_animal,
     usuario_tem_acesso_propriedade,
+    usuario_eh_admin_master,
+    usuario_eh_admin_cliente,
 )
-
-from ..models import Animal, Atendimento
-
+from ..models import Animal, Atendimento, Propriedade
 
 
 def login_obrigatorio(f):
@@ -31,8 +31,26 @@ def admin_obrigatorio(f):
     def decorated_function(*args, **kwargs):
         usuario = obter_usuario_logado()
 
-        if not usuario or usuario.perfil != "admin":
-            flash("Acesso restrito ao administrador.", "error")
+        if not usuario or not usuario_eh_admin_master(usuario):
+            flash("Acesso restrito ao administrador principal.", "error")
+            return redirect(url_for("main.painel"))
+
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def admin_cliente_ou_master_obrigatorio(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        usuario = obter_usuario_logado()
+
+        if not usuario:
+            flash("Faça login para acessar o sistema.", "error")
+            return redirect(url_for("main.login"))
+
+        if not (usuario_eh_admin_master(usuario) or usuario_eh_admin_cliente(usuario)):
+            flash("Acesso restrito à administração.", "error")
             return redirect(url_for("main.painel"))
 
         return f(*args, **kwargs)
@@ -50,7 +68,9 @@ def acesso_propriedade(f):
             flash("Propriedade não informada.", "error")
             return redirect(url_for("main.painel"))
 
-        if not usuario_tem_acesso_propriedade(usuario, propriedade_id):
+        propriedade = Propriedade.query.get_or_404(propriedade_id)
+
+        if not usuario_tem_acesso_propriedade(usuario, propriedade):
             flash("Você não tem acesso a essa propriedade.", "error")
             return redirect(url_for("main.propriedades"))
 
@@ -78,6 +98,7 @@ def acesso_animal(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
 
 def acesso_atendimento(f):
     @wraps(f)

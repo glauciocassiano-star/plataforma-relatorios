@@ -9,6 +9,27 @@ from . import db
 
 
 # =========================
+# CLIENTE (SaaS)
+# =========================
+class Cliente(db.Model):
+    __tablename__ = "clientes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(150), nullable=False)
+    documento = db.Column(db.String(30), nullable=True)
+    email = db.Column(db.String(150), nullable=True)
+    telefone = db.Column(db.String(30), nullable=True)
+    ativo = db.Column(db.Boolean, default=True, nullable=False)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    usuarios = db.relationship("Usuario", backref="cliente", lazy=True)
+    propriedades = db.relationship("Propriedade", backref="cliente", lazy=True)
+
+    def __repr__(self) -> str:
+        return f"<Cliente {self.id} {self.nome}>"
+
+
+# =========================
 # USUÁRIO
 # =========================
 class Usuario(db.Model):
@@ -18,8 +39,37 @@ class Usuario(db.Model):
     nome = db.Column(db.String(150), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     senha_hash = db.Column(db.String(255), nullable=False)
-    perfil = db.Column(db.String(20), nullable=False)  # admin, tecnico, veterinario
-    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Perfis possíveis:
+    # admin_master, admin_cliente, tecnico, veterinario
+    perfil = db.Column(db.String(30), nullable=False)
+
+    # admin_master pode existir sem cliente_id
+    cliente_id = db.Column(
+        db.Integer,
+        db.ForeignKey("clientes.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    # Quem criou o usuário:
+    # - útil para isolar técnicos e veterinários por admin_cliente
+    # - admin_master pode deixar como None, se desejar
+    criado_por_id = db.Column(
+        db.Integer,
+        db.ForeignKey("usuarios.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    criado_por = db.relationship(
+        "Usuario",
+        remote_side=[id],
+        backref=db.backref("usuarios_criados", lazy=True),
+    )
+
+    ativo = db.Column(db.Boolean, default=True, nullable=False)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def set_password(self, senha: str) -> None:
         self.senha_hash = generate_password_hash(senha)
@@ -28,7 +78,10 @@ class Usuario(db.Model):
         return check_password_hash(self.senha_hash, senha)
 
     def __repr__(self) -> str:
-        return f"<Usuario {self.id} {self.email} ({self.perfil})>"
+        return (
+            f"<Usuario {self.id} {self.email} ({self.perfil}) "
+            f"cliente={self.cliente_id} criado_por={self.criado_por_id}>"
+        )
 
 
 # =========================
@@ -40,23 +93,39 @@ class Propriedade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(150), nullable=False)
     produtor = db.Column(db.String(150), nullable=False)
-    cidade = db.Column(db.String(100))
-    estado = db.Column(db.String(50))
-    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+    cidade = db.Column(db.String(100), nullable=True)
+    estado = db.Column(db.String(50), nullable=True)
+
+    cliente_id = db.Column(
+        db.Integer,
+        db.ForeignKey("clientes.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self) -> str:
-        return f"<Propriedade {self.id} {self.nome}>"
+        return f"<Propriedade {self.id} {self.nome} cliente={self.cliente_id}>"
 
 
 # =========================
-# USUARIO - PROPRIEDADE
+# VÍNCULO USUÁRIO-PROPRIEDADE
 # =========================
 class UsuarioPropriedade(db.Model):
     __tablename__ = "usuarios_propriedades"
 
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
-    propriedade_id = db.Column(db.Integer, db.ForeignKey("propriedades.id"), nullable=False)
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("usuarios.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    propriedade_id = db.Column(
+        db.Integer,
+        db.ForeignKey("propriedades.id", ondelete="CASCADE"),
+        nullable=False,
+    )
 
     usuario = db.relationship("Usuario", backref="vinculos")
     propriedade = db.relationship("Propriedade", backref="usuarios_vinculados")
@@ -78,12 +147,19 @@ class Animal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(50), nullable=False)
     especie = db.Column(db.String(30), nullable=False, default="bovino")
-    nome = db.Column(db.String(100))
-    data_nascimento = db.Column(db.Date)
-    raca = db.Column(db.String(100))
-    sexo = db.Column(db.String(20))
-    perfil_genetico = db.Column(db.String(200))
-    propriedade_id = db.Column(db.Integer, db.ForeignKey("propriedades.id"), nullable=False)
+    nome = db.Column(db.String(100), nullable=True)
+    data_nascimento = db.Column(db.Date, nullable=True)
+    raca = db.Column(db.String(100), nullable=True)
+    sexo = db.Column(db.String(20), nullable=True)
+    perfil_genetico = db.Column(db.String(200), nullable=True)
+
+    # Mantido sem cascade automático por regra de negócio:
+    # a exclusão de propriedade segue controlada pela aplicação
+    propriedade_id = db.Column(
+        db.Integer,
+        db.ForeignKey("propriedades.id"),
+        nullable=False,
+    )
 
     propriedade = db.relationship("Propriedade", backref="animais")
 
@@ -143,9 +219,26 @@ class Atendimento(db.Model):
     __tablename__ = "atendimentos"
 
     id = db.Column(db.Integer, primary_key=True)
-    animal_id = db.Column(db.Integer, db.ForeignKey("animais.id"), nullable=False)
-    tecnico_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
-    formulario_id = db.Column(db.Integer, db.ForeignKey("formularios.id"), nullable=True)
+
+    animal_id = db.Column(
+        db.Integer,
+        db.ForeignKey("animais.id"),
+        nullable=False,
+    )
+
+    # Mantido como tecnico_id por compatibilidade com o sistema atual
+    tecnico_id = db.Column(
+        db.Integer,
+        db.ForeignKey("usuarios.id"),
+        nullable=False,
+    )
+
+    formulario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("formularios.id"),
+        nullable=True,
+    )
+
     data_atendimento = db.Column(db.Date, nullable=True)
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
     bloqueado_em = db.Column(db.DateTime, nullable=True)
@@ -160,7 +253,7 @@ class Atendimento(db.Model):
 
 
 # =========================
-# (Opcional) TOKENS/ENVIO
+# ENVIO / TOKENS
 # =========================
 class Envio(db.Model):
     __tablename__ = "envios"
@@ -170,6 +263,9 @@ class Envio(db.Model):
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
 
 
+# =========================
+# CONFIGURAÇÃO GLOBAL DO SISTEMA
+# =========================
 class ConfiguracaoSistema(db.Model):
     __tablename__ = "configuracao_sistema"
 

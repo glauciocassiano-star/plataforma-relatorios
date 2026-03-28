@@ -15,5 +15,6 @@ from . import admin_usuarios
 from . import admin_configuracoes
 from . import admin_backup
 from . import admin_painel
+from . import admin_clientes
 
 __all__ = ["main"]

@@ -70,6 +70,41 @@
     appearance: none;
   }
 
+  .admin-form-ajuda {
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .admin-senha-linha {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .admin-senha-linha .campo-padrao {
+    flex: 1 1 280px;
+  }
+
+  .admin-mostrar-senha {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .admin-mostrar-senha input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #1f4f46;
+    margin: 0;
+    cursor: pointer;
+  }
+
   .admin-form-acoes {
     display: flex;
     gap: 10px;
@@ -86,7 +121,7 @@
   .admin-tabela {
     width: 100%;
     border-collapse: collapse;
-    min-width: 760px;
+    min-width: 900px;
   }
 
   .admin-tabela thead th {
@@ -117,10 +152,34 @@
     border-radius: 999px;
     font-size: 0.9rem;
     font-weight: 600;
-    background: #f3f4f6;
-    color: #374151;
     border: 1px solid #e5e7eb;
     white-space: nowrap;
+    background: #f3f4f6;
+    color: #374151;
+  }
+
+  .admin-perfil-badge.admin-master {
+    background: #ede9fe;
+    color: #5b21b6;
+    border-color: #ddd6fe;
+  }
+
+  .admin-perfil-badge.admin-cliente {
+    background: #ecfdf5;
+    color: #166534;
+    border-color: #bbf7d0;
+  }
+
+  .admin-perfil-badge.tecnico {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+  }
+
+  .admin-perfil-badge.veterinario {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fed7aa;
   }
 
   .admin-tabela-acoes {
@@ -173,6 +232,11 @@
       font-size: 15px;
     }
 
+    .admin-senha-linha {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
     .admin-form-acoes {
       flex-direction: column;
       align-items: stretch;
@@ -184,7 +248,7 @@
     }
 
     .admin-tabela {
-      min-width: 680px;
+      min-width: 760px;
     }
 
     .admin-tabela thead th,
@@ -218,7 +282,7 @@
     }
 
     .admin-tabela {
-      min-width: 620px;
+      min-width: 680px;
     }
 
     .admin-tabela thead th,
@@ -249,16 +313,57 @@
 
       <div class="admin-form-grupo">
         <label for="senha">Senha *</label>
-        <input class="campo-padrao" type="password" id="senha" name="senha" required>
+
+        <div class="admin-senha-linha">
+          <input
+            class="campo-padrao"
+            type="password"
+            id="senha"
+            name="senha"
+            required
+            pattern="^(?=(?:.*[A-Z]){1,})(?=(?:.*[^A-Za-z0-9]){1,})(?=(?:.*[A-Za-z0-9]){5,})\S{6,}$"
+            title="A senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, sem espaços, pelo menos 5 letras ou números e 1 caractere especial."
+          >
+
+          <label class="admin-mostrar-senha" for="mostrar_senha">
+            <input type="checkbox" id="mostrar_senha">
+            Mostrar senha
+          </label>
+        </div>
+
+        <small class="admin-form-ajuda">
+          A senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, sem espaços, pelo menos 5 letras ou números e 1 caractere especial.
+        </small>
       </div>
+
+      {% if usuario_logado.perfil == "admin_master" %}
+        <div class="admin-form-grupo">
+          <label for="cliente_id">Cliente *</label>
+          <select class="campo-padrao" id="cliente_id" name="cliente_id" required>
+            <option value="">Selecione o cliente</option>
+            {% for cliente in clientes %}
+              <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+            {% endfor %}
+          </select>
+          <small class="admin-form-ajuda">
+            O administrador principal define a qual cliente este usuário pertence.
+          </small>
+        </div>
+      {% endif %}
 
       <div class="admin-form-grupo">
         <label for="perfil">Perfil *</label>
         <select class="campo-padrao" id="perfil" name="perfil">
           <option value="tecnico">Técnico</option>
           <option value="veterinario">Veterinário</option>
-          <option value="admin">Admin</option>
+          {% if usuario_logado.perfil == "admin_master" %}
+            <option value="admin_cliente">Administrador do cliente</option>
+            <option value="admin_master">Administrador principal</option>
+          {% endif %}
         </select>
+        <small class="admin-form-ajuda">
+          Técnicos e veterinários operam o sistema. O administrador do cliente gerencia usuários e propriedades da própria conta.
+        </small>
       </div>
 
       <div class="admin-form-acoes">
@@ -280,6 +385,9 @@
               <th>ID</th>
               <th>Nome</th>
               <th>Email</th>
+              {% if usuario_logado.perfil == "admin_master" %}
+                <th>Cliente</th>
+              {% endif %}
               <th>Perfil</th>
               <th>Ações</th>
             </tr>
@@ -290,12 +398,34 @@
               <td>{{ u.id }}</td>
               <td>{{ u.nome }}</td>
               <td>{{ u.email }}</td>
+
+              {% if usuario_logado.perfil == "admin_master" %}
+                <td>{{ u.cliente.nome if u.cliente else "-" }}</td>
+              {% endif %}
+
               <td>
-                <span class="admin-perfil-badge">{{ u.perfil }}</span>
+                <span class="admin-perfil-badge
+                  {% if u.perfil == 'admin_master' %}admin-master{% endif %}
+                  {% if u.perfil == 'admin_cliente' %}admin-cliente{% endif %}
+                  {% if u.perfil == 'tecnico' %}tecnico{% endif %}
+                  {% if u.perfil == 'veterinario' %}veterinario{% endif %}
+                ">
+                  {% if u.perfil == "admin_master" %}
+                    Administrador principal
+                  {% elif u.perfil == "admin_cliente" %}
+                    Administrador do cliente
+                  {% elif u.perfil == "tecnico" %}
+                    Técnico
+                  {% elif u.perfil == "veterinario" %}
+                    Veterinário
+                  {% else %}
+                    {{ u.perfil }}
+                  {% endif %}
+                </span>
               </td>
+
               <td>
                 <div class="admin-tabela-acoes">
-
                   <a class="btn"
                      href="{{ url_for('main.admin_usuario_propriedades', usuario_id=u.id) }}">
                     Propriedades
@@ -313,7 +443,6 @@
                   >
                     Excluir
                   </a>
-
                 </div>
               </td>
             </tr>
@@ -329,4 +458,18 @@
   </div>
 
 </div>
+
+<script>
+  (function () {
+    const campoSenha = document.getElementById("senha");
+    const mostrarSenha = document.getElementById("mostrar_senha");
+
+    if (campoSenha && mostrarSenha) {
+      mostrarSenha.addEventListener("change", function () {
+        campoSenha.type = this.checked ? "text" : "password";
+      });
+    }
+  })();
+</script>
+
 {% endblock %}

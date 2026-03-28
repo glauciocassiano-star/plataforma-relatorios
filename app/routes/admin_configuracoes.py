@@ -5,18 +5,14 @@ from werkzeug.utils import secure_filename
 
 from .base import main
 from .. import db
-from ..helpers.auth import obter_usuario_logado
+from ..helpers.decorators import login_obrigatorio, admin_obrigatorio
 from ..models import ConfiguracaoSistema
 
 
 @main.route("/admin/configuracoes", methods=["GET", "POST"])
+@login_obrigatorio
+@admin_obrigatorio
 def admin_configuracoes():
-    usuario = obter_usuario_logado()
-
-    if not usuario or usuario.perfil != "admin":
-        flash("Acesso restrito.", "error")
-        return redirect(url_for("main.painel"))
-
     config = ConfiguracaoSistema.query.first()
 
     if not config:

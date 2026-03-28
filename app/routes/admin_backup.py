@@ -5,8 +5,7 @@ from datetime import datetime
 from flask import flash, redirect, render_template, send_from_directory, url_for
 
 from .base import main
-from ..helpers.auth import obter_usuario_logado
-from ..helpers.decorators import login_obrigatorio
+from ..helpers.decorators import login_obrigatorio, admin_obrigatorio
 
 
 def obter_pasta_backups():
@@ -64,13 +63,8 @@ def listar_backups():
 
 @main.route("/admin/backup")
 @login_obrigatorio
+@admin_obrigatorio
 def admin_backup():
-    usuario = obter_usuario_logado()
-
-    if not usuario or usuario.perfil != "admin":
-        flash("Acesso restrito.", "error")
-        return redirect(url_for("main.painel"))
-
     backups = listar_backups()
 
     return render_template(
@@ -81,13 +75,8 @@ def admin_backup():
 
 @main.route("/admin/backup/gerar", methods=["POST"])
 @login_obrigatorio
+@admin_obrigatorio
 def gerar_backup():
-    usuario = obter_usuario_logado()
-
-    if not usuario or usuario.perfil != "admin":
-        flash("Você não tem permissão para gerar backup.", "error")
-        return redirect(url_for("main.painel"))
-
     try:
         nome_arquivo = gerar_backup_zip()
         flash(f"Backup gerado com sucesso: {nome_arquivo}", "success")
@@ -99,13 +88,8 @@ def gerar_backup():
 
 @main.route("/admin/backup/download/<path:nome_arquivo>")
 @login_obrigatorio
+@admin_obrigatorio
 def baixar_backup(nome_arquivo):
-    usuario = obter_usuario_logado()
-
-    if not usuario or usuario.perfil != "admin":
-        flash("Você não tem permissão para baixar backups.", "error")
-        return redirect(url_for("main.painel"))
-
     pasta_backups = obter_pasta_backups()
     caminho_arquivo = os.path.join(pasta_backups, nome_arquivo)
 
@@ -122,13 +106,8 @@ def baixar_backup(nome_arquivo):
 
 @main.route("/admin/backup/excluir/<path:nome_arquivo>", methods=["POST"])
 @login_obrigatorio
+@admin_obrigatorio
 def excluir_backup(nome_arquivo):
-    usuario = obter_usuario_logado()
-
-    if not usuario or usuario.perfil != "admin":
-        flash("Você não tem permissão para excluir backups.", "error")
-        return redirect(url_for("main.painel"))
-
     pasta_backups = obter_pasta_backups()
     caminho_arquivo = os.path.join(pasta_backups, nome_arquivo)
 
