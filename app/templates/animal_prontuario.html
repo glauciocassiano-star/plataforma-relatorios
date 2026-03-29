@@ -3,6 +3,7 @@
 {% block title %}Prontuário - {{ animal.codigo }}{% endblock %}
 
 {% block content %}
+
 <h2 style="margin-bottom:18px;">Prontuário do Animal</h2>
 
 <div style="
@@ -94,7 +95,6 @@
           </div>
         </div>
 
-        <!-- BOTÕES -->
         <div style="
           display:grid;
           grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));
@@ -119,7 +119,7 @@
               Editar atendimento
             </a>
 
-            {% if session.get("perfil") in ["admin", "veterinario"] %}
+            {% if usuario_logado and usuario_logado.perfil in ["admin_master", "veterinario"] %}
 
               <a
                 href="{{ url_for('main.excluir_atendimento', id=a.id) }}"
@@ -148,7 +148,7 @@
 
           {% else %}
 
-            {% if session.get("perfil") == "admin" %}
+            {% if usuario_logado and usuario_logado.perfil in ["admin_master", "veterinario"] %}
 
               <a
                 href="{{ url_for('main.desbloquear_atendimento', id=a.id) }}"
@@ -156,6 +156,13 @@
                 onclick="return confirm('Deseja desbloquear este atendimento?');"
               >
                 🔓 Desbloquear
+              </a>
+
+              <a
+                href="{{ url_for('main.novo_exame', id=a.id) }}"
+                class="btn btn-secondary"
+              >
+                + Exame
               </a>
 
             {% else %}
@@ -237,7 +244,7 @@
             <ul style="margin:0 0 0 18px;padding:0;">
               {% for k, v in a.dados.items() %}
                 <li style="margin-bottom:6px;line-height:1.5;">
-                  <b>{{ k }}:</b> {{ v if v else "-" }}
+                  <b>{{ k }}:</b> {{ v if v not in [None, ""] else "-" }}
                 </li>
               {% endfor %}
             </ul>

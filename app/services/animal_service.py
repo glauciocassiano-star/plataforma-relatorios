@@ -8,16 +8,16 @@ def listar_animais_da_propriedade(propriedade_id):
     return (
         Animal.query
         .filter_by(propriedade_id=propriedade_id)
-        .order_by(Animal.id.desc())
+        .order_by(Animal.codigo.asc())
         .all()
     )
 
 
 def criar_animal(dados, propriedade_id):
     # =========================
-    # 🔹 NORMALIZAÇÃO DOS DADOS
+    # NORMALIZAÇÃO DOS DADOS
     # =========================
-    codigo = (dados.get("codigo") or "").strip()
+    codigo = (dados.get("codigo") or "").strip().upper()
     nome = (dados.get("nome") or "").strip() or None
     data_nascimento_str = (dados.get("data_nascimento") or "").strip()
     raca = (dados.get("raca") or "").strip() or None
@@ -26,7 +26,7 @@ def criar_animal(dados, propriedade_id):
     especie = (dados.get("especie") or "").strip().lower() or "bovino"
 
     # =========================
-    # 🔹 VALIDAÇÕES
+    # VALIDAÇÕES
     # =========================
     if not codigo:
         return None, "Código do animal é obrigatório."
@@ -35,7 +35,7 @@ def criar_animal(dados, propriedade_id):
         return None, "Espécie é obrigatória."
 
     # =========================
-    # 🔹 DATA
+    # DATA
     # =========================
     data_nascimento = None
     if data_nascimento_str:
@@ -47,7 +47,7 @@ def criar_animal(dados, propriedade_id):
             return None, "Data de nascimento inválida."
 
     # =========================
-    # 🔹 DUPLICIDADE
+    # DUPLICIDADE
     # =========================
     animal_existente = Animal.query.filter_by(
         codigo=codigo,
@@ -58,7 +58,7 @@ def criar_animal(dados, propriedade_id):
         return None, "Já existe um animal com esse código nesta propriedade."
 
     # =========================
-    # 🔹 CRIAÇÃO
+    # CRIAÇÃO
     # =========================
     animal = Animal(
         codigo=codigo,
@@ -72,13 +72,13 @@ def criar_animal(dados, propriedade_id):
     )
 
     # =========================
-    # 🔹 PERSISTÊNCIA
+    # PERSISTÊNCIA
     # =========================
     try:
         db.session.add(animal)
         db.session.commit()
-    except Exception as e:
+    except Exception:
         db.session.rollback()
-        return None, f"Erro ao salvar animal: {str(e)}"
+        return None, "Ocorreu um erro ao salvar o animal. Tente novamente."
 
     return animal, None

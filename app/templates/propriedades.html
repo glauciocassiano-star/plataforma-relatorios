@@ -18,12 +18,15 @@
     appearance: none;
   }
 
-  /* 🔥 ajuste desktop do formulário */
-  .container-centralizado {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
+  .aviso-admin {
+    padding: 12px 14px;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    background: #fffbeb;
+    color: #92400e;
+    font-size: 14px;
+    line-height: 1.5;
+  }
 
   @media (max-width: 768px) {
     .propriedades-form-card,
@@ -84,7 +87,6 @@
   max-width:100%;
 ">
 
-  <!-- FORM -->
   <div class="propriedades-form-card" style="
     border:1px solid #e5e7eb;
     border-radius:14px;
@@ -96,6 +98,12 @@
     overflow:hidden;
   ">
     <h3 style="margin:0 0 14px 0;">Nova propriedade</h3>
+
+    {% if usuario_logado and usuario_logado.perfil == "admin_master" and not clientes %}
+      <div class="aviso-admin" style="margin-bottom:14px;">
+        Nenhum cliente ativo foi encontrado. Cadastre pelo menos um cliente antes de criar novas propriedades.
+      </div>
+    {% endif %}
 
     <form method="POST" class="propriedades-form" style="
       display:grid;
@@ -121,6 +129,21 @@
         <input class="campo-padrao" name="estado" placeholder="Ex: MG" maxlength="2" />
       </div>
 
+      {% if usuario_logado and usuario_logado.perfil == "admin_master" %}
+      <div>
+        <label style="display:block;margin-bottom:6px;">Cliente *</label>
+        <select class="campo-padrao" name="cliente_id" required {% if not clientes %}disabled{% endif %}>
+          <option value="">Selecione o cliente</option>
+          {% for cliente in clientes %}
+            <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+          {% endfor %}
+        </select>
+        <small style="display:block;margin-top:6px;color:#6b7280;line-height:1.45;">
+          O administrador principal deve vincular a propriedade a um cliente ativo.
+        </small>
+      </div>
+      {% endif %}
+
       <div class="propriedades-form-acoes" style="
         display:flex;
         gap:10px;
@@ -128,13 +151,14 @@
         margin-top:6px;
         flex-wrap:wrap;
       ">
-        <button type="submit">Salvar</button>
+        <button type="submit" {% if usuario_logado and usuario_logado.perfil == "admin_master" and not clientes %}disabled{% endif %}>
+          Salvar
+        </button>
         <a class="btn btn-secondary" href="{{ url_for('main.painel') }}">Voltar</a>
       </div>
     </form>
   </div>
 
-  <!-- LISTA -->
   <div class="propriedades-lista-card" style="
     border:1px solid #e5e7eb;
     border-radius:14px;
@@ -145,7 +169,7 @@
     max-width:100%;
     overflow:hidden;
   ">
-    <h3 style="margin:0 0 12px 0;">Lista</h3>
+    <h3 style="margin:0 0 12px 0;">Lista de propriedades</h3>
 
     {% if propriedades and propriedades|length > 0 %}
       <div class="table-wrap">
@@ -155,7 +179,10 @@
               <th>ID</th>
               <th>Propriedade</th>
               <th>Produtor</th>
-              <th>Cidade/UF</th>
+              <th>Cidade / UF</th>
+              {% if usuario_logado and usuario_logado.perfil == "admin_master" %}
+                <th>Cliente</th>
+              {% endif %}
               <th>Ações</th>
             </tr>
           </thead>
@@ -166,7 +193,12 @@
               <td>{{ p.id }}</td>
               <td>{{ p.nome }}</td>
               <td>{{ p.produtor }}</td>
-              <td>{{ (p.cidade or '-') ~ '/' ~ (p.estado or '-') }}</td>
+              <td>{{ (p.cidade or '-') ~ ' / ' ~ (p.estado or '-') }}</td>
+
+              {% if usuario_logado and usuario_logado.perfil == "admin_master" %}
+                <td>{{ p.cliente.nome if p.cliente else "-" }}</td>
+              {% endif %}
+
               <td>
                 <div class="acoes-tabela" style="
                   display:grid;

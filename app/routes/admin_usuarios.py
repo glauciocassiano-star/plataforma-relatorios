@@ -83,20 +83,33 @@ def admin_usuarios():
             return redirect(request.url)
 
         if usuario_eh_admin_master(usuario_logado):
-            cliente_id_raw = request.form.get("cliente_id")
+            cliente_id_raw = request.form.get("cliente_id", "").strip()
 
             if not cliente_id_raw:
                 flash("Selecione o cliente do usuário.", "error")
                 return redirect(request.url)
 
-            cliente = db.session.get(Cliente, int(cliente_id_raw))
-            if not cliente:
+            try:
+                cliente_id = int(cliente_id_raw)
+            except ValueError:
                 flash("Cliente inválido.", "error")
                 return redirect(request.url)
 
-            cliente_id = cliente.id
+            cliente = db.session.get(Cliente, cliente_id)
+            if not cliente or not cliente.ativo:
+                flash("Cliente inválido ou inativo.", "error")
+                return redirect(request.url)
+
             criado_por_id = None
         else:
+            if not usuario_logado.cliente_id or not usuario_logado.cliente:
+                flash("Seu usuário não está vinculado a um cliente válido.", "error")
+                return redirect(request.url)
+
+            if not usuario_logado.cliente.ativo:
+                flash("O cliente vinculado ao seu usuário está inativo.", "error")
+                return redirect(request.url)
+
             cliente_id = usuario_logado.cliente_id
             criado_por_id = usuario_logado.id
 
@@ -118,7 +131,12 @@ def admin_usuarios():
 
     if usuario_eh_admin_master(usuario_logado):
         usuarios = Usuario.query.order_by(Usuario.id.desc()).all()
-        clientes = Cliente.query.order_by(Cliente.nome.asc()).all()
+        clientes = (
+            Cliente.query
+            .filter_by(ativo=True)
+            .order_by(Cliente.nome.asc())
+            .all()
+        )
     else:
         usuarios = (
             Usuario.query
@@ -144,7 +162,11 @@ def admin_usuarios():
 @admin_cliente_ou_master_obrigatorio
 def admin_usuario_propriedades(usuario_id):
     usuario_logado = obter_usuario_logado()
-    usuario = Usuario.query.get_or_404(usuario_id)
+    usuario = db.session.get(Usuario, usuario_id)
+
+    if not usuario:
+        flash("Usuário não encontrado.", "error")
+        return redirect(url_for("main.admin_usuarios"))
 
     if not usuario_pode_gerenciar_propriedades_usuario(usuario_logado, usuario):
         flash("Você não tem permissão para gerenciar propriedades desse usuário.", "error")
@@ -162,11 +184,11 @@ def admin_usuario_propriedades(usuario_id):
             Propriedade.query
             .join(
                 UsuarioPropriedade,
-                UsuarioPropriedade.propriedade_id == Propriedade.id
+                UsuarioPropriedade.propriedade_id == Propriedade.id,
             )
             .filter(
                 UsuarioPropriedade.usuario_id == usuario_logado.id,
-                Propriedade.cliente_id == usuario_logado.cliente_id
+                Propriedade.cliente_id == usuario_logado.cliente_id,
             )
             .order_by(Propriedade.nome.asc())
             .all()
@@ -178,7 +200,12 @@ def admin_usuario_propriedades(usuario_id):
         UsuarioPropriedade.query.filter_by(usuario_id=usuario.id).delete()
 
         for prop_id in selecionadas:
-            prop = db.session.get(Propriedade, int(prop_id))
+            try:
+                prop_id_int = int(prop_id)
+            except (TypeError, ValueError):
+                continue
+
+            prop = db.session.get(Propriedade, prop_id_int)
             if not prop:
                 continue
 
@@ -222,7 +249,11 @@ def admin_usuario_propriedades(usuario_id):
 @admin_cliente_ou_master_obrigatorio
 def admin_editar_usuario(usuario_id):
     usuario_logado = obter_usuario_logado()
-    usuario = Usuario.query.get_or_404(usuario_id)
+    usuario = db.session.get(Usuario, usuario_id)
+
+    if not usuario:
+        flash("Usuário não encontrado.", "error")
+        return redirect(url_for("main.admin_usuarios"))
 
     if not usuario_pode_editar_usuario(usuario_logado, usuario):
         flash("Você não tem permissão para editar esse usuário.", "error")
@@ -257,15 +288,21 @@ def admin_editar_usuario(usuario_id):
         usuario.perfil = perfil
 
         if usuario_eh_admin_master(usuario_logado):
-            cliente_id_raw = request.form.get("cliente_id")
+            cliente_id_raw = (request.form.get("cliente_id") or "").strip()
 
             if not cliente_id_raw:
                 flash("Selecione o cliente do usuário.", "error")
                 return redirect(request.url)
 
-            cliente = db.session.get(Cliente, int(cliente_id_raw))
-            if not cliente:
+            try:
+                cliente_id = int(cliente_id_raw)
+            except ValueError:
                 flash("Cliente inválido.", "error")
+                return redirect(request.url)
+
+            cliente = db.session.get(Cliente, cliente_id)
+            if not cliente or not cliente.ativo:
+                flash("Cliente inválido ou inativo.", "error")
                 return redirect(request.url)
 
             if usuario.cliente_id != cliente.id:
@@ -291,7 +328,12 @@ def admin_editar_usuario(usuario_id):
 
     clientes = []
     if usuario_eh_admin_master(usuario_logado):
-        clientes = Cliente.query.order_by(Cliente.nome.asc()).all()
+        clientes = (
+            Cliente.query
+            .filter_by(ativo=True)
+            .order_by(Cliente.nome.asc())
+            .all()
+        )
 
     return render_template(
         "admin_usuario_editar.html",
@@ -305,7 +347,11 @@ def admin_editar_usuario(usuario_id):
 @admin_cliente_ou_master_obrigatorio
 def admin_excluir_usuario(usuario_id):
     usuario_logado = obter_usuario_logado()
-    usuario = Usuario.query.get_or_404(usuario_id)
+    usuario = db.session.get(Usuario, usuario_id)
+
+    if not usuario:
+        flash("Usuário não encontrado.", "error")
+        return redirect(url_for("main.admin_usuarios"))
 
     if usuario.id == usuario_logado.id:
         flash("Você não pode excluir seu próprio usuário.", "error")

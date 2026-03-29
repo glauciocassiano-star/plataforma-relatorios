@@ -4,7 +4,8 @@ from .base import main
 from .. import db
 from ..helpers.auth import obter_usuario_logado
 from ..helpers.decorators import login_obrigatorio, acesso_propriedade
-from ..models import Animal, Propriedade, UsuarioPropriedade
+from ..helpers.permissoes import usuario_eh_admin_master
+from ..models import Animal, Cliente, Propriedade, UsuarioPropriedade
 from ..services.propriedade_service import listar_propriedades_do_usuario
 
 
@@ -12,6 +13,10 @@ from ..services.propriedade_service import listar_propriedades_do_usuario
 @login_obrigatorio
 def propriedades():
     usuario = obter_usuario_logado()
+
+    if not usuario:
+        flash("Usuário não autenticado.", "error")
+        return redirect(url_for("main.login"))
 
     if request.method == "POST":
         nome = (request.form.get("nome") or "").strip()
@@ -23,21 +28,49 @@ def propriedades():
             flash("Nome e produtor são obrigatórios.", "error")
             return redirect(url_for("main.propriedades"))
 
+        cliente_id = None
+
+        if usuario_eh_admin_master(usuario):
+            cliente_id_raw = (request.form.get("cliente_id") or "").strip()
+
+            if not cliente_id_raw:
+                flash("Selecione o cliente da propriedade.", "error")
+                return redirect(url_for("main.propriedades"))
+
+            try:
+                cliente_id = int(cliente_id_raw)
+            except ValueError:
+                flash("Cliente inválido.", "error")
+                return redirect(url_for("main.propriedades"))
+
+            cliente = db.session.get(Cliente, cliente_id)
+            if not cliente or not cliente.ativo:
+                flash("Cliente inválido ou inativo.", "error")
+                return redirect(url_for("main.propriedades"))
+
+        else:
+            if not usuario.cliente_id or not usuario.cliente or not usuario.cliente.ativo:
+                flash("Seu usuário não está vinculado a um cliente ativo.", "error")
+                return redirect(url_for("main.propriedades"))
+
+            cliente_id = usuario.cliente_id
+
         prop = Propriedade(
             nome=nome,
             produtor=produtor,
             cidade=cidade or None,
             estado=estado or None,
-            cliente_id=usuario.cliente_id,
+            cliente_id=cliente_id,
         )
         db.session.add(prop)
         db.session.flush()
 
-        vinculo = UsuarioPropriedade(
-            usuario_id=usuario.id,
-            propriedade_id=prop.id,
-        )
-        db.session.add(vinculo)
+        if not usuario_eh_admin_master(usuario):
+            vinculo = UsuarioPropriedade(
+                usuario_id=usuario.id,
+                propriedade_id=prop.id,
+            )
+            db.session.add(vinculo)
 
         db.session.commit()
 
@@ -45,7 +78,21 @@ def propriedades():
         return redirect(url_for("main.propriedades"))
 
     propriedades = listar_propriedades_do_usuario(usuario)
-    return render_template("propriedades.html", propriedades=propriedades)
+
+    clientes = []
+    if usuario_eh_admin_master(usuario):
+        clientes = (
+            Cliente.query
+            .filter_by(ativo=True)
+            .order_by(Cliente.nome.asc())
+            .all()
+        )
+
+    return render_template(
+        "propriedades.html",
+        propriedades=propriedades,
+        clientes=clientes,
+    )
 
 
 @main.route("/propriedades/<int:propriedade_id>/excluir")

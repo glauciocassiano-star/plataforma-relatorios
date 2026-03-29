@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, flash
+from flask import Flask, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -42,7 +42,7 @@ def create_app():
 
     # importa models para registrar tabelas
     from . import models  # noqa: F401
-    from .models import ConfiguracaoSistema
+    from .models import ConfiguracaoSistema, Usuario
 
     # ===============================
     # REGISTRA ROTAS
@@ -52,13 +52,23 @@ def create_app():
     app.register_blueprint(main)
 
     # ===============================
-    # CONFIGURAÇÃO GLOBAL
+    # CONTEXTO GLOBAL DOS TEMPLATES
     # ===============================
 
     @app.context_processor
-    def inject_configuracao_sistema():
+    def inject_global_context():
         config = ConfiguracaoSistema.query.first()
-        return dict(config_sistema=config)
+
+        usuario_logado = None
+        usuario_id = session.get("usuario_id")
+
+        if usuario_id:
+            usuario_logado = db.session.get(Usuario, usuario_id)
+
+        return dict(
+            config_sistema=config,
+            usuario_logado=usuario_logado
+        )
 
     # ===============================
     # TRATAMENTO DE ERRO DE UPLOAD

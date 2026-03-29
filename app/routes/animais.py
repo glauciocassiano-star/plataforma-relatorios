@@ -54,14 +54,38 @@ def editar_animal(animal_id):
     propriedade = Propriedade.query.get_or_404(animal.propriedade_id)
 
     if request.method == "POST":
-        animal.codigo = (request.form.get("codigo") or "").strip()
-        animal.nome = (request.form.get("nome") or "").strip() or None
-        animal.especie = (request.form.get("especie") or "").strip() or "bovino"
-        animal.raca = (request.form.get("raca") or "").strip() or None
-        animal.sexo = (request.form.get("sexo") or "").strip() or None
-        animal.perfil_genetico = (request.form.get("perfil_genetico") or "").strip() or None
-
+        codigo = (request.form.get("codigo") or "").strip()
+        nome = (request.form.get("nome") or "").strip() or None
+        especie = (request.form.get("especie") or "").strip() or "bovino"
+        raca = (request.form.get("raca") or "").strip() or None
+        sexo = (request.form.get("sexo") or "").strip() or None
+        perfil_genetico = (request.form.get("perfil_genetico") or "").strip() or None
         data_nascimento = (request.form.get("data_nascimento") or "").strip()
+
+        if not codigo:
+            flash("O código do animal é obrigatório.", "error")
+            return redirect(request.url)
+
+        animal_existente = (
+            Animal.query
+            .filter(
+                Animal.propriedade_id == propriedade.id,
+                Animal.codigo == codigo,
+                Animal.id != animal.id
+            )
+            .first()
+        )
+
+        if animal_existente:
+            flash("Já existe outro animal com esse código nesta propriedade.", "error")
+            return redirect(request.url)
+
+        animal.codigo = codigo
+        animal.nome = nome
+        animal.especie = especie
+        animal.raca = raca
+        animal.sexo = sexo
+        animal.perfil_genetico = perfil_genetico
 
         if data_nascimento:
             try:
@@ -69,14 +93,10 @@ def editar_animal(animal_id):
                     data_nascimento, "%Y-%m-%d"
                 ).date()
             except ValueError:
-                flash("Data inválida.", "error")
+                flash("Data de nascimento inválida.", "error")
                 return redirect(request.url)
         else:
             animal.data_nascimento = None
-
-        if not animal.codigo:
-            flash("O código do animal é obrigatório.", "error")
-            return redirect(request.url)
 
         db.session.commit()
 
@@ -122,7 +142,7 @@ def prontuario_animal(animal_id: int):
     atendimentos = (
         Atendimento.query
         .filter_by(animal_id=animal.id)
-        .order_by(Atendimento.criado_em.desc())
+        .order_by(Atendimento.data_atendimento.desc(), Atendimento.criado_em.desc())
         .all()
     )
 

@@ -11,18 +11,48 @@
 {% block content %}
 
 <style>
+  .atendimento-pagina-topo {
+    margin-bottom: 18px;
+  }
+
+  .atendimento-pagina-topo h2 {
+    margin: 0 0 8px 0;
+    color: #1f2937;
+    line-height: 1.3;
+  }
+
+  .atendimento-pagina-topo p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.55;
+  }
+
   .atendimento-form-card {
     display: grid;
-    gap: 14px;
+    gap: 16px;
     max-width: 1020px;
     width: 100%;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    border-radius: 14px;
     background: #ffffff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+  }
+
+  .bloco-formulario {
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fafafa;
+  }
+
+  .bloco-formulario-titulo {
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f2937;
   }
 
   .form-field {
@@ -49,7 +79,10 @@
     resize: vertical;
   }
 
-  input[type="date"].campo-padrao {
+  input[type="date"].campo-padrao,
+  input[type="number"].campo-padrao,
+  input[type="text"].campo-padrao,
+  select.campo-padrao {
     display: block;
   }
 
@@ -58,6 +91,25 @@
     align-items: center;
     gap: 8px;
     margin-top: 8px;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #ffffff;
+  }
+
+  .checkbox-field input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: #1f8774;
+    flex-shrink: 0;
+  }
+
+  .checkbox-field label {
+    margin: 0;
+    font-weight: 600;
+    color: #374151;
+    line-height: 1.4;
   }
 
   .form-help {
@@ -66,16 +118,30 @@
     line-height: 1.5;
   }
 
+  .campo-obrigatorio {
+    color: #b91c1c;
+    font-weight: 700;
+  }
+
   .atendimento-form-acoes {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    margin-top: 18px;
+    margin-top: 8px;
   }
 
   .atendimento-form-acoes .btn,
   .atendimento-form-acoes button {
     min-height: 44px;
+  }
+
+  .rodape-voltar {
+    margin-top: 18px;
+  }
+
+  .rodape-voltar a {
+    color: #1f8774;
+    font-weight: 600;
   }
 
   @media (max-width: 1020px) {
@@ -87,6 +153,11 @@
   @media (max-width: 768px) {
     .atendimento-form-card {
       padding: 14px;
+      gap: 14px;
+    }
+
+    .bloco-formulario {
+      padding: 12px;
     }
 
     .atendimento-form-acoes {
@@ -98,131 +169,167 @@
     .atendimento-form-acoes button {
       width: 100%;
     }
+
+    .campo-padrao {
+      min-height: 50px;
+      font-size: 15px;
+      padding: 10px 12px;
+    }
   }
 </style>
 
-<h2 style="margin-bottom:16px;">
-  {% if modo_edicao %}
-    Editar Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
-  {% else %}
-    Novo Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
-  {% endif %}
-</h2>
+<div class="atendimento-pagina-topo">
+  <h2>
+    {% if modo_edicao %}
+      Editar Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
+    {% else %}
+      Novo Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
+    {% endif %}
+  </h2>
+
+  <p>
+    {% if modo_edicao %}
+      Atualize os dados clínicos e epidemiológicos do atendimento deste animal.
+    {% else %}
+      Preencha os campos abaixo para registrar um novo atendimento clínico.
+    {% endif %}
+  </p>
+</div>
 
 <form method="POST" enctype="multipart/form-data" class="atendimento-form-card" id="formAtendimento">
 
-  <!-- BLOCO: DATA -->
-  <div class="form-field">
-    <label for="data_atendimento">📅 Data do atendimento</label>
-    <input
-      class="campo-padrao"
-      type="date"
-      name="data_atendimento"
-      id="data_atendimento"
-      required
-      value="{{ atendimento.data_atendimento.strftime('%Y-%m-%d') if modo_edicao and atendimento and atendimento.data_atendimento else '' }}"
-    >
+  <div class="bloco-formulario">
+    <h3 class="bloco-formulario-titulo">Dados principais</h3>
+
+    <div class="form-field">
+      <label for="data_atendimento">
+        📅 Data do atendimento <span class="campo-obrigatorio">*</span>
+      </label>
+      <input
+        class="campo-padrao"
+        type="date"
+        name="data_atendimento"
+        id="data_atendimento"
+        required
+        value="{{ atendimento.data_atendimento.strftime('%Y-%m-%d') if modo_edicao and atendimento and atendimento.data_atendimento else '' }}"
+      >
+    </div>
   </div>
 
-  <!-- BLOCO: CAMPOS DINÂMICOS -->
-  {% for c in campos %}
-    {% if c.tipo == "checkbox" %}
-      <div class="checkbox-field">
-        <input
-          type="checkbox"
-          name="{{ c.nome_chave }}"
-          id="{{ c.nome_chave }}"
-          {% if modo_edicao and atendimento and atendimento.dados and atendimento.dados.get(c.nome_chave) %}
-            checked
-          {% endif %}
-        >
-        <label for="{{ c.nome_chave }}">{{ c.rotulo }}</label>
-      </div>
+  {% if campos %}
+    <div class="bloco-formulario">
+      <h3 class="bloco-formulario-titulo">Formulário clínico</h3>
 
-    {% else %}
-      <div class="form-field" style="margin-top:8px;">
-        <label for="{{ c.nome_chave }}">{{ c.rotulo }}</label>
-
-        {% if c.tipo == "textarea" %}
-          <textarea
-            class="campo-padrao"
-            name="{{ c.nome_chave }}"
-            id="{{ c.nome_chave }}"
-            {% if c.obrigatorio %}required{% endif %}
-          >{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}</textarea>
-
-        {% elif c.tipo == "number" %}
-          <input
-            class="campo-padrao"
-            type="number"
-            name="{{ c.nome_chave }}"
-            id="{{ c.nome_chave }}"
-            step="any"
-            {% if c.obrigatorio %}required{% endif %}
-            value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
-          >
-
-        {% elif c.tipo == "select" %}
-          <select
-            class="campo-padrao"
-            name="{{ c.nome_chave }}"
-            id="{{ c.nome_chave }}"
-            {% if c.obrigatorio %}required{% endif %}
-          >
-            <option value="">Selecione</option>
-            {% for op in c.opcoes %}
-              <option
-                value="{{ op }}"
-                {% if modo_edicao and atendimento and atendimento.dados.get(c.nome_chave) == op %}
-                  selected
-                {% endif %}
-              >
-                {{ op }}
-              </option>
-            {% endfor %}
-          </select>
-
-        {% elif c.tipo == "date" %}
-          <input
-            class="campo-padrao"
-            type="date"
-            name="{{ c.nome_chave }}"
-            id="{{ c.nome_chave }}"
-            {% if c.obrigatorio %}required{% endif %}
-            value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
-          >
+      {% for c in campos %}
+        {% if c.tipo == "checkbox" %}
+          <div class="checkbox-field">
+            <input
+              type="checkbox"
+              name="{{ c.nome_chave }}"
+              id="{{ c.nome_chave }}"
+              {% if modo_edicao and atendimento and atendimento.dados and atendimento.dados.get(c.nome_chave) %}
+                checked
+              {% endif %}
+            >
+            <label for="{{ c.nome_chave }}">
+              {{ c.rotulo }}
+              {% if c.obrigatorio %}<span class="campo-obrigatorio">*</span>{% endif %}
+            </label>
+          </div>
 
         {% else %}
-          <input
-            class="campo-padrao"
-            type="text"
-            name="{{ c.nome_chave }}"
-            id="{{ c.nome_chave }}"
-            {% if c.obrigatorio %}required{% endif %}
-            value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
-          >
-        {% endif %}
-      </div>
-    {% endif %}
-  {% endfor %}
+          <div class="form-field" style="margin-top: 10px;">
+            <label for="{{ c.nome_chave }}">
+              {{ c.rotulo }}
+              {% if c.obrigatorio %}<span class="campo-obrigatorio">*</span>{% endif %}
+            </label>
 
-  <!-- BLOCO: IMAGENS -->
-  <div class="form-field" style="margin-top:14px;">
-    <label for="imagens">📷 Imagens do atendimento</label>
-    <input
-      type="file"
-      name="imagens"
-      id="imagens"
-      accept=".jpg,.jpeg,.png,.webp"
-      multiple
-    >
-    <small class="form-help">
-      Você pode enviar uma ou mais imagens clínicas deste atendimento.
-    </small>
+            {% if c.tipo == "textarea" %}
+              <textarea
+                class="campo-padrao"
+                name="{{ c.nome_chave }}"
+                id="{{ c.nome_chave }}"
+                {% if c.obrigatorio %}required{% endif %}
+              >{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}</textarea>
+
+            {% elif c.tipo == "number" %}
+              <input
+                class="campo-padrao"
+                type="number"
+                name="{{ c.nome_chave }}"
+                id="{{ c.nome_chave }}"
+                step="any"
+                {% if c.obrigatorio %}required{% endif %}
+                value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
+              >
+
+            {% elif c.tipo == "select" %}
+              <select
+                class="campo-padrao"
+                name="{{ c.nome_chave }}"
+                id="{{ c.nome_chave }}"
+                {% if c.obrigatorio %}required{% endif %}
+              >
+                <option value="">Selecione</option>
+                {% if c.opcoes %}
+                  {% for op in c.opcoes %}
+                    <option
+                      value="{{ op }}"
+                      {% if modo_edicao and atendimento and atendimento.dados.get(c.nome_chave) == op %}
+                        selected
+                      {% endif %}
+                    >
+                      {{ op }}
+                    </option>
+                  {% endfor %}
+                {% endif %}
+              </select>
+
+            {% elif c.tipo == "date" %}
+              <input
+                class="campo-padrao"
+                type="date"
+                name="{{ c.nome_chave }}"
+                id="{{ c.nome_chave }}"
+                {% if c.obrigatorio %}required{% endif %}
+                value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
+              >
+
+            {% else %}
+              <input
+                class="campo-padrao"
+                type="text"
+                name="{{ c.nome_chave }}"
+                id="{{ c.nome_chave }}"
+                {% if c.obrigatorio %}required{% endif %}
+                value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
+              >
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="bloco-formulario">
+    <h3 class="bloco-formulario-titulo">Imagens do atendimento</h3>
+
+    <div class="form-field">
+      <label for="imagens">📷 Upload de imagens</label>
+      <input
+        type="file"
+        name="imagens"
+        id="imagens"
+        accept=".jpg,.jpeg,.png,.webp"
+        multiple
+      >
+      <small class="form-help">
+        Você pode enviar uma ou mais imagens clínicas deste atendimento.
+      </small>
+    </div>
   </div>
 
-  <!-- BLOCO: AÇÕES -->
-  <div class="form-actions atendimento-form-acoes">
+  <div class="atendimento-form-acoes">
     <button type="submit">
       {% if modo_edicao %}
         Salvar alterações
@@ -238,30 +345,26 @@
 
 </form>
 
-<p style="margin-top:18px;">
+<div class="rodape-voltar">
   <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}">← Voltar</a>
-</p>
+</div>
 
 <script>
 function salvarOffline() {
   const form = document.getElementById("formAtendimento");
-
   const formData = new FormData(form);
   const dados = {};
 
-  // Campos normais
   formData.forEach((value, key) => {
     if (value instanceof File) return;
     dados[key] = value;
   });
 
-  // Checkboxes
   const checkboxes = form.querySelectorAll("input[type='checkbox']");
   checkboxes.forEach(cb => {
     dados[cb.name] = cb.checked;
   });
 
-  // Metadados
   dados._offline_id = crypto.randomUUID();
   dados._salvo_em = new Date().toISOString();
   dados._animal_id = "{{ animal.id }}";

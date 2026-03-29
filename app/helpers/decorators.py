@@ -12,13 +12,33 @@ from .permissoes import (
 from ..models import Animal, Atendimento, Propriedade
 
 
+def _usuario_pode_usar_sistema(usuario):
+    if not usuario:
+        return False, "Faça login para acessar o sistema."
+
+    if not getattr(usuario, "ativo", True):
+        return False, "Seu usuário está inativo. Procure o administrador do sistema."
+
+    if usuario_eh_admin_master(usuario):
+        return True, None
+
+    if not getattr(usuario, "cliente", None):
+        return False, "Seu usuário não está vinculado a um cliente válido."
+
+    if not getattr(usuario.cliente, "ativo", True):
+        return False, "O cliente vinculado ao seu usuário está inativo."
+
+    return True, None
+
+
 def login_obrigatorio(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         usuario = obter_usuario_logado()
+        permitido, mensagem = _usuario_pode_usar_sistema(usuario)
 
-        if not usuario:
-            flash("Faça login para acessar o sistema.", "error")
+        if not permitido:
+            flash(mensagem, "error")
             return redirect(url_for("main.login"))
 
         return f(*args, **kwargs)
@@ -30,8 +50,13 @@ def admin_obrigatorio(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         usuario = obter_usuario_logado()
+        permitido, mensagem = _usuario_pode_usar_sistema(usuario)
 
-        if not usuario or not usuario_eh_admin_master(usuario):
+        if not permitido:
+            flash(mensagem, "error")
+            return redirect(url_for("main.login"))
+
+        if not usuario_eh_admin_master(usuario):
             flash("Acesso restrito ao administrador principal.", "error")
             return redirect(url_for("main.painel"))
 
@@ -44,9 +69,10 @@ def admin_cliente_ou_master_obrigatorio(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         usuario = obter_usuario_logado()
+        permitido, mensagem = _usuario_pode_usar_sistema(usuario)
 
-        if not usuario:
-            flash("Faça login para acessar o sistema.", "error")
+        if not permitido:
+            flash(mensagem, "error")
             return redirect(url_for("main.login"))
 
         if not (usuario_eh_admin_master(usuario) or usuario_eh_admin_cliente(usuario)):
@@ -62,6 +88,12 @@ def acesso_propriedade(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         usuario = obter_usuario_logado()
+        permitido, mensagem = _usuario_pode_usar_sistema(usuario)
+
+        if not permitido:
+            flash(mensagem, "error")
+            return redirect(url_for("main.login"))
+
         propriedade_id = kwargs.get("propriedade_id")
 
         if not propriedade_id:
@@ -83,6 +115,12 @@ def acesso_animal(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         usuario = obter_usuario_logado()
+        permitido, mensagem = _usuario_pode_usar_sistema(usuario)
+
+        if not permitido:
+            flash(mensagem, "error")
+            return redirect(url_for("main.login"))
+
         animal_id = kwargs.get("animal_id")
 
         if not animal_id:
@@ -104,7 +142,13 @@ def acesso_atendimento(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         usuario = obter_usuario_logado()
-        atendimento_id = kwargs.get("id")
+        permitido, mensagem = _usuario_pode_usar_sistema(usuario)
+
+        if not permitido:
+            flash(mensagem, "error")
+            return redirect(url_for("main.login"))
+
+        atendimento_id = kwargs.get("atendimento_id") or kwargs.get("id")
 
         if not atendimento_id:
             flash("Atendimento não informado.", "error")

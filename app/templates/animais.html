@@ -4,154 +4,313 @@
 
 {% block content %}
 
-<h2 style="margin-bottom:18px;">Animais - {{ propriedade.nome }}</h2>
-
-<div class="animais-acoes-topo" style="
-  margin-bottom:18px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-">
-  <a class="btn"
-     href="{{ url_for('main.novo_animal', propriedade_id=propriedade.id) }}">
-    + Novo Animal
-  </a>
-
-  <a class="btn btn-secondary"
-     href="{{ url_for('main.propriedades') }}">
-    Voltar
-  </a>
-</div>
-
-{% if animais and animais|length > 0 %}
-
-  <div class="animais-busca" style="
-    margin-bottom:16px;
-    max-width:420px;
-  ">
-    <label for="buscaAnimal" style="display:block; margin-bottom:6px;">
-      Buscar animal
-    </label>
-
-    <input
-      type="text"
-      id="buscaAnimal"
-      placeholder="Buscar por código ou nome..."
-    >
-  </div>
-
-  <div class="table-wrap">
-    <table id="tabelaAnimais">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Nome</th>
-          <th>Raça</th>
-          <th>Sexo</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for a in animais %}
-          <tr>
-            <td>{{ a.codigo }}</td>
-            <td>{{ a.nome or "-" }}</td>
-            <td>{{ a.raca or "-" }}</td>
-            <td>{{ a.sexo or "-" }}</td>
-
-            <td>
-              <div class="acoes-tabela" style="
-                display:grid;
-                grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));
-                gap:8px;
-                min-width:320px;
-              ">
-                <a class="btn"
-                   href="{{ url_for('main.prontuario_animal', animal_id=a.id) }}">
-                  Prontuário
-                </a>
-
-                <a class="btn btn-secondary"
-                   href="{{ url_for('main.editar_animal', animal_id=a.id) }}">
-                  Editar
-                </a>
-
-                <a class="btn btn-danger"
-                   href="{{ url_for('main.excluir_animal', animal_id=a.id) }}"
-                   onclick="return confirm('Tem certeza que deseja excluir este animal?');">
-                  Excluir
-                </a>
-              </div>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-{% else %}
-
-  <div style="
-    padding:14px;
-    border:1px dashed #e5e7eb;
-    border-radius:12px;
-    color:#6b7280;
-    background:#ffffff;
-  ">
-    Nenhum animal cadastrado ainda.
-  </div>
-
-{% endif %}
-
 <style>
-@media (max-width: 768px) {
-
-  .animais-acoes-topo {
-    flex-direction: column;
-    align-items: stretch;
+  .animais-shell {
+    display: grid;
+    gap: 18px;
+    width: 100%;
   }
 
-  .animais-acoes-topo .btn {
-    width: 100%;
+  .animais-topo-card,
+  .animais-lista-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    padding: 18px;
+  }
+
+  .animais-topo-card h2 {
+    margin: 0 0 8px 0;
+    color: #1f2937;
+    line-height: 1.25;
+  }
+
+  .animais-topo-subtitulo {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  .animais-topo-meta {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .animais-meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #f3f7f6;
+    border: 1px solid #d9e2df;
+    color: #1f2937;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .animais-meta-tag strong {
+    color: #1f4f46;
+  }
+
+  .animais-acoes-topo {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
   .animais-busca {
-    max-width: 100%;
+    max-width: 460px;
+    margin-bottom: 14px;
+  }
+
+  .animais-busca label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .animais-busca input {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #cfd8d5;
+    background: #ffffff;
+    color: #1f2937;
+    font-size: 15px;
+  }
+
+  .animais-busca input:focus {
+    outline: none;
+    border-color: #2f855a;
+    box-shadow: 0 0 0 3px rgba(47, 133, 90, 0.12);
+  }
+
+  .animais-resumo {
+    margin-bottom: 12px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .animais-vazio {
+    padding: 16px;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+    color: #6b7280;
+    background: #ffffff;
+    line-height: 1.6;
   }
 
   .acoes-tabela {
-    grid-template-columns: 1fr !important;
-    min-width: unset !important;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    min-width: 320px;
   }
 
-  .acoes-tabela .btn {
-    width: 100%;
+  .animais-sem-resultado {
+    display: none;
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px dashed #d1d5db;
+    border-radius: 12px;
+    color: #6b7280;
+    background: #f9fafb;
+    line-height: 1.6;
   }
 
-  #tabelaAnimais th,
-  #tabelaAnimais td {
-    padding: 10px 8px;
-    font-size: 13px;
-  }
-}
+  @media (max-width: 768px) {
+    .animais-topo-card,
+    .animais-lista-card {
+      padding: 14px;
+      border-radius: 14px;
+    }
 
-@media (max-width: 480px) {
+    .animais-topo-card h2 {
+      font-size: 1.45rem;
+    }
 
-  #tabelaAnimais th,
-  #tabelaAnimais td {
-    font-size: 12px;
+    .animais-topo-meta {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .animais-meta-tag {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .animais-acoes-topo {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .animais-acoes-topo .btn {
+      width: 100%;
+    }
+
+    .animais-busca {
+      max-width: 100%;
+    }
+
+    .acoes-tabela {
+      grid-template-columns: 1fr !important;
+      min-width: unset !important;
+    }
+
+    .acoes-tabela .btn {
+      width: 100%;
+    }
+
+    #tabelaAnimais th,
+    #tabelaAnimais td {
+      padding: 10px 8px;
+      font-size: 13px;
+    }
   }
-}
+
+  @media (max-width: 480px) {
+    .animais-topo-card h2 {
+      font-size: 1.28rem;
+    }
+
+    #tabelaAnimais th,
+    #tabelaAnimais td {
+      font-size: 12px;
+    }
+  }
 </style>
+
+<div class="animais-shell">
+
+  <div class="animais-topo-card">
+    <h2>Animais - {{ propriedade.nome }}</h2>
+
+    <p class="animais-topo-subtitulo">
+      Gerencie os animais desta propriedade, acesse o prontuário individual e registre atendimentos clínicos com mais rapidez em campo.
+    </p>
+
+    <div class="animais-topo-meta">
+      <span class="animais-meta-tag">
+        Propriedade: <strong>{{ propriedade.nome }}</strong>
+      </span>
+
+      <span class="animais-meta-tag">
+        Produtor: <strong>{{ propriedade.produtor or "-" }}</strong>
+      </span>
+
+      <span class="animais-meta-tag">
+        Total de animais: <strong>{{ animais|length if animais else 0 }}</strong>
+      </span>
+    </div>
+
+    <div class="animais-acoes-topo">
+      <a class="btn"
+         href="{{ url_for('main.novo_animal', propriedade_id=propriedade.id) }}">
+        + Novo animal
+      </a>
+
+      <a class="btn btn-secondary"
+         href="{{ url_for('main.propriedades') }}">
+        Voltar
+      </a>
+    </div>
+  </div>
+
+  <div class="animais-lista-card">
+
+    {% if animais and animais|length > 0 %}
+
+      <div class="animais-busca">
+        <label for="buscaAnimal">Buscar animal</label>
+        <input
+          type="text"
+          id="buscaAnimal"
+          placeholder="Buscar por código ou nome..."
+        >
+      </div>
+
+      <div class="animais-resumo">
+        <strong>Animais cadastrados:</strong> {{ animais|length }}
+      </div>
+
+      <div class="table-wrap">
+        <table id="tabelaAnimais">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nome</th>
+              <th>Raça</th>
+              <th>Sexo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for a in animais %}
+              <tr>
+                <td>{{ a.codigo }}</td>
+                <td>{{ a.nome or "-" }}</td>
+                <td>{{ a.raca or "-" }}</td>
+                <td>{{ a.sexo or "-" }}</td>
+
+                <td>
+                  <div class="acoes-tabela">
+                    <a class="btn"
+                       href="{{ url_for('main.prontuario_animal', animal_id=a.id) }}">
+                      Prontuário
+                    </a>
+
+                    <a class="btn btn-secondary"
+                       href="{{ url_for('main.editar_animal', animal_id=a.id) }}">
+                      Editar
+                    </a>
+
+                    <a class="btn btn-danger"
+                       href="{{ url_for('main.excluir_animal', animal_id=a.id) }}"
+                       onclick="return confirm('Tem certeza que deseja excluir este animal?');">
+                      Excluir
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div id="semResultadoBusca" class="animais-sem-resultado">
+        Nenhum animal corresponde à busca informada.
+      </div>
+
+    {% else %}
+
+      <div class="animais-vazio">
+        Nenhum animal cadastrado ainda nesta propriedade.
+      </div>
+
+    {% endif %}
+
+  </div>
+
+</div>
 
 <script>
 const campoBuscaAnimal = document.getElementById("buscaAnimal");
+const avisoSemResultado = document.getElementById("semResultadoBusca");
 
 if (campoBuscaAnimal) {
   campoBuscaAnimal.addEventListener("keyup", function () {
-    const termo = this.value.toLowerCase();
+    const termo = this.value.toLowerCase().trim();
     const linhas = document.querySelectorAll("#tabelaAnimais tbody tr");
+    let visiveis = 0;
 
     linhas.forEach(function (linha) {
       const codigo = linha.children[0].textContent.toLowerCase();
@@ -159,10 +318,15 @@ if (campoBuscaAnimal) {
 
       if (codigo.includes(termo) || nome.includes(termo)) {
         linha.style.display = "";
+        visiveis += 1;
       } else {
         linha.style.display = "none";
       }
     });
+
+    if (avisoSemResultado) {
+      avisoSemResultado.style.display = visiveis === 0 ? "block" : "none";
+    }
   });
 }
 </script>

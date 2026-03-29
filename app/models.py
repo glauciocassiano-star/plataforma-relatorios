@@ -16,14 +16,25 @@ class Cliente(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(150), nullable=False)
-    documento = db.Column(db.String(30), nullable=True)
+    nome_fantasia = db.Column(db.String(150), nullable=True)
+    documento = db.Column(db.String(30), nullable=True, unique=True)
     email = db.Column(db.String(150), nullable=True)
     telefone = db.Column(db.String(30), nullable=True)
     ativo = db.Column(db.Boolean, default=True, nullable=False)
     criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    observacoes = db.Column(db.Text, nullable=True)
 
-    usuarios = db.relationship("Usuario", backref="cliente", lazy=True)
-    propriedades = db.relationship("Propriedade", backref="cliente", lazy=True)
+    usuarios = db.relationship(
+        "Usuario",
+        backref=db.backref("cliente", lazy=True),
+        lazy=True,
+    )
+
+    propriedades = db.relationship(
+        "Propriedade",
+        backref=db.backref("cliente", lazy=True),
+        lazy=True,
+    )
 
     def __repr__(self) -> str:
         return f"<Cliente {self.id} {self.nome}>"
@@ -53,8 +64,7 @@ class Usuario(db.Model):
     )
 
     # Quem criou o usuário:
-    # - útil para isolar técnicos e veterinários por admin_cliente
-    # - admin_master pode deixar como None, se desejar
+    # útil para auditoria e organização futura
     criado_por_id = db.Column(
         db.Integer,
         db.ForeignKey("usuarios.id", ondelete="SET NULL"),
@@ -127,8 +137,14 @@ class UsuarioPropriedade(db.Model):
         nullable=False,
     )
 
-    usuario = db.relationship("Usuario", backref="vinculos")
-    propriedade = db.relationship("Propriedade", backref="usuarios_vinculados")
+    usuario = db.relationship(
+        "Usuario",
+        backref=db.backref("vinculos", lazy=True, cascade="all, delete-orphan"),
+    )
+    propriedade = db.relationship(
+        "Propriedade",
+        backref=db.backref("usuarios_vinculados", lazy=True, cascade="all, delete-orphan"),
+    )
 
     __table_args__ = (
         db.UniqueConstraint("usuario_id", "propriedade_id", name="uq_usuario_propriedade"),
@@ -153,15 +169,17 @@ class Animal(db.Model):
     sexo = db.Column(db.String(20), nullable=True)
     perfil_genetico = db.Column(db.String(200), nullable=True)
 
-    # Mantido sem cascade automático por regra de negócio:
-    # a exclusão de propriedade segue controlada pela aplicação
+    # Mantido sem cascade automático por regra de negócio
     propriedade_id = db.Column(
         db.Integer,
         db.ForeignKey("propriedades.id"),
         nullable=False,
     )
 
-    propriedade = db.relationship("Propriedade", backref="animais")
+    propriedade = db.relationship(
+        "Propriedade",
+        backref=db.backref("animais", lazy=True),
+    )
 
     __table_args__ = (
         db.UniqueConstraint("propriedade_id", "codigo", name="uq_animais_propriedade_codigo"),
@@ -202,7 +220,10 @@ class CampoFormulario(db.Model):
     opcoes = db.Column(db.JSON, nullable=True)
     ordem = db.Column(db.Integer, default=0)
 
-    formulario = db.relationship("Formulario", backref="campos")
+    formulario = db.relationship(
+        "Formulario",
+        backref=db.backref("campos", lazy=True, cascade="all, delete-orphan"),
+    )
 
     __table_args__ = (
         db.UniqueConstraint("formulario_id", "nome_chave", name="uq_formulario_nome_chave"),
@@ -240,13 +261,22 @@ class Atendimento(db.Model):
     )
 
     data_atendimento = db.Column(db.Date, nullable=True)
-    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     bloqueado_em = db.Column(db.DateTime, nullable=True)
     dados = db.Column(db.JSON, nullable=False)
 
-    animal = db.relationship("Animal", backref="atendimentos")
-    tecnico = db.relationship("Usuario", backref="atendimentos_realizados")
-    formulario = db.relationship("Formulario", backref="atendimentos")
+    animal = db.relationship(
+        "Animal",
+        backref=db.backref("atendimentos", lazy=True),
+    )
+    tecnico = db.relationship(
+        "Usuario",
+        backref=db.backref("atendimentos_realizados", lazy=True),
+    )
+    formulario = db.relationship(
+        "Formulario",
+        backref=db.backref("atendimentos", lazy=True),
+    )
 
     def __repr__(self) -> str:
         return f"<Atendimento {self.id} animal={self.animal_id}>"
@@ -260,7 +290,7 @@ class Envio(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(100), unique=True, default=lambda: str(uuid.uuid4()))
-    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
 # =========================
@@ -298,11 +328,7 @@ class AtendimentoImagem(db.Model):
 
     atendimento = db.relationship(
         "Atendimento",
-        backref=db.backref(
-            "imagens",
-            lazy=True,
-            cascade="all, delete-orphan"
-        )
+        backref=db.backref("imagens", lazy=True, cascade="all, delete-orphan"),
     )
 
     def __repr__(self) -> str:
@@ -333,11 +359,7 @@ class Exame(db.Model):
 
     atendimento = db.relationship(
         "Atendimento",
-        backref=db.backref(
-            "exames",
-            lazy=True,
-            cascade="all, delete-orphan"
-        )
+        backref=db.backref("exames", lazy=True, cascade="all, delete-orphan"),
     )
 
     def __repr__(self) -> str:

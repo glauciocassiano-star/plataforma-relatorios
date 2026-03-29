@@ -5,23 +5,95 @@
 {% block content %}
 
 <style>
+  .animal-shell {
+    display: grid;
+    gap: 18px;
+    width: 100%;
+  }
+
+  .animal-topo-card,
+  .animal-form-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    padding: 18px;
+  }
+
+  .animal-topo-card h2 {
+    margin: 0 0 8px 0;
+    color: #1f2937;
+    line-height: 1.25;
+  }
+
+  .animal-topo-subtitulo {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  .animal-topo-meta {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .animal-meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #f3f7f6;
+    border: 1px solid #d9e2df;
+    color: #1f2937;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .animal-meta-tag strong {
+    color: #1f4f46;
+  }
+
   .animal-form-card {
     display: grid;
-    gap: 14px;
+    gap: 16px;
     max-width: 1020px;
     width: 100%;
     margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    background: #ffffff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
+  }
+
+  .bloco-formulario {
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fafafa;
+  }
+
+  .bloco-formulario-titulo {
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .form-grid-duplo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 14px;
   }
 
   .campo-grupo {
     display: grid;
     gap: 6px;
+  }
+
+  .campo-grupo label {
+    font-weight: 600;
+    color: #374151;
+    line-height: 1.4;
   }
 
   .campo-padrao {
@@ -42,6 +114,17 @@
     display: block;
   }
 
+  .form-help {
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .campo-obrigatorio {
+    color: #b91c1c;
+    font-weight: 700;
+  }
+
   .animal-form-acoes {
     display: flex;
     gap: 10px;
@@ -54,10 +137,48 @@
     min-height: 44px;
   }
 
+  .rodape-voltar {
+    margin-top: 4px;
+  }
+
+  .rodape-voltar a {
+    color: #1f8774;
+    font-weight: 600;
+  }
+
   @media (max-width: 768px) {
+    .animal-topo-card,
     .animal-form-card {
       padding: 14px;
-      max-width: 100%;
+      border-radius: 14px;
+    }
+
+    .animal-topo-card h2 {
+      font-size: 1.45rem;
+    }
+
+    .animal-topo-meta {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .animal-meta-tag {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .bloco-formulario {
+      padding: 12px;
+    }
+
+    .form-grid-duplo {
+      grid-template-columns: 1fr;
+    }
+
+    .campo-padrao {
+      min-height: 50px;
+      padding: 10px 12px;
+      font-size: 15px;
     }
 
     .animal-form-acoes {
@@ -70,103 +191,154 @@
       width: 100%;
     }
   }
+
+  @media (max-width: 480px) {
+    .animal-topo-card h2 {
+      font-size: 1.28rem;
+    }
+  }
 </style>
 
-<h2 style="margin-bottom:8px;">Editar Animal</h2>
+<div class="animal-shell">
 
-<p style="margin-bottom:16px; color:#6b7280; text-align:center;">
-  Propriedade: <strong>{{ propriedade.nome }}</strong>
-</p>
+  <div class="animal-topo-card">
+    <h2>Editar animal</h2>
 
-<form method="POST" class="animal-form-card">
-  <div class="campo-grupo">
-    <label for="codigo"><b>Código</b></label>
-    <input
-      class="campo-padrao"
-      type="text"
-      id="codigo"
-      name="codigo"
-      value="{{ animal.codigo }}"
-      required
-    >
+    <p class="animal-topo-subtitulo">
+      Atualize os dados cadastrais e mantenha o registro do animal consistente para o acompanhamento clínico, sanitário e epidemiológico.
+    </p>
+
+    <div class="animal-topo-meta">
+      <span class="animal-meta-tag">
+        Propriedade: <strong>{{ propriedade.nome }}</strong>
+      </span>
+
+      <span class="animal-meta-tag">
+        Código atual: <strong>{{ animal.codigo }}</strong>
+      </span>
+
+      <span class="animal-meta-tag">
+        Nome: <strong>{{ animal.nome or "-" }}</strong>
+      </span>
+    </div>
   </div>
 
-  <div class="campo-grupo">
-    <label for="nome"><b>Nome</b></label>
-    <input
-      class="campo-padrao"
-      type="text"
-      id="nome"
-      name="nome"
-      value="{{ animal.nome or '' }}"
-    >
-  </div>
+  <form method="POST" class="animal-form-card">
 
-  <div class="campo-grupo">
-    <label for="data_nascimento"><b>Data de nascimento</b></label>
-    <input
-      class="campo-padrao"
-      type="date"
-      id="data_nascimento"
-      name="data_nascimento"
-      value="{{ animal.data_nascimento.strftime('%Y-%m-%d') if animal.data_nascimento else '' }}"
-    >
-  </div>
+    <div class="bloco-formulario">
+      <h3 class="bloco-formulario-titulo">Identificação principal</h3>
 
-  <div class="campo-grupo">
-    <label for="especie"><b>Espécie</b></label>
-    <input
-      class="campo-padrao"
-      type="text"
-      id="especie"
-      name="especie"
-      value="{{ animal.especie or '' }}"
-    >
-  </div>
+      <div class="form-grid-duplo">
+        <div class="campo-grupo">
+          <label for="codigo">Código do animal <span class="campo-obrigatorio">*</span></label>
+          <input
+            class="campo-padrao"
+            type="text"
+            id="codigo"
+            name="codigo"
+            value="{{ animal.codigo }}"
+            required
+          >
+          <small class="form-help">
+            Mantenha um código único para esta propriedade.
+          </small>
+        </div>
 
-  <div class="campo-grupo">
-    <label for="raca"><b>Raça</b></label>
-    <input
-      class="campo-padrao"
-      type="text"
-      id="raca"
-      name="raca"
-      value="{{ animal.raca or '' }}"
-    >
-  </div>
+        <div class="campo-grupo">
+          <label for="especie">Espécie</label>
+          <select class="campo-padrao" id="especie" name="especie">
+            <option value="bovino" {% if animal.especie == "bovino" %}selected{% endif %}>Bovino</option>
+            <option value="equino" {% if animal.especie == "equino" %}selected{% endif %}>Equino</option>
+            <option value="ovino" {% if animal.especie == "ovino" %}selected{% endif %}>Ovino</option>
+            <option value="caprino" {% if animal.especie == "caprino" %}selected{% endif %}>Caprino</option>
+            <option value="suino" {% if animal.especie == "suino" %}selected{% endif %}>Suíno</option>
+            <option value="aves" {% if animal.especie == "aves" %}selected{% endif %}>Aves</option>
+            <option value="outros" {% if animal.especie == "outros" %}selected{% endif %}>Outros</option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-  <div class="campo-grupo">
-    <label for="sexo"><b>Sexo</b></label>
-    <input
-      class="campo-padrao"
-      type="text"
-      id="sexo"
-      name="sexo"
-      value="{{ animal.sexo or '' }}"
-    >
-  </div>
+    <div class="bloco-formulario">
+      <h3 class="bloco-formulario-titulo">Informações complementares</h3>
 
-  <div class="campo-grupo">
-    <label for="perfil_genetico"><b>Perfil genético</b></label>
-    <input
-      class="campo-padrao"
-      type="text"
-      id="perfil_genetico"
-      name="perfil_genetico"
-      value="{{ animal.perfil_genetico or '' }}"
-    >
-  </div>
+      <div class="form-grid-duplo">
+        <div class="campo-grupo">
+          <label for="nome">Nome</label>
+          <input
+            class="campo-padrao"
+            type="text"
+            id="nome"
+            name="nome"
+            value="{{ animal.nome or '' }}"
+          >
+        </div>
 
-  <div class="animal-form-acoes">
-    <button type="submit">Salvar alterações</button>
+        <div class="campo-grupo">
+          <label for="data_nascimento">Data de nascimento</label>
+          <input
+            class="campo-padrao"
+            type="date"
+            id="data_nascimento"
+            name="data_nascimento"
+            value="{{ animal.data_nascimento.strftime('%Y-%m-%d') if animal.data_nascimento else '' }}"
+          >
+        </div>
 
-    <a
-      class="btn btn-secondary"
-      href="{{ url_for('main.listar_animais', propriedade_id=propriedade.id) }}"
-    >
-      Cancelar
+        <div class="campo-grupo">
+          <label for="raca">Raça</label>
+          <input
+            class="campo-padrao"
+            type="text"
+            id="raca"
+            name="raca"
+            value="{{ animal.raca or '' }}"
+          >
+        </div>
+
+        <div class="campo-grupo">
+          <label for="sexo">Sexo</label>
+          <select class="campo-padrao" id="sexo" name="sexo">
+            <option value="" {% if not animal.sexo %}selected{% endif %}>Selecione</option>
+            <option value="M" {% if animal.sexo == "M" %}selected{% endif %}>Macho</option>
+            <option value="F" {% if animal.sexo == "F" %}selected{% endif %}>Fêmea</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="campo-grupo" style="margin-top: 14px;">
+        <label for="perfil_genetico">Perfil genético</label>
+        <input
+          class="campo-padrao"
+          type="text"
+          id="perfil_genetico"
+          name="perfil_genetico"
+          value="{{ animal.perfil_genetico or '' }}"
+        >
+        <small class="form-help">
+          Informação útil para análises futuras e associação com perfil clínico e epidemiológico.
+        </small>
+      </div>
+    </div>
+
+    <div class="animal-form-acoes">
+      <button type="submit">Salvar alterações</button>
+
+      <a
+        class="btn btn-secondary"
+        href="{{ url_for('main.listar_animais', propriedade_id=propriedade.id) }}"
+      >
+        Cancelar
+      </a>
+    </div>
+  </form>
+
+  <div class="rodape-voltar">
+    <a href="{{ url_for('main.listar_animais', propriedade_id=propriedade.id) }}">
+      ← Voltar
     </a>
   </div>
-</form>
+
+</div>
 
 {% endblock %}

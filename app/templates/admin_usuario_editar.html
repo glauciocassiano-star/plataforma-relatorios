@@ -241,8 +241,11 @@
         <select class="campo-padrao" id="perfil" name="perfil">
           <option value="tecnico" {% if usuario.perfil == "tecnico" %}selected{% endif %}>Técnico</option>
           <option value="veterinario" {% if usuario.perfil == "veterinario" %}selected{% endif %}>Veterinário</option>
-          <option value="admin_cliente" {% if usuario.perfil == "admin_cliente" %}selected{% endif %}>Administrador do cliente</option>
+
           {% if usuario_logado.perfil == "admin_master" %}
+            <option value="admin_cliente" {% if usuario.perfil == "admin_cliente" %}selected{% endif %}>
+              Administrador do cliente
+            </option>
             <option value="admin_master" {% if usuario.perfil == "admin_master" %}selected{% endif %}>
               Administrador principal
             </option>
