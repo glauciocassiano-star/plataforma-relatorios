@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VetData</title>
+  <title>Moovet</title>
   <style>
     :root {
       --cor-primaria: #1f8774;
@@ -122,13 +122,13 @@
     }
 
     .btn {
-      background: var(--cor-primaria);
+      background: linear-gradient(135deg, #1f4f46, #2f7d6c);
       color: #ffffff;
       box-shadow: 0 8px 20px rgba(31, 135, 116, 0.18);
     }
 
     .btn:hover {
-      background: var(--cor-primaria-escura);
+      background: linear-gradient(135deg, #173b35, #25695b);
     }
 
     .btn-outline {
@@ -142,7 +142,7 @@
     }
 
     .hero {
-      padding: 72px 0 52px 0;
+      padding: 72px 0 56px 0;
       background:
         radial-gradient(circle at top left, rgba(31,135,116,0.12), transparent 30%),
         radial-gradient(circle at top right, rgba(47,133,90,0.10), transparent 28%);
@@ -150,9 +150,13 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1.08fr 0.92fr;
       gap: 34px;
       align-items: center;
+    }
+
+    .hero-copy {
+      max-width: 560px;
     }
 
     .hero-badge {
@@ -180,7 +184,7 @@
       margin: 0;
       font-size: 18px;
       color: var(--cor-texto-suave);
-      max-width: 700px;
+      max-width: 560px;
     }
 
     .hero-actions {
@@ -193,16 +197,22 @@
     .hero-points {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 26px;
+      gap: 16px;
+      margin-top: 28px;
     }
 
     .hero-point {
       background: #ffffff;
       border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: 16px;
+      padding: 16px;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      transition: 0.2s ease;
+    }
+
+    .hero-point:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
     }
 
     .hero-point strong {
@@ -248,6 +258,12 @@
       background: #fafafa;
       border-radius: 16px;
       padding: 16px;
+      transition: 0.2s ease;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
     }
 
     .mini-card .label {
@@ -263,12 +279,13 @@
       font-size: 22px;
       font-weight: 700;
       color: var(--cor-texto);
+      line-height: 1.2;
     }
 
     .mini-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 16px;
     }
 
     .section {
@@ -311,6 +328,12 @@
       padding: 20px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
       min-width: 0;
+      transition: 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.07);
     }
 
     .card-icon {
@@ -456,6 +479,10 @@
         grid-template-columns: 1fr;
       }
 
+      .hero-copy {
+        max-width: 100%;
+      }
+
       .hero h1 {
         font-size: 40px;
       }
@@ -537,7 +564,7 @@
       <div class="brand">
         <div class="brand-logo">🐄</div>
         <div class="brand-text">
-          <strong>VetData</strong>
+          <strong>Moovet</strong>
           <span>Plataforma de gestão clínica e inteligência epidemiológica</span>
         </div>
       </div>
@@ -551,7 +578,7 @@
 
   <section class="hero">
     <div class="container hero-grid">
-      <div>
+      <div class="hero-copy">
         <div class="hero-badge">Plataforma veterinária para uso técnico em campo</div>
 
         <h1>
@@ -560,7 +587,7 @@
         </h1>
 
         <p>
-          O VetData organiza prontuários veterinários, atendimentos clínicos e indicadores epidemiológicos
+          O Moovet organiza prontuários veterinários, atendimentos clínicos e indicadores epidemiológicos
           em um único ambiente, apoiando decisões mais rápidas, seguras e estratégicas.
         </p>
 
@@ -642,7 +669,7 @@
         <h2>O problema não está apenas no registro. Está na falta de inteligência sobre os dados.</h2>
         <p>
           Registros dispersos, anotações manuais e dificuldade para acompanhar histórico clínico
-          reduzem a capacidade de resposta técnica e sanitária. O VetData organiza essa rotina
+          reduzem a capacidade de resposta técnica e sanitária. O Moovet organiza essa rotina
           e transforma informação em apoio real para decisão.
         </p>
       </div>
@@ -690,7 +717,7 @@
   <section class="section">
     <div class="container split">
       <div class="list-box">
-        <h3>O que o VetData ajuda a resolver</h3>
+        <h3>O que o Moovet ajuda a resolver</h3>
         <ul class="feature-list">
           <li><span>✓</span><div>Centralização do histórico clínico por animal e por propriedade.</div></li>
           <li><span>✓</span><div>Padronização da coleta de dados em campo com formulários estruturados.</div></li>
@@ -716,13 +743,13 @@
       <div class="cta-card">
         <h2>Leve mais organização, rastreabilidade e inteligência para a rotina veterinária.</h2>
         <p>
-          O VetData foi pensado para transformar dados clínicos em uma base sólida de acompanhamento,
+          O Moovet foi pensado para transformar dados clínicos em uma base sólida de acompanhamento,
           monitoramento sanitário e tomada de decisão.
         </p>
 
         <div class="cta-actions">
           <a class="btn" href="{{ url_for('main.login') }}">Acessar sistema</a>
-          <a class="btn-outline" href="mailto:contato@vetdata.com.br">Solicitar apresentação</a>
+          <a class="btn-outline" href="mailto:contato@moovet.com.br">Solicitar apresentação</a>
         </div>
       </div>
     </div>
@@ -730,7 +757,7 @@
 
   <footer class="footer">
     <div class="container footer-inner">
-      <div>VetData • Plataforma de gestão clínica e inteligência epidemiológica veterinária</div>
+      <div>Moovet • Plataforma de gestão clínica e inteligência epidemiológica veterinária</div>
       <div>Uso técnico, acadêmico e institucional</div>
     </div>
   </footer>

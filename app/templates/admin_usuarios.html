@@ -238,9 +238,18 @@
 
   .admin-tabela-acoes {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(110px, 1fr));
     gap: 8px;
-    min-width: 210px;
+    min-width: 230px;
+    align-items: stretch;
+  }
+
+  .admin-tabela-acoes .btn {
+    width: 100%;
+    min-height: 40px;
+    padding: 10px 12px;
+    text-align: center;
+    justify-content: center;
   }
 
   .admin-tabela-acoes .btn-danger {
