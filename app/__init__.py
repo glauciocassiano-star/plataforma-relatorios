@@ -14,11 +14,19 @@ def create_app():
     # CONFIGURAÇÕES BÁSICAS
     # ===============================
 
-    app.config["SECRET_KEY"] = "chave-super-secreta-123"
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key-local")
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
-        BASE_DIR, "..", "instance", "database.db"
-    )
+    database_url = os.getenv("DATABASE_URL")
+
+    if database_url:
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+            BASE_DIR, "..", "instance", "database.db"
+        )
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
