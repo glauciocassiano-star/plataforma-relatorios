@@ -7,7 +7,7 @@
     {% if config_sistema and config_sistema.nome_plataforma %}
       {{ config_sistema.nome_plataforma }}
     {% else %}
-      {% block title %}Sistema Veterinário{% endblock %}
+      {% block title %}Moovet{% endblock %}
     {% endif %}
   </title>
 
@@ -997,17 +997,17 @@
 
         <div class="brand-text">
           <h1>
-            {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Plataforma de Prontuário Veterinário" }}
+            {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }}
           </h1>
 
           <p>
-            {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else "Monitoramento clínico, epidemiológico e sanitário" }}
+            {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else "Gestão clínica, monitoramento sanitário e inteligência epidemiológica para propriedades rurais" }}
           </p>
         </div>
       </div>
 
       <div class="topbar-right">
-        Sistema técnico para propriedades rurais e vigilância veterinária
+        Plataforma técnica para rotina veterinária, gestão clínica e vigilância epidemiológica
       </div>
     </div>
   </header>
@@ -1139,7 +1139,7 @@
       <div>
         <h4>Sobre o sistema</h4>
         <p>
-          {{ config_sistema.rodape if config_sistema and config_sistema.rodape else "Plataforma voltada ao registro de prontuário veterinário, acompanhamento clínico e apoio à análise epidemiológica em propriedades rurais." }}
+          {{ config_sistema.rodape if config_sistema and config_sistema.rodape else "O Moovet é uma plataforma voltada ao registro de prontuário veterinário, acompanhamento clínico e apoio à análise epidemiológica em propriedades rurais." }}
         </p>
       </div>
 
@@ -1164,7 +1164,7 @@
     </div>
 
     <div class="footer-bottom">
-      {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Plataforma de Prontuário Veterinário" }} • Uso técnico, acadêmico e sanitário
+      {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }} • Uso técnico, acadêmico e sanitário
     </div>
   </footer>
 

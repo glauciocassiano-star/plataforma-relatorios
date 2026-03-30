@@ -319,11 +319,11 @@
         </div>
 
         <h2>
-          {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Plataforma de Prontuário Veterinário" }}
+          {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }}
         </h2>
 
         <p class="painel-banner-texto">
-          {{ config_sistema.texto_banner if config_sistema and config_sistema.texto_banner else "Sistema para acompanhamento clínico, registro de atendimentos, análise epidemiológica e apoio ao monitoramento sanitário em propriedades rurais." }}
+          {{ config_sistema.texto_banner if config_sistema and config_sistema.texto_banner else "Plataforma para acompanhamento clínico, registro de atendimentos, análise epidemiológica e apoio ao monitoramento sanitário em propriedades rurais." }}
         </p>
 
         {% if usuario_logado %}
