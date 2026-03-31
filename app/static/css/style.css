@@ -306,25 +306,31 @@ th {
 }
 
 /* =====================================
-   ADMIN - USUÁRIOS
+   ADMIN - USUÁRIOS (CORREÇÃO DEFINITIVA)
 ===================================== */
 
+.admin-tabela td:last-child {
+  width: 180px;
+}
+
+/* força layout vertical SEM interferência externa */
 .admin-tabela-acoes {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 150px;
-  width: 150px;
+  display: flex !important;
+  flex-direction: column !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+
+  width: 160px !important;
+  min-width: 160px !important;
 }
 
+/* garante que cada botão ocupe 100% */
+.admin-tabela-acoes a,
 .admin-tabela-acoes .btn {
-  width: 100%;
-  min-height: 40px;
-  padding: 10px 12px;
-  text-align: center;
-  justify-content: center;
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
 }
-
 /* =====================================
    ADMIN - EDITAR USUÁRIO
 ===================================== */
@@ -763,11 +769,11 @@ th {
 ===================================== */
 
 @media (max-width: 768px) {
-  .btn,
-  button,
-  input[type="submit"] {
-    min-height: 44px;
+  .admin-tabela-acoes {
+    width: 100% !important;
+    min-width: 140px !important;
   }
+
 
   .acoes-tabela {
     display: flex;
