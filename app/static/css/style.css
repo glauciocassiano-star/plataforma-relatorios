@@ -1,3 +1,207 @@
+/* =====================================
+   MOOVET - BASE GLOBAL
+===================================== */
+
+:root {
+  --cor-primaria: #1f8774;
+  --cor-primaria-escura: #1d4c44;
+  --cor-secundaria: #2f855a;
+  --cor-fundo: #f4f7f6;
+  --cor-card: #ffffff;
+  --cor-borda: #d9e2df;
+  --cor-texto: #1f2937;
+  --cor-texto-suave: #6b7280;
+  --cor-alerta: #bc4444;
+  --cor-sucesso: #18a44e;
+  --sombra-leve: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --sombra-media: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* =====================================
+   TIPOGRAFIA BASE
+===================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--cor-texto);
+  margin-top: 0;
+}
+
+p {
+  margin-top: 0;
+}
+
+/* =====================================
+   BOTÕES GLOBAIS
+===================================== */
+
+.btn,
+button,
+input[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 14px;
+  text-align: center;
+}
+
+.btn:hover,
+button:hover,
+input[type="submit"]:hover {
+  background: var(--cor-primaria-escura);
+}
+
+.btn.btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn.btn-secondary:hover {
+  background: #d1d5db;
+}
+
+.btn.btn-danger {
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+.btn.btn-danger:hover {
+  background: #991b1b;
+}
+
+/* =====================================
+   FORMULÁRIOS GLOBAIS
+===================================== */
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cfd8d5;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--cor-texto);
+  font-size: 14px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--cor-secundaria);
+  box-shadow: 0 0 0 3px rgba(47, 133, 90, 0.12);
+}
+
+label {
+  font-weight: 600;
+  color: var(--cor-texto);
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input[type="file"] {
+  padding: 8px;
+  border: 1px solid #cfd8d5;
+  border-radius: var(--radius-sm);
+  background: #f9fafb;
+  color: var(--cor-texto);
+  font-size: 14px;
+}
+
+small.form-help {
+  color: var(--cor-texto-suave);
+  line-height: 1.4;
+}
+
+/* =====================================
+   TABELAS GLOBAIS
+===================================== */
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  min-width: 640px;
+}
+
+th,
+td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+th {
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+/* =====================================
+   CARDS GENÉRICOS
+===================================== */
+
+.card {
+  background: var(--cor-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--sombra-leve);
+}
+
+/* =====================================
+   LOGIN
+===================================== */
+
 .login-page {
   min-height: 100vh;
   display: flex;
@@ -24,7 +228,7 @@
   border-radius: 16px;
   width: 100%;
   max-width: 360px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--sombra-media);
 }
 
 .login-box h2 {
@@ -74,58 +278,112 @@
   background: #173b35;
 }
 
-@media (max-width:768px){
+/* =====================================
+   AÇÕES DE TABELA
+===================================== */
 
-input,
-select,
-textarea{
-font-size:16px;
-padding:12px;
+.acoes-tabela {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-label{
-font-size:15px;
+.acoes-tabela .btn {
+  justify-content: center;
 }
 
+/* =====================================
+   HOME / CARDS DE RESUMO
+===================================== */
+
+.cards-home {
+  display: grid;
+  gap: 16px;
 }
 
-@media (max-width:768px){
-
-.acoes-tabela{
-display:flex;
-flex-direction:column;
-gap:8px;
+.card-home {
+  width: 100%;
 }
 
-.acoes-tabela .btn{
-width:100%;
+/* =====================================
+   ADMIN - USUÁRIOS
+===================================== */
+
+.admin-tabela-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 150px;
+  width: 150px;
 }
 
+.admin-tabela-acoes .btn {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  text-align: center;
+  justify-content: center;
 }
 
-@media (max-width:768px){
+/* =====================================
+   UTILITÁRIOS
+===================================== */
 
-.nav-link{
-font-size:15px;
-padding:12px;
+.erro {
+  color: var(--cor-alerta);
+  font-weight: 600;
 }
 
+/* =====================================
+   RESPONSIVO
+===================================== */
+
+@media (max-width: 768px) {
+  .btn,
+  button,
+  input[type="submit"] {
+    min-height: 44px;
+  }
+
+  .acoes-tabela {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .acoes-tabela .btn {
+    width: 100%;
+  }
+
+  .cards-home {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card-home {
+    width: 100%;
+  }
+
+  .admin-tabela-acoes {
+    width: 100%;
+    min-width: 140px;
+  }
+
+  table {
+    min-width: 560px;
+  }
+
+  th,
+  td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
 }
 
-/* =========================
-   AJUSTES MOBILE
-========================= */
-
-@media (max-width:768px){
-
-.cards-home{
-display:flex;
-flex-direction:column;
-gap:16px;
-}
-
-.card-home{
-width:100%;
-}
-
+@media (max-width: 480px) {
+  th,
+  td {
+    font-size: 12px;
+  }
 }
