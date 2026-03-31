@@ -1,198 +1,7 @@
 {% extends "base.html" %}
-
 {% block title %}Novo Animal{% endblock %}
 
 {% block content %}
-
-<style>
-  .animal-shell {
-    display: grid;
-    gap: 18px;
-    width: 100%;
-  }
-
-  .animal-topo-card,
-  .animal-form-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    padding: 18px;
-  }
-
-  .animal-topo-card h2 {
-    margin: 0 0 8px 0;
-    color: #1f2937;
-    line-height: 1.25;
-  }
-
-  .animal-topo-subtitulo {
-    margin: 0;
-    color: #6b7280;
-    line-height: 1.6;
-  }
-
-  .animal-topo-meta {
-    margin-top: 14px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .animal-meta-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: #f3f7f6;
-    border: 1px solid #d9e2df;
-    color: #1f2937;
-    font-size: 13px;
-    line-height: 1.2;
-  }
-
-  .animal-meta-tag strong {
-    color: #1f4f46;
-  }
-
-  .animal-form-card {
-    display: grid;
-    gap: 16px;
-    max-width: 1020px;
-    width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-
-  .bloco-formulario {
-    border: 1px solid #eef2f7;
-    border-radius: 12px;
-    padding: 16px;
-    background: #fafafa;
-  }
-
-  .bloco-formulario-titulo {
-    margin: 0 0 12px 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1f2937;
-  }
-
-  .form-grid-duplo {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(240px, 1fr));
-    gap: 14px;
-  }
-
-  .campo-grupo {
-    display: grid;
-    gap: 6px;
-  }
-
-  .campo-grupo label {
-    font-weight: 600;
-    color: #374151;
-    line-height: 1.4;
-  }
-
-  .campo-padrao {
-    min-height: 56px;
-    padding: 12px 14px;
-    border: 1px solid #cfd8d5;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #1f2937;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  input[type="date"].campo-padrao {
-    display: block;
-  }
-
-  .form-help {
-    color: #6b7280;
-    font-size: 13px;
-    line-height: 1.45;
-  }
-
-  .campo-obrigatorio {
-    color: #b91c1c;
-    font-weight: 700;
-  }
-
-  .animal-form-acoes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 6px;
-  }
-
-  .rodape-voltar {
-    margin-top: 4px;
-  }
-
-  .rodape-voltar a {
-    color: #1f8774;
-    font-weight: 600;
-  }
-
-  @media (max-width: 768px) {
-    .animal-topo-card,
-    .animal-form-card {
-      padding: 14px;
-      border-radius: 14px;
-    }
-
-    .animal-topo-card h2 {
-      font-size: 1.45rem;
-    }
-
-    .animal-topo-meta {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .animal-meta-tag {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    .bloco-formulario {
-      padding: 12px;
-    }
-
-    .form-grid-duplo {
-      grid-template-columns: 1fr;
-    }
-
-    .campo-padrao {
-      min-height: 50px;
-      padding: 10px 12px;
-      font-size: 15px;
-    }
-
-    .animal-form-acoes {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .animal-form-acoes .btn,
-    .animal-form-acoes button {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .animal-topo-card h2 {
-      font-size: 1.28rem;
-    }
-  }
-</style>
 
 <div class="animal-shell">
 
@@ -214,35 +23,21 @@
     </div>
   </div>
 
-  <form
-    method="POST"
-    id="formAnimal"
-    class="animal-form-card"
-  >
+  <form method="POST" id="formAnimal" class="animal-form-card">
 
     <div class="bloco-formulario">
       <h3 class="bloco-formulario-titulo">Identificação principal</h3>
 
       <div class="form-grid-duplo">
         <div class="campo-grupo">
-          <label for="codigo">Código do animal <span class="campo-obrigatorio">*</span></label>
-          <input
-            class="campo-padrao"
-            type="text"
-            name="codigo"
-            id="codigo"
-            placeholder="Ex: 00123"
-            required
-          />
-          <small class="form-help">
-            Utilize um código único para facilitar identificação, manejo e histórico clínico.
-          </small>
+          <label>Código *</label>
+          <input class="campo-padrao" type="text" name="codigo" required />
         </div>
 
         <div class="campo-grupo">
-          <label for="especie">Espécie <span class="campo-obrigatorio">*</span></label>
-          <select class="campo-padrao" name="especie" id="especie" required>
-            <option value="bovino" selected>Bovino</option>
+          <label>Espécie *</label>
+          <select class="campo-padrao" name="especie" required>
+            <option value="bovino">Bovino</option>
             <option value="equino">Equino</option>
             <option value="ovino">Ovino</option>
             <option value="caprino">Caprino</option>
@@ -258,102 +53,45 @@
       <h3 class="bloco-formulario-titulo">Informações complementares</h3>
 
       <div class="form-grid-duplo">
-        <div class="campo-grupo">
-          <label for="nome">Nome</label>
-          <input
-            class="campo-padrao"
-            type="text"
-            name="nome"
-            id="nome"
-            placeholder="Nome (opcional)"
-          />
-        </div>
+        <input class="campo-padrao" type="text" name="nome" placeholder="Nome" />
+        <input class="campo-padrao" type="date" name="data_nascimento" />
+        <input class="campo-padrao" type="text" name="raca" placeholder="Raça" />
 
-        <div class="campo-grupo">
-          <label for="data_nascimento">Data de nascimento</label>
-          <input
-            class="campo-padrao"
-            type="date"
-            name="data_nascimento"
-            id="data_nascimento"
-          />
-        </div>
-
-        <div class="campo-grupo">
-          <label for="raca">Raça</label>
-          <input
-            class="campo-padrao"
-            type="text"
-            name="raca"
-            id="raca"
-            placeholder="Raça (opcional)"
-          />
-        </div>
-
-        <div class="campo-grupo">
-          <label for="sexo">Sexo</label>
-          <select class="campo-padrao" name="sexo" id="sexo">
-            <option value="">Selecione (opcional)</option>
-            <option value="M">Macho</option>
-            <option value="F">Fêmea</option>
-          </select>
-        </div>
+        <select class="campo-padrao" name="sexo">
+          <option value="">Sexo</option>
+          <option value="M">Macho</option>
+          <option value="F">Fêmea</option>
+        </select>
       </div>
 
-      <div class="campo-grupo" style="margin-top: 14px;">
-        <label for="perfil_genetico">Perfil genético</label>
-        <input
-          class="campo-padrao"
-          type="text"
-          name="perfil_genetico"
-          id="perfil_genetico"
-          placeholder="Perfil genético (opcional)"
-        />
-        <small class="form-help">
-          Campo útil para análises futuras e associação entre perfil genético e ocorrência de casos.
-        </small>
-      </div>
+      <input class="campo-padrao" type="text" name="perfil_genetico" placeholder="Perfil genético" />
     </div>
 
     <div class="animal-form-acoes">
       <button type="submit">Salvar</button>
-
       <button type="button" onclick="salvarOffline()" class="btn btn-secondary">
         💾 Salvar offline
       </button>
     </div>
-  </form>
 
-  <div class="rodape-voltar">
-    <a href="{{ url_for('main.listar_animais', propriedade_id=propriedade.id) }}">
-      ← Voltar
-    </a>
-  </div>
+  </form>
 
 </div>
 
 <script>
-  function salvarOffline() {
-    const form = document.getElementById("formAnimal");
-    const formData = new FormData(form);
-    const dados = {};
+function salvarOffline() {
+  const form = document.getElementById("formAnimal");
+  const dados = Object.fromEntries(new FormData(form));
 
-    formData.forEach((value, key) => {
-      dados[key] = value;
-    });
+  dados._offline_id = crypto.randomUUID();
+  dados._tipo = "animal";
 
-    dados._offline_id = crypto.randomUUID();
-    dados._salvo_em = new Date().toISOString();
-    dados._tipo = "animal";
-    dados._propriedade_id = "{{ propriedade.id }}";
+  let lista = JSON.parse(localStorage.getItem("animais_offline") || "[]");
+  lista.push(dados);
 
-    let lista = JSON.parse(localStorage.getItem("animais_offline") || "[]");
-    lista.push(dados);
-
-    localStorage.setItem("animais_offline", JSON.stringify(lista));
-
-    alert("Animal salvo offline com sucesso!");
-  }
+  localStorage.setItem("animais_offline", JSON.stringify(lista));
+  alert("Animal salvo offline!");
+}
 </script>
 
 {% endblock %}

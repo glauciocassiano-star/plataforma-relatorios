@@ -3,120 +3,6 @@
 
 {% block content %}
 
-<style>
-  .admin-editar-usuario-layout {
-    display: grid;
-    gap: 20px;
-    margin-top: 14px;
-  }
-
-  .admin-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 22px;
-    background: #ffffff;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-    min-width: 0;
-  }
-
-  .admin-card-form {
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
-  }
-
-  .admin-titulo-secao {
-    margin: 0 0 18px 0;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1f2937;
-  }
-
-  .admin-form-card {
-    display: grid;
-    gap: 16px;
-    width: 100%;
-  }
-
-  .admin-form-grupo {
-    display: grid;
-    gap: 6px;
-  }
-
-  .admin-form-grupo label {
-    font-weight: 600;
-    color: #374151;
-  }
-
-  .campo-padrao {
-    min-height: 52px;
-    padding: 12px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #1f2937;
-    font-size: 15px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .campo-padrao:focus {
-    outline: none;
-    border-color: #1f4f46;
-    box-shadow: 0 0 0 3px rgba(31,79,70,0.12);
-  }
-
-  .admin-form-ajuda {
-    color: #6b7280;
-    font-size: 13px;
-  }
-
-  .admin-senha-linha {
-    display: grid;
-    gap: 10px;
-  }
-
-  .admin-mostrar-senha {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #374151;
-  }
-
-  .admin-form-acoes {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .admin-form-acoes button {
-    flex: 1;
-  }
-
-  .admin-form-acoes .btn {
-    flex: 1;
-    text-align: center;
-  }
-
-  @media (max-width: 768px) {
-
-    .admin-card {
-      padding: 16px;
-    }
-
-    .admin-form-acoes {
-      flex-direction: column;
-    }
-
-    .admin-form-acoes button,
-    .admin-form-acoes .btn {
-      width: 100%;
-    }
-  }
-</style>
-
 <h2>Editar Usuário</h2>
 
 <div class="admin-editar-usuario-layout">
@@ -147,6 +33,7 @@
           </option>
           {% endfor %}
         </select>
+
         <small class="admin-form-ajuda">
           Alterar o cliente remove vínculos de propriedades por segurança.
         </small>
@@ -178,10 +65,16 @@
 
       <div class="admin-form-grupo">
         <label for="perfil">Perfil *</label>
+
         <select class="campo-padrao" id="perfil" name="perfil">
 
-          <option value="tecnico" {% if usuario.perfil == "tecnico" %}selected{% endif %}>Técnico</option>
-          <option value="veterinario" {% if usuario.perfil == "veterinario" %}selected{% endif %}>Veterinário</option>
+          <option value="tecnico" {% if usuario.perfil == "tecnico" %}selected{% endif %}>
+            Técnico
+          </option>
+
+          <option value="veterinario" {% if usuario.perfil == "veterinario" %}selected{% endif %}>
+            Veterinário
+          </option>
 
           {% if usuario_logado.perfil == "admin_master" %}
           <option value="admin_cliente" {% if usuario.perfil == "admin_cliente" %}selected{% endif %}>
@@ -198,6 +91,7 @@
 
       <div class="admin-form-acoes">
         <button type="submit">Salvar alterações</button>
+
         <a class="btn btn-secondary" href="{{ url_for('main.admin_usuarios') }}">
           Cancelar
         </a>

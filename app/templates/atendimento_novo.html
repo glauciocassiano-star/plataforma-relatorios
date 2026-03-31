@@ -144,6 +144,26 @@
     font-weight: 600;
   }
 
+  .formulario-info {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .formulario-vazio {
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px dashed #d1d5db;
+    background: #ffffff;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
   @media (max-width: 1020px) {
     .atendimento-form-card {
       max-width: 100%;
@@ -191,12 +211,66 @@
     {% if modo_edicao %}
       Atualize os dados clínicos e epidemiológicos do atendimento deste animal.
     {% else %}
-      Preencha os campos abaixo para registrar um novo atendimento clínico.
+      Escolha o formulário adequado ao perfil e preencha os dados clínicos do atendimento.
     {% endif %}
   </p>
 </div>
 
+<form method="GET" class="atendimento-form-card" style="margin-bottom: 14px;">
+  <div class="bloco-formulario">
+    <h3 class="bloco-formulario-titulo">Seleção de formulário</h3>
+
+    <div class="form-field">
+      <label for="formulario_id">
+        Formulário disponível para o perfil
+        {% if perfil_efetivo %}<span class="campo-obrigatorio">*</span>{% endif %}
+      </label>
+
+      <select
+        class="campo-padrao"
+        name="formulario_id"
+        id="formulario_id"
+        onchange="this.form.submit()"
+      >
+        <option value="">Selecione um formulário</option>
+        {% for f in formularios_disponiveis %}
+          <option
+            value="{{ f.id }}"
+            {% if formulario and formulario.id == f.id %}selected{% endif %}
+          >
+            {{ f.nome }} — {{ f.perfil_alvo|capitalize }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <small class="form-help">
+        Apenas formulários ativos compatíveis com o perfil atual são exibidos.
+      </small>
+    </div>
+
+    {% if formulario %}
+      <div class="formulario-info">
+        <strong>Formulário selecionado:</strong> {{ formulario.nome }}
+        <br>
+        <strong>Perfil-alvo:</strong> {{ formulario.perfil_alvo }}
+      </div>
+    {% elif formularios_disponiveis %}
+      <div class="formulario-info">
+        Selecione um formulário para carregar os campos clínicos.
+      </div>
+    {% else %}
+      <div class="formulario-vazio">
+        Nenhum formulário ativo compatível com este perfil foi encontrado.
+      </div>
+    {% endif %}
+  </div>
+</form>
+
 <form method="POST" enctype="multipart/form-data" class="atendimento-form-card" id="formAtendimento">
+
+  {% if formulario %}
+    <input type="hidden" name="formulario_id" value="{{ formulario.id }}">
+  {% endif %}
 
   <div class="bloco-formulario">
     <h3 class="bloco-formulario-titulo">Dados principais</h3>
@@ -216,7 +290,7 @@
     </div>
   </div>
 
-  {% if campos %}
+  {% if formulario and campos %}
     <div class="bloco-formulario">
       <h3 class="bloco-formulario-titulo">Formulário clínico</h3>
 
@@ -309,6 +383,12 @@
         {% endif %}
       {% endfor %}
     </div>
+  {% elif formularios_disponiveis %}
+    <div class="bloco-formulario">
+      <div class="formulario-vazio">
+        Selecione um formulário acima para exibir os campos clínicos deste atendimento.
+      </div>
+    </div>
   {% endif %}
 
   <div class="bloco-formulario">
@@ -330,7 +410,7 @@
   </div>
 
   <div class="atendimento-form-acoes">
-    <button type="submit">
+    <button type="submit" {% if not formulario %}disabled{% endif %}>
       {% if modo_edicao %}
         Salvar alterações
       {% else %}
@@ -338,7 +418,7 @@
       {% endif %}
     </button>
 
-    <button type="button" onclick="salvarOffline()" class="btn btn-secondary">
+    <button type="button" onclick="salvarOffline()" class="btn btn-secondary" {% if not formulario %}disabled{% endif %}>
       💾 Salvar offline
     </button>
   </div>

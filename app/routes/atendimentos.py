@@ -57,7 +57,6 @@ def selecionar_atendimento():
         animais_info=animais_info,
     )
 
-
 @main.route("/animais/<int:animal_id>/atendimentos/novo", methods=["GET", "POST"])
 @login_obrigatorio
 @acesso_animal
@@ -65,7 +64,7 @@ def novo_atendimento(animal_id):
     usuario = obter_usuario_logado()
     animal = Animal.query.get_or_404(animal_id)
 
-    perfil = (usuario.perfil or "tecnico").strip()
+    perfil = (usuario.perfil or "tecnico").strip().lower()
 
     if perfil == "admin_master":
         perfil_simulado = (request.args.get("perfil") or "veterinario").strip().lower()
@@ -73,18 +72,35 @@ def novo_atendimento(animal_id):
             perfil_simulado = "veterinario"
         perfil = perfil_simulado
 
-    formulario = (
-        Formulario.query.filter(
+    formularios_disponiveis = (
+        Formulario.query
+        .filter(
             Formulario.ativo.is_(True),
             Formulario.perfil_alvo.in_([perfil, "ambos"])
         )
-        .order_by(Formulario.id.desc())
-        .first()
+        .order_by(Formulario.nome.asc())
+        .all()
     )
+
+    formulario_id = request.values.get("formulario_id", type=int)
+
+    formulario = None
+    if formulario_id:
+        formulario = next(
+            (f for f in formularios_disponiveis if f.id == formulario_id),
+            None
+        )
+
+    if not formulario and formularios_disponiveis:
+        formulario = formularios_disponiveis[0]
 
     campos = sorted(formulario.campos, key=lambda c: (c.ordem or 0, c.id)) if formulario else []
 
     if request.method == "POST":
+        if not formulario:
+            flash("Selecione um formulário válido para continuar.", "error")
+            return redirect(request.url)
+
         dados = {}
         erro = None
 
@@ -154,7 +170,7 @@ def novo_atendimento(animal_id):
         atendimento = Atendimento(
             animal_id=animal.id,
             tecnico_id=usuario.id,
-            formulario_id=formulario.id if formulario else None,
+            formulario_id=formulario.id,
             dados=dados,
             data_atendimento=data_atendimento,
         )
@@ -181,10 +197,10 @@ def novo_atendimento(animal_id):
         "atendimento_novo.html",
         animal=animal,
         formulario=formulario,
+        formularios_disponiveis=formularios_disponiveis,
         campos=campos,
         perfil_efetivo=perfil,
     )
-
 
 @main.route("/atendimentos/<int:id>/editar", methods=["GET", "POST"])
 @login_obrigatorio
