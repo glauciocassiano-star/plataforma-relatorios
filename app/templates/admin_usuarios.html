@@ -237,11 +237,11 @@
   }
 
   .admin-tabela-acoes {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(110px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    min-width: 230px;
-    align-items: stretch;
+    min-width: 150px;
+    width: 150px;
   }
 
   .admin-tabela-acoes .btn {
@@ -250,10 +250,6 @@
     padding: 10px 12px;
     text-align: center;
     justify-content: center;
-  }
-
-  .admin-tabela-acoes .btn-danger {
-    grid-column: 1 / -1;
   }
 
   .admin-vazio {
@@ -326,12 +322,8 @@
     }
 
     .admin-tabela-acoes {
-      grid-template-columns: 1fr;
+      width: 100%;
       min-width: 140px;
-    }
-
-    .admin-tabela-acoes .btn-danger {
-      grid-column: auto;
     }
   }
 
@@ -596,3 +588,31 @@
 </script>
 
 {% endblock %}
+
+/* =========================
+   ADMIN - USUÁRIOS
+========================= */
+
+.admin-tabela-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 150px;
+  width: 150px;
+}
+
+.admin-tabela-acoes .btn {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  text-align: center;
+  justify-content: center;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .admin-tabela-acoes {
+    width: 100%;
+    min-width: 140px;
+  }
+}
