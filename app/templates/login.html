@@ -15,17 +15,17 @@
       --cor-primaria-escura: #173b35;
       --cor-secundaria: #e8f3f0;
       --cor-fundo: #f4f7f6;
-      --cor-card: rgba(255, 255, 255, 0.92);
-      --cor-borda: #d9e2df;
+      --cor-card: rgba(31, 79, 70, 0.85);
+      --cor-borda: rgba(255, 255, 255, 0.08);
       --cor-texto: #1f2937;
       --cor-texto-suave: #6b7280;
-      --cor-erro-fundo: #fef2f2;
-      --cor-erro-borda: #fecaca;
-      --cor-erro-texto: #b91c1c;
-      --cor-sucesso-fundo: #ecfdf3;
-      --cor-sucesso-borda: #bbf7d0;
-      --cor-sucesso-texto: #166534;
-      --sombra: 0 16px 40px rgba(18, 38, 33, 0.12);
+      --cor-erro-fundo: rgba(127, 29, 29, 0.22);
+      --cor-erro-borda: rgba(254, 202, 202, 0.28);
+      --cor-erro-texto: #fecaca;
+      --cor-sucesso-fundo: rgba(20, 83, 45, 0.24);
+      --cor-sucesso-borda: rgba(187, 247, 208, 0.22);
+      --cor-sucesso-texto: #bbf7d0;
+      --sombra: 0 16px 40px rgba(18, 38, 33, 0.18);
     }
 
     * {
@@ -104,6 +104,7 @@
       line-height: 1;
       letter-spacing: -0.03em;
       margin: 0 0 16px 0;
+      color: #ffffff;
     }
 
     .login-brand h1 {
@@ -112,6 +113,7 @@
       line-height: 1.1;
       font-weight: 700;
       letter-spacing: -0.02em;
+      color: #ffffff;
     }
 
     .login-brand p {
@@ -154,11 +156,12 @@
       width: 100%;
       max-width: 460px;
       background: var(--cor-card);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(217, 226, 223, 0.9);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--cor-borda);
       border-radius: 24px;
       box-shadow: var(--sombra);
       padding: 34px 28px 26px 28px;
+      color: #ffffff;
     }
 
     .login-topo {
@@ -171,14 +174,14 @@
       font-weight: 700;
       text-align: center;
       margin-bottom: 8px;
-      color: var(--cor-primaria);
+      color: #ffffff;
       letter-spacing: -0.02em;
     }
 
     .login-subtitulo {
       font-size: 14px;
       text-align: center;
-      color: var(--cor-texto-suave);
+      color: rgba(255, 255, 255, 0.78);
       margin-bottom: 0;
       line-height: 1.6;
     }
@@ -210,9 +213,9 @@
     }
 
     .login-flash.info {
-      background: #eff6ff;
-      border-color: #bfdbfe;
-      color: #1d4ed8;
+      background: rgba(29, 78, 216, 0.18);
+      border-color: rgba(191, 219, 254, 0.24);
+      color: #dbeafe;
     }
 
     .login-box form {
@@ -224,7 +227,7 @@
       font-size: 13px;
       font-weight: 600;
       margin-bottom: 6px;
-      color: #374151;
+      color: rgba(255, 255, 255, 0.86);
     }
 
     .login-box input {
@@ -232,18 +235,18 @@
       min-height: 52px;
       padding: 12px 14px;
       border-radius: 12px;
-      border: 1px solid #d1d5db;
+      border: 1px solid rgba(209, 213, 219, 0.9);
       margin-bottom: 16px;
       font-size: 15px;
       background: #ffffff;
-      color: var(--cor-texto);
+      color: #1f2937;
       transition: 0.2s ease;
     }
 
     .login-box input:focus {
       outline: none;
       border-color: var(--cor-primaria);
-      box-shadow: 0 0 0 4px rgba(31, 79, 70, 0.12);
+      box-shadow: 0 0 0 4px rgba(31, 79, 70, 0.18);
     }
 
     .login-box button {
@@ -252,7 +255,7 @@
       padding: 12px 16px;
       border: none;
       border-radius: 12px;
-      background: var(--cor-primaria);
+      background: #245f54;
       color: white;
       font-weight: 700;
       font-size: 15px;
@@ -261,7 +264,7 @@
     }
 
     .login-box button:hover {
-      background: var(--cor-primaria-escura);
+      background: #1b4a41;
       transform: translateY(-1px);
     }
 
@@ -273,14 +276,14 @@
       margin-top: 14px;
       font-size: 13px;
       line-height: 1.6;
-      color: var(--cor-texto-suave);
+      color: rgba(255, 255, 255, 0.72);
       text-align: center;
     }
 
     .login-footer {
       text-align: center;
       font-size: 12px;
-      color: #9ca3af;
+      color: rgba(255, 255, 255, 0.6);
       margin-top: 20px;
       line-height: 1.5;
     }
@@ -462,7 +465,7 @@
       </div>
 
       <div class="login-footer">
-        Sistema técnico para propriedades rurais • Mooo
+        Sistema técnico para propriedades rurais • Moovet
       </div>
 
     </div>
