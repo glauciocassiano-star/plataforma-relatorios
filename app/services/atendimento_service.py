@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 
 from .. import db
@@ -6,28 +8,79 @@ from ..models import AtendimentoImagem
 
 
 def processar_dados_formulario(campos, form):
+    """
+    Processa e valida os dados dinâmicos do formulário.
+    Compatível com:
+    - text
+    - textarea
+    - number
+    - checkbox (booleano ou múltipla escolha)
+    - select
+    - date
+    - datetime
+    """
     dados = {}
 
     for c in campos:
+        valor = None
+
         if c.tipo == "checkbox":
-            valor = True if form.get(c.nome_chave) else False
+            # Se houver opções, tratamos como múltipla escolha
+            if c.opcoes:
+                valor = form.getlist(c.nome_chave)
+                valor = [v.strip() for v in valor if v and v.strip()]
+                if not valor:
+                    valor = []
+            else:
+                # checkbox simples (true/false)
+                valor = True if form.get(c.nome_chave) else False
+
+        elif c.tipo == "number":
+            bruto = (form.get(c.nome_chave) or "").strip()
+            if bruto == "":
+                valor = None
+            else:
+                try:
+                    valor = float(bruto) if "." in bruto else int(bruto)
+                except ValueError:
+                    raise ValueError(f"O campo '{c.rotulo}' deve ser numérico.")
+
+        elif c.tipo == "date":
+            bruto = (form.get(c.nome_chave) or "").strip()
+            if bruto == "":
+                valor = None
+            else:
+                try:
+                    datetime.strptime(bruto, "%Y-%m-%d")
+                    valor = bruto
+                except ValueError:
+                    raise ValueError(f"O campo '{c.rotulo}' deve ser uma data válida.")
+
+        elif c.tipo == "datetime":
+            bruto = (form.get(c.nome_chave) or "").strip()
+            if bruto == "":
+                valor = None
+            else:
+                try:
+                    datetime.strptime(bruto, "%Y-%m-%dT%H:%M")
+                    valor = bruto
+                except ValueError:
+                    raise ValueError(f"O campo '{c.rotulo}' deve ser uma data/hora válida.")
+
         else:
             valor = (form.get(c.nome_chave) or "").strip()
+            if valor == "":
+                valor = None
 
-        if c.obrigatorio and (valor == "" or valor is False):
-            raise ValueError(f"O campo '{c.rotulo}' é obrigatório.")
-
-        if c.tipo == "number" and valor != "":
-            try:
-                valor = float(valor) if "." in str(valor) else int(valor)
-            except ValueError:
-                raise ValueError(f"'{c.rotulo}' deve ser numérico.")
-
-        if c.tipo == "date" and valor != "":
-            try:
-                datetime.strptime(valor, "%Y-%m-%d")
-            except ValueError:
-                raise ValueError(f"'{c.rotulo}' deve ser uma data válida.")
+        if c.obrigatorio:
+            vazio = (
+                valor is None
+                or valor == ""
+                or (c.tipo == "checkbox" and valor is False)
+                or (isinstance(valor, list) and len(valor) == 0)
+            )
+            if vazio:
+                raise ValueError(f"O campo '{c.rotulo}' é obrigatório.")
 
         dados[c.nome_chave] = valor
 
@@ -35,6 +88,9 @@ def processar_dados_formulario(campos, form):
 
 
 def processar_data_atendimento(form):
+    """
+    Processa a data principal do atendimento.
+    """
     data_atendimento_str = (form.get("data_atendimento") or "").strip()
 
     if not data_atendimento_str:
@@ -47,6 +103,9 @@ def processar_data_atendimento(form):
 
 
 def processar_imagens_atendimento(arquivos_imagens, atendimento_id):
+    """
+    Processa upload das imagens vinculadas ao atendimento.
+    """
     erros = []
 
     for arquivo in arquivos_imagens:

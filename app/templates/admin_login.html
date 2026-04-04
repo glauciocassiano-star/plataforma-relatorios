@@ -1,19 +1,52 @@
 {% extends "base.html" %}
 
-{% block title %}Login Admin{% endblock %}
+{% block title %}Login Administrativo{% endblock %}
 
 {% block content %}
 
-<h2>Login Administrativo</h2>
+<div class="admin-login-shell">
 
-<form method="POST">
-    <label>Usuário:</label><br>
-    <input type="text" name="username"><br><br>
+  <div class="admin-login-card">
 
-    <label>Senha:</label><br>
-    <input type="password" name="senha"><br><br>
+    <div class="admin-login-topo">
+      <h2 class="admin-login-titulo">Acesso administrativo</h2>
+      <p class="admin-login-subtitulo">
+        Utilize suas credenciais para acessar o painel administrativo do sistema.
+      </p>
+    </div>
 
-    <button type="submit">Entrar</button>
-</form>
+    <form method="POST" class="admin-login-form">
+
+      <div class="admin-login-grupo">
+        <label for="username">Usuário</label>
+        <input
+          class="campo-padrao"
+          type="text"
+          id="username"
+          name="username"
+          required
+        >
+      </div>
+
+      <div class="admin-login-grupo">
+        <label for="senha">Senha</label>
+        <input
+          class="campo-padrao"
+          type="password"
+          id="senha"
+          name="senha"
+          required
+        >
+      </div>
+
+      <div class="admin-login-acoes">
+        <button type="submit">Entrar</button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
 
 {% endblock %}

@@ -4,41 +4,67 @@
 
 {% block content %}
 
-<h2>Painel Administrativo - Envios</h2>
+<div class="envios-admin-shell">
 
-<table border="1" width="100%" cellpadding="6" cellspacing="0">
-    <tr>
-        <th>Destinatário</th>
-        <th>Lote</th>
-        <th>Enviado em</th>
-        <th>Pode editar até</th>
-        <th>Status</th>
-        <th>Ação</th>
-    </tr>
+  <div class="envios-admin-topo">
+    <h2 class="envios-admin-titulo">Painel de envios</h2>
+    <p class="envios-admin-subtitulo">
+      Acompanhe os envios realizados, prazos de edição e status dos relatórios vinculados aos destinatários.
+    </p>
+  </div>
 
-    {% for envio in envios %}
-    <tr>
-        <td>{{ envio.destinatario.nome }}</td>
-        <td>{{ envio.lote.nome_lote }}</td>
-        <td>{{ envio.enviado_em }}</td>
-        <td>{{ envio.pode_editar_ate }}</td>
+  <div class="envios-admin-card">
 
-        <td>
-            {% if agora > envio.pode_editar_ate %}
-                🔴 Expirado
-            {% else %}
-                🟢 Ativo
-            {% endif %}
-        </td>
+    {% if envios %}
+      <div class="table-wrap">
+        <table class="envios-admin-tabela">
+          <thead>
+            <tr>
+              <th>Destinatário</th>
+              <th>Lote</th>
+              <th>Enviado em</th>
+              <th>Editar até</th>
+              <th>Status</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
 
-        <td>
-            <a href="{{ url_for('main.relatorio', token=envio.token) }}">
-                Abrir
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
+          <tbody>
+            {% for envio in envios %}
+            <tr>
+              <td>{{ envio.destinatario.nome }}</td>
+              <td>{{ envio.lote.nome_lote }}</td>
+              <td>{{ envio.enviado_em }}</td>
+              <td>{{ envio.pode_editar_ate }}</td>
 
-</table>
+              <td>
+                {% if agora > envio.pode_editar_ate %}
+                  <span class="envio-status expirado">Expirado</span>
+                {% else %}
+                  <span class="envio-status ativo">Ativo</span>
+                {% endif %}
+              </td>
+
+              <td>
+                <a class="btn btn-secondary"
+                   href="{{ url_for('main.relatorio', token=envio.token) }}">
+                  Abrir
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+    {% else %}
+      <div class="envios-admin-vazio">
+        Nenhum envio registrado ainda.
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>
 
 {% endblock %}

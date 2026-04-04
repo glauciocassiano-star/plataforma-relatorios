@@ -30,7 +30,7 @@ def login():
         flash("Email ou senha inválidos.", "error")
         return redirect(url_for("main.login"))
 
-    return render_template("login.html")
+    return render_template("login.html", ocultar_layout=True)
 
 
 @main.route("/logout")

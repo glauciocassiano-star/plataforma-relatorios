@@ -36,6 +36,13 @@ class Cliente(db.Model):
         lazy=True,
     )
 
+    formularios = db.relationship(
+        "Formulario",
+        backref=db.backref("cliente", lazy=True),
+        lazy=True,
+        foreign_keys="Formulario.cliente_id",
+    )
+
     def __repr__(self) -> str:
         return f"<Cliente {self.id} {self.nome}>"
 
@@ -63,8 +70,6 @@ class Usuario(db.Model):
         index=True,
     )
 
-    # Quem criou o usuário:
-    # útil para auditoria e organização futura
     criado_por_id = db.Column(
         db.Integer,
         db.ForeignKey("usuarios.id", ondelete="SET NULL"),
@@ -169,7 +174,6 @@ class Animal(db.Model):
     sexo = db.Column(db.String(20), nullable=True)
     perfil_genetico = db.Column(db.String(200), nullable=True)
 
-    # Mantido sem cascade automático por regra de negócio
     propriedade_id = db.Column(
         db.Integer,
         db.ForeignKey("propriedades.id"),
@@ -198,11 +202,53 @@ class Formulario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(120), nullable=False)
     perfil_alvo = db.Column(db.String(20), nullable=False, default="tecnico")
-    ativo = db.Column(db.Boolean, default=True)
-    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+    ativo = db.Column(db.Boolean, default=True, nullable=False)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    # NOVOS CAMPOS
+    # rural | clinica | hospital
+    tipo_contexto = db.Column(db.String(30), nullable=False, default="rural", index=True)
+
+    # True para modelos protegidos do sistema
+    template_base = db.Column(db.Boolean, default=False, nullable=False, index=True)
+
+    # formulário personalizado do cliente
+    cliente_id = db.Column(
+        db.Integer,
+        db.ForeignKey("clientes.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+
+    # referência ao template original
+    formulario_origem_id = db.Column(
+        db.Integer,
+        db.ForeignKey("formularios.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    formulario_origem = db.relationship(
+        "Formulario",
+        remote_side=[id],
+        backref=db.backref("copias_personalizadas", lazy=True),
+        foreign_keys=[formulario_origem_id],
+    )
+
+    __table_args__ = (
+        db.CheckConstraint(
+            "tipo_contexto IN ('rural', 'clinica', 'hospital')",
+            name="ck_formulario_tipo_contexto",
+        ),
+    )
 
     def __repr__(self) -> str:
-        return f"<Formulario {self.id} {self.nome}>"
+        return (
+            f"<Formulario {self.id} {self.nome} "
+            f"contexto={self.tipo_contexto} "
+            f"template_base={self.template_base} "
+            f"cliente={self.cliente_id}>"
+        )
 
 
 # =========================
@@ -212,13 +258,27 @@ class CampoFormulario(db.Model):
     __tablename__ = "campos_formulario"
 
     id = db.Column(db.Integer, primary_key=True)
-    formulario_id = db.Column(db.Integer, db.ForeignKey("formularios.id"), nullable=False)
+
+    formulario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("formularios.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
     rotulo = db.Column(db.String(120), nullable=False)
     nome_chave = db.Column(db.String(80), nullable=False)
     tipo = db.Column(db.String(20), nullable=False, default="text")
-    obrigatorio = db.Column(db.Boolean, default=False)
+    obrigatorio = db.Column(db.Boolean, default=False, nullable=False)
     opcoes = db.Column(db.JSON, nullable=True)
-    ordem = db.Column(db.Integer, default=0)
+    ordem = db.Column(db.Integer, default=0, nullable=False)
+
+    # NOVOS CAMPOS
+    grupo = db.Column(db.String(80), nullable=True)           # ex.: Identificação, Diagnóstico
+    ajuda = db.Column(db.String(255), nullable=True)          # dica breve abaixo do campo
+    placeholder = db.Column(db.String(120), nullable=True)    # placeholder do input
+    visivel = db.Column(db.Boolean, default=True, nullable=False)
+    editavel = db.Column(db.Boolean, default=True, nullable=False)
 
     formulario = db.relationship(
         "Formulario",
@@ -230,7 +290,10 @@ class CampoFormulario(db.Model):
     )
 
     def __repr__(self) -> str:
-        return f"<CampoFormulario {self.id} {self.nome_chave} ({self.tipo})>"
+        return (
+            f"<CampoFormulario {self.id} {self.nome_chave} ({self.tipo}) "
+            f"grupo={self.grupo} editavel={self.editavel}>"
+        )
 
 
 # =========================
@@ -247,7 +310,6 @@ class Atendimento(db.Model):
         nullable=False,
     )
 
-    # Mantido como tecnico_id por compatibilidade com o sistema atual
     tecnico_id = db.Column(
         db.Integer,
         db.ForeignKey("usuarios.id"),

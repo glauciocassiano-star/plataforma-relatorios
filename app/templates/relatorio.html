@@ -4,48 +4,78 @@
 
 {% block content %}
 
-<h2>Relatório para {{ envio.destinatario.nome }}</h2>
+<div class="relatorio-form-shell">
 
-{% if prazo_expirado %}
-    <p class="erro">Prazo para edição encerrado.</p>
-{% endif %}
+  <div class="relatorio-form-topo">
+    <h2 class="relatorio-form-titulo">Relatório para {{ envio.destinatario.nome }}</h2>
+    <p class="relatorio-form-subtitulo">
+      Preencha as informações solicitadas para envio do relatório referente ao lote <strong>{{ envio.lote.nome_lote }}</strong>.
+    </p>
+  </div>
 
-<form method="POST">
+  {% if prazo_expirado %}
+    <div class="relatorio-form-alerta">
+      Prazo para edição encerrado.
+    </div>
+  {% endif %}
 
-    <label>Observação:</label><br>
-    <textarea name="texto_observacao" rows="4" style="width:100%;"
-        {% if prazo_expirado %}disabled{% endif %}>
-{{ relatorio.texto_observacao if relatorio else '' }}
-    </textarea>
-    <br><br>
+  <div class="relatorio-form-card">
+    <form method="POST" class="relatorio-formulario">
 
-    <label>Número de Referência:</label><br>
-    <input type="text" name="numero_referencia"
-        value="{{ relatorio.numero_referencia if relatorio else '' }}"
-        {% if prazo_expirado %}disabled{% endif %}>
-    <br><br>
+      <div class="relatorio-form-grupo">
+        <label for="texto_observacao">Observação</label>
+        <textarea
+          class="campo-padrao relatorio-form-textarea"
+          id="texto_observacao"
+          name="texto_observacao"
+          rows="4"
+          {% if prazo_expirado %}disabled{% endif %}
+        >{{ relatorio.texto_observacao if relatorio else '' }}</textarea>
+      </div>
 
-    <label>
-        <input type="checkbox" name="checkbox_febre"
-        {% if relatorio and relatorio.checkbox_febre %}checked{% endif %}
-        {% if prazo_expirado %}disabled{% endif %}>
-        Febre
-    </label>
-    <br>
+      <div class="relatorio-form-grupo">
+        <label for="numero_referencia">Número de referência</label>
+        <input
+          class="campo-padrao"
+          type="text"
+          id="numero_referencia"
+          name="numero_referencia"
+          value="{{ relatorio.numero_referencia if relatorio else '' }}"
+          {% if prazo_expirado %}disabled{% endif %}
+        >
+      </div>
 
-    <label>
-        <input type="checkbox" name="checkbox_alteracao"
-        {% if relatorio and relatorio.checkbox_alteracao %}checked{% endif %}
-        {% if prazo_expirado %}disabled{% endif %}>
-        Alteração clínica
-    </label>
+      <div class="relatorio-form-checkboxes">
+        <label class="relatorio-form-checkbox">
+          <input
+            type="checkbox"
+            name="checkbox_febre"
+            {% if relatorio and relatorio.checkbox_febre %}checked{% endif %}
+            {% if prazo_expirado %}disabled{% endif %}
+          >
+          <span>Febre</span>
+        </label>
 
-    <br><br>
+        <label class="relatorio-form-checkbox">
+          <input
+            type="checkbox"
+            name="checkbox_alteracao"
+            {% if relatorio and relatorio.checkbox_alteracao %}checked{% endif %}
+            {% if prazo_expirado %}disabled{% endif %}
+          >
+          <span>Alteração clínica</span>
+        </label>
+      </div>
 
-    <button type="submit" {% if prazo_expirado %}disabled{% endif %}>
-        Enviar Relatório
-    </button>
+      <div class="relatorio-form-acoes">
+        <button type="submit" {% if prazo_expirado %}disabled{% endif %}>
+          Enviar relatório
+        </button>
+      </div>
 
-</form>
+    </form>
+  </div>
+
+</div>
 
 {% endblock %}

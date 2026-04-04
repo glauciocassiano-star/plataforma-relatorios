@@ -4,204 +4,6 @@
 
 {% block content %}
 
-<style>
-  .exame-shell {
-    display: grid;
-    gap: 18px;
-    width: 100%;
-  }
-
-  .exame-topo-card,
-  .exame-form-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    padding: 18px;
-  }
-
-  .exame-topo-card h2 {
-    margin: 0 0 8px 0;
-    color: #1f2937;
-    line-height: 1.25;
-  }
-
-  .exame-topo-subtitulo {
-    margin: 0;
-    color: #6b7280;
-    line-height: 1.6;
-  }
-
-  .exame-topo-meta {
-    margin-top: 14px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .exame-meta-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: #f3f7f6;
-    border: 1px solid #d9e2df;
-    color: #1f2937;
-    font-size: 13px;
-    line-height: 1.2;
-  }
-
-  .exame-meta-tag strong {
-    color: #1f4f46;
-  }
-
-  .exame-form-card {
-    display: grid;
-    gap: 16px;
-    max-width: 960px;
-    width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-
-  .bloco-formulario {
-    border: 1px solid #eef2f7;
-    border-radius: 12px;
-    padding: 16px;
-    background: #fafafa;
-  }
-
-  .bloco-formulario-titulo {
-    margin: 0 0 12px 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1f2937;
-  }
-
-  .form-grid-duplo {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(240px, 1fr));
-    gap: 14px;
-  }
-
-  .campo-grupo {
-    display: grid;
-    gap: 6px;
-  }
-
-  .campo-grupo label {
-    font-weight: 600;
-    color: #374151;
-    line-height: 1.4;
-  }
-
-  .campo-padrao {
-    min-height: 56px;
-    padding: 12px 14px;
-    border: 1px solid #cfd8d5;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #1f2937;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  textarea.campo-padrao {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  input[type="date"].campo-padrao,
-  input[type="file"].campo-padrao,
-  input[type="text"].campo-padrao,
-  select.campo-padrao {
-    display: block;
-  }
-
-  .form-help {
-    color: #6b7280;
-    font-size: 13px;
-    line-height: 1.45;
-  }
-
-  .campo-obrigatorio {
-    color: #b91c1c;
-    font-weight: 700;
-  }
-
-  .exame-form-acoes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-  }
-
-  .rodape-voltar {
-    margin-top: 4px;
-  }
-
-  .rodape-voltar a {
-    color: #1f8774;
-    font-weight: 600;
-  }
-
-  @media (max-width: 768px) {
-    .exame-topo-card,
-    .exame-form-card {
-      padding: 14px;
-      border-radius: 14px;
-    }
-
-    .exame-topo-card h2 {
-      font-size: 1.45rem;
-    }
-
-    .exame-topo-meta {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .exame-meta-tag {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    .bloco-formulario {
-      padding: 12px;
-    }
-
-    .form-grid-duplo {
-      grid-template-columns: 1fr;
-    }
-
-    .campo-padrao {
-      min-height: 50px;
-      padding: 10px 12px;
-      font-size: 15px;
-    }
-
-    .exame-form-acoes {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .exame-form-acoes .btn,
-    .exame-form-acoes button {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .exame-topo-card h2 {
-      font-size: 1.28rem;
-    }
-  }
-</style>
-
 <div class="exame-shell">
 
   <div class="exame-topo-card">
@@ -229,12 +31,12 @@
 
   <form method="POST" enctype="multipart/form-data" class="exame-form-card">
 
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Informações principais</h3>
+    <div class="exame-bloco">
+      <h3 class="exame-bloco-titulo">Informações principais</h3>
 
-      <div class="form-grid-duplo">
-        <div class="campo-grupo">
-          <label for="categoria">Categoria <span class="campo-obrigatorio">*</span></label>
+      <div class="exame-grid-duplo">
+        <div class="exame-campo-grupo">
+          <label for="categoria">Categoria <span class="exame-campo-obrigatorio">*</span></label>
           <select name="categoria" id="categoria" class="campo-padrao" required>
             <option value="">Selecione</option>
             <option value="laboratorial">Laboratorial</option>
@@ -242,39 +44,39 @@
           </select>
         </div>
 
-        <div class="campo-grupo">
+        <div class="exame-campo-grupo">
           <label for="data_exame">Data do exame</label>
           <input type="date" name="data_exame" id="data_exame" class="campo-padrao">
         </div>
       </div>
 
-      <div class="campo-grupo" style="margin-top: 14px;">
-        <label for="nome_exame">Nome do exame <span class="campo-obrigatorio">*</span></label>
+      <div class="exame-campo-grupo exame-campo-grupo-full">
+        <label for="nome_exame">Nome do exame <span class="exame-campo-obrigatorio">*</span></label>
         <input type="text" name="nome_exame" id="nome_exame" class="campo-padrao" required>
-        <small class="form-help">
+        <small class="exame-form-help">
           Exemplo: hemograma, ultrassonografia, exame coproparasitológico, radiografia.
         </small>
       </div>
     </div>
 
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Resultados e observações</h3>
+    <div class="exame-bloco">
+      <h3 class="exame-bloco-titulo">Resultados e observações</h3>
 
-      <div class="campo-grupo">
+      <div class="exame-campo-grupo">
         <label for="resultado">Resultado / Laudo</label>
         <textarea name="resultado" id="resultado" rows="5" class="campo-padrao"></textarea>
       </div>
 
-      <div class="campo-grupo" style="margin-top: 14px;">
+      <div class="exame-campo-grupo exame-campo-grupo-full">
         <label for="observacoes">Observações</label>
         <textarea name="observacoes" id="observacoes" rows="4" class="campo-padrao"></textarea>
       </div>
     </div>
 
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Arquivo complementar</h3>
+    <div class="exame-bloco">
+      <h3 class="exame-bloco-titulo">Arquivo complementar</h3>
 
-      <div class="campo-grupo">
+      <div class="exame-campo-grupo">
         <label for="arquivo">Arquivo do exame</label>
         <input
           type="file"
@@ -283,14 +85,14 @@
           class="campo-padrao"
           accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.xls,.xlsx"
         >
-        <small class="form-help">
+        <small class="exame-form-help">
           Você pode anexar PDF, imagem ou documento complementar do exame.
         </small>
       </div>
     </div>
 
     <div class="exame-form-acoes">
-      <button type="submit" class="btn">Salvar exame</button>
+      <button type="submit">Salvar exame</button>
 
       <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}" class="btn btn-secondary">
         Cancelar
@@ -299,7 +101,7 @@
 
   </form>
 
-  <div class="rodape-voltar">
+  <div class="exame-rodape-voltar">
     <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}">
       ← Voltar
     </a>

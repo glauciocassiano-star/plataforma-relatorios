@@ -4,20 +4,45 @@
 
 {% block content %}
 
-<h2 class="sucesso">Relatório enviado com sucesso!</h2>
+<div class="sucesso-shell">
 
-<p><strong>Destinatário:</strong> {{ envio.destinatario.nome }}</p>
+  <div class="sucesso-card">
 
-<p><strong>Prazo para edição até:</strong><br>
-{{ envio.pode_editar_ate }}
-</p>
+    <div class="sucesso-topo">
+      <h2 class="sucesso-titulo">Relatório enviado com sucesso!</h2>
+      <p class="sucesso-subtitulo">
+        O envio foi realizado corretamente e os dados foram registrados no sistema.
+      </p>
+    </div>
 
-{% if not prazo_expirado %}
-    <a href="{{ url_for('main.relatorio', token=envio.token) }}">
-        <button>Editar novamente</button>
-    </a>
-{% else %}
-    <p class="erro">Prazo de edição encerrado.</p>
-{% endif %}
+    <div class="sucesso-info">
+
+      <div class="sucesso-item">
+        <span class="sucesso-label">Destinatário</span>
+        <strong>{{ envio.destinatario.nome }}</strong>
+      </div>
+
+      <div class="sucesso-item">
+        <span class="sucesso-label">Prazo para edição</span>
+        <strong>{{ envio.pode_editar_ate }}</strong>
+      </div>
+
+    </div>
+
+    {% if not prazo_expirado %}
+      <div class="sucesso-acoes">
+        <a class="btn" href="{{ url_for('main.relatorio', token=envio.token) }}">
+          Editar novamente
+        </a>
+      </div>
+    {% else %}
+      <div class="sucesso-alerta">
+        Prazo de edição encerrado.
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>
 
 {% endblock %}

@@ -3,224 +3,239 @@
 
 {% block content %}
 
-<h2 class="admin-titulo-pagina">Usuários</h2>
+<div class="usuarios-admin-shell">
 
-<p class="admin-subtitulo-pagina">
-  Gerencie os acessos da plataforma, organize os usuários por cliente e defina quais perfis poderão operar o sistema.
-</p>
+  <div class="usuarios-admin-topo">
+    <h2 class="usuarios-admin-titulo">Usuários</h2>
+    <p class="usuarios-admin-subtitulo">
+      Gerencie os acessos da plataforma, organize os usuários por cliente e defina quais perfis poderão operar o sistema.
+    </p>
 
-<div class="admin-contexto">
-  <span class="admin-contexto-tag">
-    Usuário logado: <strong>{{ usuario_logado.nome }}</strong>
-  </span>
+    <div class="usuarios-admin-contexto">
+      <span class="usuarios-admin-contexto-tag">
+        Usuário logado: <strong>{{ usuario_logado.nome }}</strong>
+      </span>
 
-  <span class="admin-contexto-tag">
-    Perfil: <strong>
-      {% if usuario_logado.perfil == "admin_master" %}
-        Administrador principal
-      {% elif usuario_logado.perfil == "admin_cliente" %}
-        Administrador do cliente
-      {% elif usuario_logado.perfil == "tecnico" %}
-        Técnico
-      {% elif usuario_logado.perfil == "veterinario" %}
-        Veterinário
-      {% else %}
-        {{ usuario_logado.perfil }}
-      {% endif %}
-    </strong>
-  </span>
-
-  <span class="admin-contexto-tag">
-    Cliente:
-    <strong>{{ usuario_logado.cliente.nome if usuario_logado.cliente else "Sem vínculo" }}</strong>
-  </span>
-</div>
-
-<div class="admin-usuarios-layout">
-
-  <div class="admin-card">
-    <h3 class="admin-titulo-secao">Novo usuário</h3>
-
-    {% if usuario_logado.perfil == "admin_master" and not clientes %}
-      <div class="admin-aviso" style="margin-bottom: 14px;">
-        Nenhum cliente ativo foi encontrado. Cadastre pelo menos um cliente antes de criar novos usuários vinculados.
-      </div>
-    {% endif %}
-
-    <form method="POST" class="admin-form-card">
-
-      <div class="admin-form-grupo">
-        <label for="nome">Nome *</label>
-        <input class="campo-padrao" id="nome" name="nome" required>
-      </div>
-
-      <div class="admin-form-grupo">
-        <label for="email">Email *</label>
-        <input class="campo-padrao" type="email" id="email" name="email" required>
-      </div>
-
-      <div class="admin-form-grupo">
-        <label for="senha">Senha *</label>
-
-        <div class="admin-senha-linha">
-          <input
-            class="campo-padrao"
-            type="password"
-            id="senha"
-            name="senha"
-            required
-            pattern="^(?=(?:.*[A-Z]){1,})(?=(?:.*[^A-Za-z0-9]){1,})(?=(?:.*[A-Za-z0-9]){5,})\S{6,}$"
-            title="A senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, sem espaços, pelo menos 5 letras ou números e 1 caractere especial."
-          >
-
-          <label class="admin-mostrar-senha" for="mostrar_senha">
-            <input type="checkbox" id="mostrar_senha">
-            Mostrar senha
-          </label>
-        </div>
-
-        <small class="admin-form-ajuda">
-          A senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, sem espaços, pelo menos 5 letras ou números e 1 caractere especial.
-        </small>
-      </div>
-
-      {% if usuario_logado.perfil == "admin_master" %}
-        <div class="admin-form-grupo">
-          <label for="cliente_id">Cliente *</label>
-          <select
-            class="campo-padrao"
-            id="cliente_id"
-            name="cliente_id"
-            required
-            {% if not clientes %}disabled{% endif %}
-          >
-            <option value="">Selecione o cliente</option>
-            {% for cliente in clientes %}
-              <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
-            {% endfor %}
-          </select>
-          <small class="admin-form-ajuda">
-            O administrador principal define a qual cliente este usuário pertence.
-          </small>
-        </div>
-      {% endif %}
-
-      <div class="admin-form-grupo">
-        <label for="perfil">Perfil *</label>
-        <select class="campo-padrao" id="perfil" name="perfil">
-          <option value="tecnico">Técnico</option>
-          <option value="veterinario">Veterinário</option>
+      <span class="usuarios-admin-contexto-tag">
+        Perfil:
+        <strong>
           {% if usuario_logado.perfil == "admin_master" %}
-            <option value="admin_cliente">Administrador do cliente</option>
-            <option value="admin_master">Administrador principal</option>
+            Administrador principal
+          {% elif usuario_logado.perfil == "admin_cliente" %}
+            Administrador do cliente
+          {% elif usuario_logado.perfil == "tecnico" %}
+            Técnico
+          {% elif usuario_logado.perfil == "veterinario" %}
+            Veterinário
+          {% else %}
+            {{ usuario_logado.perfil }}
           {% endif %}
-        </select>
-        <small class="admin-form-ajuda">
-          Técnicos e veterinários operam o sistema. O administrador do cliente gerencia usuários e propriedades da própria conta.
-        </small>
-      </div>
+        </strong>
+      </span>
 
-      <div class="admin-form-acoes">
-        <button
-          type="submit"
-          {% if usuario_logado.perfil == "admin_master" and not clientes %}disabled{% endif %}
-        >
-          Salvar
-        </button>
-        <a class="btn btn-secondary" href="{{ url_for('main.painel') }}">Voltar</a>
-      </div>
-
-    </form>
+      <span class="usuarios-admin-contexto-tag">
+        Cliente:
+        <strong>{{ usuario_logado.cliente.nome if usuario_logado.cliente else "Sem vínculo" }}</strong>
+      </span>
+    </div>
   </div>
 
-  <div class="admin-card">
-    <h3 class="admin-titulo-secao">Lista de usuários</h3>
+  <div class="usuarios-admin-layout">
 
-    {% if usuarios %}
-      <div class="admin-tabela-wrap">
-        <table class="admin-tabela">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Email</th>
+    <div class="usuarios-admin-card">
+      <h3 class="usuarios-admin-card-titulo">Novo usuário</h3>
+
+      {% if usuario_logado.perfil == "admin_master" and not clientes %}
+        <div class="usuarios-admin-aviso">
+          Nenhum cliente ativo foi encontrado. Cadastre pelo menos um cliente antes de criar novos usuários vinculados.
+        </div>
+      {% endif %}
+
+      <form method="POST" class="usuarios-admin-form">
+
+        <div class="usuarios-admin-grid">
+          <div class="usuarios-admin-grupo">
+            <label for="nome">Nome *</label>
+            <input class="campo-padrao" id="nome" name="nome" required>
+          </div>
+
+          <div class="usuarios-admin-grupo">
+            <label for="email">Email *</label>
+            <input class="campo-padrao" type="email" id="email" name="email" required>
+          </div>
+
+          <div class="usuarios-admin-grupo usuarios-admin-grupo-full">
+            <label for="senha">Senha *</label>
+
+            <div class="usuarios-admin-senha-linha">
+              <input
+                class="campo-padrao"
+                type="password"
+                id="senha"
+                name="senha"
+                required
+                pattern="^(?=(?:.*[A-Z]){1,})(?=(?:.*[^A-Za-z0-9]){1,})(?=(?:.*[A-Za-z0-9]){5,})\S{6,}$"
+                title="A senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, sem espaços, pelo menos 5 letras ou números e 1 caractere especial."
+              >
+
+              <label class="usuarios-admin-mostrar-senha" for="mostrar_senha">
+                <input type="checkbox" id="mostrar_senha">
+                Mostrar senha
+              </label>
+            </div>
+
+            <small class="usuarios-admin-ajuda">
+              A senha deve ter no mínimo 6 caracteres, ao menos 1 letra maiúscula, sem espaços, pelo menos 5 letras ou números e 1 caractere especial.
+            </small>
+          </div>
+
+          {% if usuario_logado.perfil == "admin_master" %}
+            <div class="usuarios-admin-grupo usuarios-admin-grupo-full">
+              <label for="cliente_id">Cliente *</label>
+              <select
+                class="campo-padrao"
+                id="cliente_id"
+                name="cliente_id"
+                required
+                {% if not clientes %}disabled{% endif %}
+              >
+                <option value="">Selecione o cliente</option>
+                {% for cliente in clientes %}
+                  <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                {% endfor %}
+              </select>
+
+              <small class="usuarios-admin-ajuda">
+                O administrador principal define a qual cliente este usuário pertence.
+              </small>
+            </div>
+          {% endif %}
+
+          <div class="usuarios-admin-grupo">
+            <label for="perfil">Perfil *</label>
+            <select class="campo-padrao" id="perfil" name="perfil">
+              <option value="tecnico">Técnico</option>
+              <option value="veterinario">Veterinário</option>
               {% if usuario_logado.perfil == "admin_master" %}
-                <th>Cliente</th>
+                <option value="admin_cliente">Administrador do cliente</option>
+                <option value="admin_master">Administrador principal</option>
               {% endif %}
-              <th>Perfil</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for u in usuarios %}
-            <tr>
-              <td>{{ u.id }}</td>
-              <td>{{ u.nome }}</td>
-              <td>{{ u.email }}</td>
+            </select>
 
-              {% if usuario_logado.perfil == "admin_master" %}
-                <td>{{ u.cliente.nome if u.cliente else "-" }}</td>
-              {% endif %}
+            <small class="usuarios-admin-ajuda">
+              Técnicos e veterinários operam o sistema. O administrador do cliente gerencia usuários e propriedades da própria conta.
+            </small>
+          </div>
+        </div>
 
-              <td>
-                <span class="admin-perfil-badge
-                  {% if u.perfil == 'admin_master' %}admin-master{% endif %}
-                  {% if u.perfil == 'admin_cliente' %}admin-cliente{% endif %}
-                  {% if u.perfil == 'tecnico' %}tecnico{% endif %}
-                  {% if u.perfil == 'veterinario' %}veterinario{% endif %}
-                ">
-                  {% if u.perfil == "admin_master" %}
-                    Administrador principal
-                  {% elif u.perfil == "admin_cliente" %}
-                    Administrador do cliente
-                  {% elif u.perfil == "tecnico" %}
-                    Técnico
-                  {% elif u.perfil == "veterinario" %}
-                    Veterinário
-                  {% else %}
-                    {{ u.perfil }}
-                  {% endif %}
-                </span>
-              </td>
+        <div class="usuarios-admin-acoes">
+          <button
+            type="submit"
+            {% if usuario_logado.perfil == "admin_master" and not clientes %}disabled{% endif %}
+          >
+            Salvar
+          </button>
 
-              <td>
-                <span class="admin-status-badge {% if u.ativo %}ativo{% else %}inativo{% endif %}">
-                  {% if u.ativo %}Ativo{% else %}Inativo{% endif %}
-                </span>
-              </td>
+          <a class="btn btn-secondary" href="{{ url_for('main.painel') }}">
+            Voltar
+          </a>
+        </div>
 
-              <td>
-                <div class="admin-tabela-acoes">
-                  <a class="btn"
-                     href="{{ url_for('main.admin_usuario_propriedades', usuario_id=u.id) }}">
-                    Propriedades
-                  </a>
+      </form>
+    </div>
 
-                  <a class="btn btn-secondary"
-                     href="{{ url_for('main.admin_editar_usuario', usuario_id=u.id) }}">
-                    Editar
-                  </a>
+    <div class="usuarios-admin-card">
+      <h3 class="usuarios-admin-card-titulo">Lista de usuários</h3>
 
-                  <a
-                    class="btn btn-danger"
-                    href="{{ url_for('main.admin_excluir_usuario', usuario_id=u.id) }}"
-                    onclick="return confirm('Tem certeza que deseja excluir este usuário?');"
-                  >
-                    Excluir
-                  </a>
-                </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% else %}
-      <div class="admin-vazio">
-        Nenhum usuário cadastrado ainda.
-      </div>
-    {% endif %}
+      {% if usuarios %}
+        <div class="table-wrap">
+          <table class="usuarios-admin-tabela">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                {% if usuario_logado.perfil == "admin_master" %}
+                  <th>Cliente</th>
+                {% endif %}
+                <th>Perfil</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for u in usuarios %}
+              <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.nome }}</td>
+                <td>{{ u.email }}</td>
+
+                {% if usuario_logado.perfil == "admin_master" %}
+                  <td>{{ u.cliente.nome if u.cliente else "-" }}</td>
+                {% endif %}
+
+                <td>
+                  <span class="usuarios-admin-badge-perfil
+                    {% if u.perfil == 'admin_master' %}master{% endif %}
+                    {% if u.perfil == 'admin_cliente' %}cliente{% endif %}
+                    {% if u.perfil == 'tecnico' %}tecnico{% endif %}
+                    {% if u.perfil == 'veterinario' %}veterinario{% endif %}
+                  ">
+                    {% if u.perfil == "admin_master" %}
+                      Administrador principal
+                    {% elif u.perfil == "admin_cliente" %}
+                      Administrador do cliente
+                    {% elif u.perfil == "tecnico" %}
+                      Técnico
+                    {% elif u.perfil == "veterinario" %}
+                      Veterinário
+                    {% else %}
+                      {{ u.perfil }}
+                    {% endif %}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="usuarios-admin-badge-status {% if u.ativo %}ativo{% else %}inativo{% endif %}">
+                    {% if u.ativo %}Ativo{% else %}Inativo{% endif %}
+                  </span>
+                </td>
+
+                <td>
+                  <div class="usuarios-admin-tabela-acoes">
+                    <a class="btn"
+                       href="{{ url_for('main.admin_usuario_propriedades', usuario_id=u.id) }}">
+                      Propriedades
+                    </a>
+
+                    <a class="btn btn-secondary"
+                       href="{{ url_for('main.admin_editar_usuario', usuario_id=u.id) }}">
+                      Editar
+                    </a>
+
+                    <a
+                      class="btn btn-soft-danger"
+                      href="{{ url_for('main.admin_excluir_usuario', usuario_id=u.id) }}"
+                      onclick="return confirm('Tem certeza que deseja excluir este usuário?');"
+                    >
+                      Excluir
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+
+          </table>
+        </div>
+      {% else %}
+        <div class="usuarios-admin-vazio">
+          Nenhum usuário cadastrado ainda.
+        </div>
+      {% endif %}
+    </div>
+
   </div>
 
 </div>

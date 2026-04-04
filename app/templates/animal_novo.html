@@ -3,40 +3,49 @@
 
 {% block content %}
 
-<div class="animal-shell">
+<div class="animal-novo-shell">
 
-  <div class="animal-topo-card">
+  <div class="animal-novo-topo-card">
     <h2>Novo animal - {{ propriedade.nome }}</h2>
 
-    <p class="animal-topo-subtitulo">
+    <p class="animal-novo-topo-subtitulo">
       Cadastre um novo animal nesta propriedade para iniciar o acompanhamento clínico, sanitário e epidemiológico.
     </p>
 
-    <div class="animal-topo-meta">
-      <span class="animal-meta-tag">
+    <div class="animal-novo-topo-meta">
+      <span class="animal-novo-meta-tag">
         Propriedade: <strong>{{ propriedade.nome }}</strong>
       </span>
 
-      <span class="animal-meta-tag">
+      <span class="animal-novo-meta-tag">
         Produtor: <strong>{{ propriedade.produtor or "-" }}</strong>
       </span>
     </div>
   </div>
 
-  <form method="POST" id="formAnimal" class="animal-form-card">
+  <form method="POST" id="formAnimal" class="animal-novo-form-card">
 
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Identificação principal</h3>
+    <div class="animal-novo-bloco">
+      <h3 class="animal-novo-bloco-titulo">Identificação principal</h3>
 
-      <div class="form-grid-duplo">
-        <div class="campo-grupo">
-          <label>Código *</label>
-          <input class="campo-padrao" type="text" name="codigo" required />
+      <div class="animal-novo-grid-duplo">
+        <div class="animal-novo-campo-grupo">
+          <label for="codigo">Código do animal <span class="animal-novo-campo-obrigatorio">*</span></label>
+          <input
+            class="campo-padrao"
+            type="text"
+            id="codigo"
+            name="codigo"
+            required
+          >
+          <small class="animal-novo-form-help">
+            Utilize um código único para facilitar a identificação e o histórico do animal.
+          </small>
         </div>
 
-        <div class="campo-grupo">
-          <label>Espécie *</label>
-          <select class="campo-padrao" name="especie" required>
+        <div class="animal-novo-campo-grupo">
+          <label for="especie">Espécie <span class="animal-novo-campo-obrigatorio">*</span></label>
+          <select class="campo-padrao" id="especie" name="especie" required>
             <option value="bovino">Bovino</option>
             <option value="equino">Equino</option>
             <option value="ovino">Ovino</option>
@@ -49,26 +58,53 @@
       </div>
     </div>
 
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Informações complementares</h3>
+    <div class="animal-novo-bloco">
+      <h3 class="animal-novo-bloco-titulo">Informações complementares</h3>
 
-      <div class="form-grid-duplo">
-        <input class="campo-padrao" type="text" name="nome" placeholder="Nome" />
-        <input class="campo-padrao" type="date" name="data_nascimento" />
-        <input class="campo-padrao" type="text" name="raca" placeholder="Raça" />
+      <div class="animal-novo-grid-duplo">
+        <div class="animal-novo-campo-grupo">
+          <label for="nome">Nome</label>
+          <input class="campo-padrao" type="text" id="nome" name="nome" placeholder="Nome do animal">
+        </div>
 
-        <select class="campo-padrao" name="sexo">
-          <option value="">Sexo</option>
-          <option value="M">Macho</option>
-          <option value="F">Fêmea</option>
-        </select>
+        <div class="animal-novo-campo-grupo">
+          <label for="data_nascimento">Data de nascimento</label>
+          <input class="campo-padrao" type="date" id="data_nascimento" name="data_nascimento">
+        </div>
+
+        <div class="animal-novo-campo-grupo">
+          <label for="raca">Raça</label>
+          <input class="campo-padrao" type="text" id="raca" name="raca" placeholder="Raça">
+        </div>
+
+        <div class="animal-novo-campo-grupo">
+          <label for="sexo">Sexo</label>
+          <select class="campo-padrao" id="sexo" name="sexo">
+            <option value="">Selecione</option>
+            <option value="M">Macho</option>
+            <option value="F">Fêmea</option>
+          </select>
+        </div>
       </div>
 
-      <input class="campo-padrao" type="text" name="perfil_genetico" placeholder="Perfil genético" />
+      <div class="animal-novo-campo-grupo animal-novo-campo-grupo-full">
+        <label for="perfil_genetico">Perfil genético</label>
+        <input
+          class="campo-padrao"
+          type="text"
+          id="perfil_genetico"
+          name="perfil_genetico"
+          placeholder="Perfil genético"
+        >
+        <small class="animal-novo-form-help">
+          Campo útil para análises futuras e correlações clínicas e epidemiológicas.
+        </small>
+      </div>
     </div>
 
-    <div class="animal-form-acoes">
+    <div class="animal-novo-form-acoes">
       <button type="submit">Salvar</button>
+
       <button type="button" onclick="salvarOffline()" class="btn btn-secondary">
         💾 Salvar offline
       </button>

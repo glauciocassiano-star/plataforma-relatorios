@@ -1,93 +1,72 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-  <title>Moovet | Login</title>
+{% block title %}Login{% endblock %}
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
 
-<body>
-
+{% block content %}
 <div class="login-page">
+  <div class="login-layout">
 
-  <!-- LADO ESQUERDO (BRAND) -->
-  <section class="login-brand">
-    <div class="login-brand-conteudo">
+    <section class="login-panel">
+      <div class="login-panel-inner">
+        <div class="login-logo">Moovet</div>
 
-      <div class="login-badge">
-        Plataforma veterinária e epidemiológica
-      </div>
+        <h1 class="login-title">
+          Gestão clínica e monitoramento epidemiológico para propriedades rurais
+        </h1>
 
-      <div class="login-marca">Moovet</div>
+        <p class="login-description">
+          Organize atendimentos, acompanhe prontuários e fortaleça a inteligência
+          sanitária com uma plataforma pensada para a rotina técnica em campo.
+        </p>
 
-      <h1>
-        Monitoramento clínico, epidemiológico e sanitário para propriedades rurais
-      </h1>
+        <p class="login-support">
+          Ambiente seguro, técnico e estruturado para uso veterinário.
+        </p>
 
-      <p>
-        Organize atendimentos, acompanhe prontuários, consolide dados sanitários e fortaleça a análise epidemiológica com uma plataforma pensada para uso técnico em campo.
-      </p>
-
-      <ul class="login-brand-lista">
-        <li><span>•</span> Registro clínico estruturado por propriedade e animal</li>
-        <li><span>•</span> Acompanhamento de atendimentos, exames e imagens</li>
-        <li><span>•</span> Base para indicadores epidemiológicos e vigilância sanitária</li>
-      </ul>
-
-    </div>
-  </section>
-
-  <!-- LADO DIREITO (LOGIN) -->
-  <section class="login-box-wrap">
-    <div class="login-box">
-
-      <div class="login-topo">
-        <div class="login-titulo">Entrar</div>
-        <div class="login-subtitulo">
-          Acesse a plataforma com seu email e senha
-        </div>
-      </div>
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="login-flashes">
-            {% for category, message in messages %}
-              <div class="login-flash {{ category if category in ['success', 'error', 'info'] else 'info' }}">
-                {{ message }}
-              </div>
-            {% endfor %}
+        <form method="POST" class="login-form" id="login-form">
+          <div class="form-group">
+            <label for="email">Usuário</label>
+            <input type="text" id="email" name="email" autocomplete="username" required>
           </div>
-        {% endif %}
-      {% endwith %}
 
-      <form method="POST">
+          <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" autocomplete="current-password" required>
+          </div>
 
-        <label for="email">Usuário</label>
-        <input type="text" name="email" id="email" autocomplete="username" required>
-
-        <label for="senha">Senha</label>
-        <input type="password" name="senha" id="senha" autocomplete="current-password" required>
-
-        <button type="submit">Entrar</button>
-
-      </form>
-
-      <div class="login-ajuda">
-        Use suas credenciais de acesso para entrar no ambiente técnico da plataforma.
+          <button type="submit" class="btn-login" id="btn-login">
+            <span class="btn-login-text">Entrar no sistema</span>
+            <span class="btn-login-loader" aria-hidden="true"></span>
+          </button>
+        </form>
       </div>
+    </section>
 
-      <div class="login-footer">
-        Sistema técnico para propriedades rurais • Moovet
-      </div>
+    <section class="login-visual" aria-hidden="true">
+      <div class="login-visual-overlay"></div>
+      <div class="login-visual-gradient"></div>
+    </section>
 
-    </div>
-  </section>
-
+  </div>
 </div>
+{% endblock %}
 
-</body>
-</html>
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("login-form");
+    const button = document.getElementById("btn-login");
+
+    if (form && button) {
+      form.addEventListener("submit", () => {
+        button.classList.add("is-loading");
+        button.disabled = true;
+      });
+    }
+  });
+</script>
+{% endblock %}

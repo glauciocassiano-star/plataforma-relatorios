@@ -10,453 +10,294 @@
 
 {% block content %}
 
-<style>
-  .atendimento-pagina-topo {
-    margin-bottom: 18px;
-  }
+<div class="atendimento-shell">
 
-  .atendimento-pagina-topo h2 {
-    margin: 0 0 8px 0;
-    color: #1f2937;
-    line-height: 1.3;
-  }
+  <div class="atendimento-topo">
+    <div>
+      <h2 class="atendimento-titulo">
+        {% if modo_edicao %}
+          Editar Atendimento
+        {% else %}
+          Novo Atendimento
+        {% endif %}
+      </h2>
 
-  .atendimento-pagina-topo p {
-    margin: 0;
-    color: #6b7280;
-    line-height: 1.55;
-  }
-
-  .atendimento-form-card {
-    display: grid;
-    gap: 16px;
-    max-width: 1020px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    background: #ffffff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box;
-  }
-
-  .bloco-formulario {
-    border: 1px solid #eef2f7;
-    border-radius: 12px;
-    padding: 16px;
-    background: #fafafa;
-  }
-
-  .bloco-formulario-titulo {
-    margin: 0 0 12px 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1f2937;
-  }
-
-  .form-field {
-    display: grid;
-    gap: 6px;
-  }
-
-  .campo-padrao {
-    min-height: 56px;
-    padding: 12px 14px;
-    border: 1px solid #cfd8d5;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #1f2937;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-
-  textarea.campo-padrao {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  input[type="date"].campo-padrao,
-  input[type="number"].campo-padrao,
-  input[type="text"].campo-padrao,
-  select.campo-padrao {
-    display: block;
-  }
-
-  .checkbox-field {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-    padding: 10px 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    background: #ffffff;
-  }
-
-  .checkbox-field input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    accent-color: #1f8774;
-    flex-shrink: 0;
-  }
-
-  .checkbox-field label {
-    margin: 0;
-    font-weight: 600;
-    color: #374151;
-    line-height: 1.4;
-  }
-
-  .form-help {
-    color: #6b7280;
-    font-size: 0.92rem;
-    line-height: 1.5;
-  }
-
-  .campo-obrigatorio {
-    color: #b91c1c;
-    font-weight: 700;
-  }
-
-  .atendimento-form-acoes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-  }
-
-  .atendimento-form-acoes .btn,
-  .atendimento-form-acoes button {
-    min-height: 44px;
-  }
-
-  .rodape-voltar {
-    margin-top: 18px;
-  }
-
-  .rodape-voltar a {
-    color: #1f8774;
-    font-weight: 600;
-  }
-
-  .formulario-info {
-    margin-top: 10px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    color: #1d4ed8;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .formulario-vazio {
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px dashed #d1d5db;
-    background: #ffffff;
-    color: #6b7280;
-    line-height: 1.6;
-  }
-
-  @media (max-width: 1020px) {
-    .atendimento-form-card {
-      max-width: 100%;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .atendimento-form-card {
-      padding: 14px;
-      gap: 14px;
-    }
-
-    .bloco-formulario {
-      padding: 12px;
-    }
-
-    .atendimento-form-acoes {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .atendimento-form-acoes .btn,
-    .atendimento-form-acoes button {
-      width: 100%;
-    }
-
-    .campo-padrao {
-      min-height: 50px;
-      font-size: 15px;
-      padding: 10px 12px;
-    }
-  }
-</style>
-
-<div class="atendimento-pagina-topo">
-  <h2>
-    {% if modo_edicao %}
-      Editar Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
-    {% else %}
-      Novo Atendimento - {{ animal.codigo }}{% if animal.nome %} ({{ animal.nome }}){% endif %}
-    {% endif %}
-  </h2>
-
-  <p>
-    {% if modo_edicao %}
-      Atualize os dados clínicos e epidemiológicos do atendimento deste animal.
-    {% else %}
-      Escolha o formulário adequado ao perfil e preencha os dados clínicos do atendimento.
-    {% endif %}
-  </p>
-</div>
-
-<form method="GET" class="atendimento-form-card" style="margin-bottom: 14px;">
-  <div class="bloco-formulario">
-    <h3 class="bloco-formulario-titulo">Seleção de formulário</h3>
-
-    <div class="form-field">
-      <label for="formulario_id">
-        Formulário disponível para o perfil
-        {% if perfil_efetivo %}<span class="campo-obrigatorio">*</span>{% endif %}
-      </label>
-
-      <select
-        class="campo-padrao"
-        name="formulario_id"
-        id="formulario_id"
-        onchange="this.form.submit()"
-      >
-        <option value="">Selecione um formulário</option>
-        {% for f in formularios_disponiveis %}
-          <option
-            value="{{ f.id }}"
-            {% if formulario and formulario.id == f.id %}selected{% endif %}
-          >
-            {{ f.nome }} — {{ f.perfil_alvo|capitalize }}
-          </option>
-        {% endfor %}
-      </select>
-
-      <small class="form-help">
-        Apenas formulários ativos compatíveis com o perfil atual são exibidos.
-      </small>
+      <p class="atendimento-subtitulo">
+        Animal:
+        <strong>
+          {{ animal.nome if animal.nome else animal.codigo }}
+        </strong>
+        {% if animal.propriedade %}
+          • Propriedade: <strong>{{ animal.propriedade.nome }}</strong>
+        {% endif %}
+      </p>
     </div>
 
-    {% if formulario %}
-      <div class="formulario-info">
-        <strong>Formulário selecionado:</strong> {{ formulario.nome }}
-        <br>
-        <strong>Perfil-alvo:</strong> {{ formulario.perfil_alvo }}
-      </div>
-    {% elif formularios_disponiveis %}
-      <div class="formulario-info">
-        Selecione um formulário para carregar os campos clínicos.
-      </div>
-    {% else %}
-      <div class="formulario-vazio">
-        Nenhum formulário ativo compatível com este perfil foi encontrado.
-      </div>
-    {% endif %}
+    <div class="atendimento-topo-badges">
+      {% if contexto %}
+        <span class="atendimento-badge">
+          Contexto:
+          {% if contexto == "rural" %}
+            Propriedade rural
+          {% elif contexto == "clinica" %}
+            Clínica veterinária
+          {% elif contexto == "hospital" %}
+            Hospital veterinário
+          {% else %}
+            {{ contexto }}
+          {% endif %}
+        </span>
+      {% endif %}
+
+      {% if formulario %}
+        <span class="atendimento-badge atendimento-badge-soft">
+          Formulário: {{ formulario.nome }}
+        </span>
+      {% endif %}
+    </div>
   </div>
-</form>
 
-<form method="POST" enctype="multipart/form-data" class="atendimento-form-card" id="formAtendimento">
+  {% if not modo_edicao %}
+    <div class="atendimento-contexto-seletor">
+      <a
+        class="btn {% if contexto == 'rural' %}{% else %}btn-secondary{% endif %}"
+        href="{{ url_for('main.novo_atendimento', animal_id=animal.id, contexto='rural') }}"
+      >
+        Propriedade rural
+      </a>
 
-  {% if formulario %}
-    <input type="hidden" name="formulario_id" value="{{ formulario.id }}">
+      <a
+        class="btn {% if contexto == 'clinica' %}{% else %}btn-secondary{% endif %}"
+        href="{{ url_for('main.novo_atendimento', animal_id=animal.id, contexto='clinica') }}"
+      >
+        Clínica veterinária
+      </a>
+
+      <a
+        class="btn {% if contexto == 'hospital' %}{% else %}btn-secondary{% endif %}"
+        href="{{ url_for('main.novo_atendimento', animal_id=animal.id, contexto='hospital') }}"
+      >
+        Hospital veterinário
+      </a>
+    </div>
   {% endif %}
 
-  <div class="bloco-formulario">
-    <h3 class="bloco-formulario-titulo">Dados principais</h3>
-
-    <div class="form-field">
-      <label for="data_atendimento">
-        📅 Data do atendimento <span class="campo-obrigatorio">*</span>
-      </label>
-      <input
-        class="campo-padrao"
-        type="date"
-        name="data_atendimento"
-        id="data_atendimento"
-        required
-        value="{{ atendimento.data_atendimento.strftime('%Y-%m-%d') if modo_edicao and atendimento and atendimento.data_atendimento else '' }}"
-      >
+  {% if not formulario %}
+    <div class="atendimento-vazio">
+      Nenhum formulário ativo foi encontrado para este contexto e perfil de usuário.
     </div>
-  </div>
+  {% else %}
 
-  {% if formulario and campos %}
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Formulário clínico</h3>
+    <form
+      method="POST"
+      enctype="multipart/form-data"
+      class="atendimento-form"
+    >
+      <input type="hidden" name="contexto" value="{{ contexto or 'rural' }}">
 
-      {% for c in campos %}
-        {% if c.tipo == "checkbox" %}
-          <div class="checkbox-field">
+      <div class="atendimento-card">
+        <h3 class="atendimento-card-titulo">Dados gerais</h3>
+
+        <div class="atendimento-grid atendimento-grid-2">
+          <div class="atendimento-grupo">
+            <label for="data_atendimento">Data do atendimento *</label>
             <input
-              type="checkbox"
-              name="{{ c.nome_chave }}"
-              id="{{ c.nome_chave }}"
-              {% if modo_edicao and atendimento and atendimento.dados and atendimento.dados.get(c.nome_chave) %}
-                checked
-              {% endif %}
+              type="date"
+              id="data_atendimento"
+              name="data_atendimento"
+              class="campo-padrao"
+              required
+              value="{% if modo_edicao and atendimento and atendimento.data_atendimento %}{{ atendimento.data_atendimento.strftime('%Y-%m-%d') }}{% else %}{{ request.form.get('data_atendimento', '') }}{% endif %}"
             >
-            <label for="{{ c.nome_chave }}">
-              {{ c.rotulo }}
-              {% if c.obrigatorio %}<span class="campo-obrigatorio">*</span>{% endif %}
-            </label>
           </div>
+        </div>
+      </div>
 
-        {% else %}
-          <div class="form-field" style="margin-top: 10px;">
-            <label for="{{ c.nome_chave }}">
-              {{ c.rotulo }}
-              {% if c.obrigatorio %}<span class="campo-obrigatorio">*</span>{% endif %}
+      {% set ns = namespace(grupo_atual=None) %}
+
+      {% for campo in campos %}
+        {% if campo.visivel %}
+
+          {% set grupo_nome = campo.grupo or 'Outros dados' %}
+
+          {% if ns.grupo_atual != grupo_nome %}
+            {% if ns.grupo_atual is not none %}
+              </div>
+            {% endif %}
+
+            <div class="atendimento-card">
+              <h3 class="atendimento-card-titulo">{{ grupo_nome }}</h3>
+              <div class="atendimento-grid atendimento-grid-2">
+            {% set ns.grupo_atual = grupo_nome %}
+          {% endif %}
+
+          <div class="atendimento-grupo {% if campo.tipo == 'textarea' %}atendimento-grupo-full{% endif %}">
+            <label for="{{ campo.nome_chave }}">
+              {{ campo.rotulo }}{% if campo.obrigatorio %} *{% endif %}
             </label>
 
-            {% if c.tipo == "textarea" %}
-              <textarea
-                class="campo-padrao"
-                name="{{ c.nome_chave }}"
-                id="{{ c.nome_chave }}"
-                {% if c.obrigatorio %}required{% endif %}
-              >{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}</textarea>
+            {% set valor_atual = none %}
+            {% if modo_edicao and atendimento %}
+              {% set valor_atual = atendimento.dados.get(campo.nome_chave) %}
+            {% else %}
+              {% set valor_atual = request.form.get(campo.nome_chave) %}
+            {% endif %}
 
-            {% elif c.tipo == "number" %}
+            {% if campo.tipo == "text" %}
               <input
+                type="text"
+                id="{{ campo.nome_chave }}"
+                name="{{ campo.nome_chave }}"
                 class="campo-padrao"
-                type="number"
-                name="{{ c.nome_chave }}"
-                id="{{ c.nome_chave }}"
-                step="any"
-                {% if c.obrigatorio %}required{% endif %}
-                value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
+                {% if campo.placeholder %}placeholder="{{ campo.placeholder }}"{% endif %}
+                {% if campo.obrigatorio %}required{% endif %}
+                value="{{ valor_atual or '' }}"
               >
 
-            {% elif c.tipo == "select" %}
-              <select
+            {% elif campo.tipo == "number" %}
+              <input
+                type="number"
+                id="{{ campo.nome_chave }}"
+                name="{{ campo.nome_chave }}"
                 class="campo-padrao"
-                name="{{ c.nome_chave }}"
-                id="{{ c.nome_chave }}"
-                {% if c.obrigatorio %}required{% endif %}
+                {% if campo.placeholder %}placeholder="{{ campo.placeholder }}"{% endif %}
+                {% if campo.obrigatorio %}required{% endif %}
+                value="{{ valor_atual if valor_atual is not none else '' }}"
+              >
+
+            {% elif campo.tipo == "date" %}
+              <input
+                type="date"
+                id="{{ campo.nome_chave }}"
+                name="{{ campo.nome_chave }}"
+                class="campo-padrao"
+                {% if campo.obrigatorio %}required{% endif %}
+                value="{{ valor_atual or '' }}"
+              >
+
+            {% elif campo.tipo == "datetime" %}
+              <input
+                type="datetime-local"
+                id="{{ campo.nome_chave }}"
+                name="{{ campo.nome_chave }}"
+                class="campo-padrao"
+                {% if campo.obrigatorio %}required{% endif %}
+                value="{{ valor_atual or '' }}"
+              >
+
+            {% elif campo.tipo == "textarea" %}
+              <textarea
+                id="{{ campo.nome_chave }}"
+                name="{{ campo.nome_chave }}"
+                class="campo-padrao campo-padrao-textarea"
+                {% if campo.placeholder %}placeholder="{{ campo.placeholder }}"{% endif %}
+                {% if campo.obrigatorio %}required{% endif %}
+              >{{ valor_atual or '' }}</textarea>
+
+            {% elif campo.tipo == "select" %}
+              <select
+                id="{{ campo.nome_chave }}"
+                name="{{ campo.nome_chave }}"
+                class="campo-padrao"
+                {% if campo.obrigatorio %}required{% endif %}
               >
                 <option value="">Selecione</option>
-                {% if c.opcoes %}
-                  {% for op in c.opcoes %}
-                    <option
-                      value="{{ op }}"
-                      {% if modo_edicao and atendimento and atendimento.dados.get(c.nome_chave) == op %}
-                        selected
-                      {% endif %}
-                    >
-                      {{ op }}
-                    </option>
-                  {% endfor %}
-                {% endif %}
+                {% for opcao in campo.opcoes or [] %}
+                  <option
+                    value="{{ opcao }}"
+                    {% if valor_atual == opcao %}selected{% endif %}
+                  >
+                    {{ opcao }}
+                  </option>
+                {% endfor %}
               </select>
 
-            {% elif c.tipo == "date" %}
-              <input
-                class="campo-padrao"
-                type="date"
-                name="{{ c.nome_chave }}"
-                id="{{ c.nome_chave }}"
-                {% if c.obrigatorio %}required{% endif %}
-                value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
-              >
+            {% elif campo.tipo == "checkbox" %}
+              {% if campo.opcoes %}
+                {% set valores_marcados = [] %}
+                {% if modo_edicao and atendimento and atendimento.dados.get(campo.nome_chave) is iterable and atendimento.dados.get(campo.nome_chave) is not string %}
+                  {% set valores_marcados = atendimento.dados.get(campo.nome_chave) %}
+                {% endif %}
 
-            {% else %}
-              <input
-                class="campo-padrao"
-                type="text"
-                name="{{ c.nome_chave }}"
-                id="{{ c.nome_chave }}"
-                {% if c.obrigatorio %}required{% endif %}
-                value="{{ atendimento.dados.get(c.nome_chave, '') if modo_edicao and atendimento and atendimento.dados else '' }}"
-              >
+                <div class="atendimento-checkbox-multi">
+                  {% for opcao in campo.opcoes %}
+                    <label class="atendimento-checkbox-item">
+                      <input
+                        type="checkbox"
+                        name="{{ campo.nome_chave }}"
+                        value="{{ opcao }}"
+                        {% if opcao in valores_marcados %}checked{% endif %}
+                      >
+                      <span>{{ opcao }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <label class="atendimento-checkbox-simples">
+                  <input
+                    type="checkbox"
+                    id="{{ campo.nome_chave }}"
+                    name="{{ campo.nome_chave }}"
+                    {% if valor_atual %}checked{% endif %}
+                  >
+                  <span>Marcar</span>
+                </label>
+              {% endif %}
+            {% endif %}
+
+            {% if campo.ajuda %}
+              <small class="atendimento-ajuda">{{ campo.ajuda }}</small>
             {% endif %}
           </div>
+
         {% endif %}
       {% endfor %}
-    </div>
-  {% elif formularios_disponiveis %}
-    <div class="bloco-formulario">
-      <div class="formulario-vazio">
-        Selecione um formulário acima para exibir os campos clínicos deste atendimento.
+
+      {% if ns.grupo_atual is not none %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="atendimento-card">
+        <h3 class="atendimento-card-titulo">Imagens do atendimento</h3>
+
+        <div class="atendimento-grupo">
+          <label for="imagens">Adicionar imagens</label>
+          <input
+            type="file"
+            id="imagens"
+            name="imagens"
+            multiple
+            accept=".png,.jpg,.jpeg,.webp"
+            class="campo-padrao"
+          >
+          <small class="atendimento-ajuda">
+            Você pode enviar uma ou mais imagens relacionadas ao caso.
+          </small>
+        </div>
       </div>
-    </div>
+
+      <div class="atendimento-acoes">
+        <button type="submit">
+          {% if modo_edicao %}
+            Salvar alterações
+          {% else %}
+            Salvar atendimento
+          {% endif %}
+        </button>
+
+        <a
+          class="btn btn-secondary"
+          href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}"
+        >
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+
   {% endif %}
 
-  <div class="bloco-formulario">
-    <h3 class="bloco-formulario-titulo">Imagens do atendimento</h3>
-
-    <div class="form-field">
-      <label for="imagens">📷 Upload de imagens</label>
-      <input
-        type="file"
-        name="imagens"
-        id="imagens"
-        accept=".jpg,.jpeg,.png,.webp"
-        multiple
-      >
-      <small class="form-help">
-        Você pode enviar uma ou mais imagens clínicas deste atendimento.
-      </small>
-    </div>
-  </div>
-
-  <div class="atendimento-form-acoes">
-    <button type="submit" {% if not formulario %}disabled{% endif %}>
-      {% if modo_edicao %}
-        Salvar alterações
-      {% else %}
-        Salvar atendimento
-      {% endif %}
-    </button>
-
-    <button type="button" onclick="salvarOffline()" class="btn btn-secondary" {% if not formulario %}disabled{% endif %}>
-      💾 Salvar offline
-    </button>
-  </div>
-
-</form>
-
-<div class="rodape-voltar">
-  <a href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}">← Voltar</a>
 </div>
-
-<script>
-function salvarOffline() {
-  const form = document.getElementById("formAtendimento");
-  const formData = new FormData(form);
-  const dados = {};
-
-  formData.forEach((value, key) => {
-    if (value instanceof File) return;
-    dados[key] = value;
-  });
-
-  const checkboxes = form.querySelectorAll("input[type='checkbox']");
-  checkboxes.forEach(cb => {
-    dados[cb.name] = cb.checked;
-  });
-
-  dados._offline_id = crypto.randomUUID();
-  dados._salvo_em = new Date().toISOString();
-  dados._animal_id = "{{ animal.id }}";
-  dados._formulario_id = "{{ formulario.id if formulario else '' }}";
-
-  let lista = JSON.parse(localStorage.getItem("atendimentos_offline") || "[]");
-  lista.push(dados);
-
-  localStorage.setItem("atendimentos_offline", JSON.stringify(lista));
-
-  alert("Atendimento salvo offline com sucesso!");
-}
-</script>
 
 {% endblock %}

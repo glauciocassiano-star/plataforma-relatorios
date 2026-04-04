@@ -13,6 +13,11 @@ from ..helpers.decorators import (
 )
 from ..models import Animal, Atendimento, Exame, Formulario, Propriedade
 from ..services.animal_service import listar_animais_da_propriedade
+from ..services.formulario_service import (
+    listar_campos_formulario,
+    normalizar_contexto,
+    obter_formulario_ativo,
+)
 from ..services.propriedade_service import listar_propriedades_do_usuario
 from ..utils.pdf import gerar_pdf_atendimento
 from ..utils.uploads import salvar_arquivo_exame, salvar_imagem_atendimento
@@ -57,6 +62,7 @@ def selecionar_atendimento():
         animais_info=animais_info,
     )
 
+
 @main.route("/animais/<int:animal_id>/atendimentos/novo", methods=["GET", "POST"])
 @login_obrigatorio
 @acesso_animal
@@ -72,33 +78,25 @@ def novo_atendimento(animal_id):
             perfil_simulado = "veterinario"
         perfil = perfil_simulado
 
-    formularios_disponiveis = (
-        Formulario.query
-        .filter(
-            Formulario.ativo.is_(True),
-            Formulario.perfil_alvo.in_([perfil, "ambos"])
-        )
-        .order_by(Formulario.nome.asc())
-        .all()
+    contexto = normalizar_contexto(request.values.get("contexto"))
+
+    cliente_id = getattr(usuario, "cliente_id", None)
+
+    formulario = obter_formulario_ativo(
+        tipo_contexto=contexto,
+        perfil=perfil,
+        cliente_id=cliente_id,
+        perfil_usuario_logado=usuario.perfil,
     )
 
-    formulario_id = request.values.get("formulario_id", type=int)
-
-    formulario = None
-    if formulario_id:
-        formulario = next(
-            (f for f in formularios_disponiveis if f.id == formulario_id),
-            None
-        )
-
-    if not formulario and formularios_disponiveis:
-        formulario = formularios_disponiveis[0]
-
-    campos = sorted(formulario.campos, key=lambda c: (c.ordem or 0, c.id)) if formulario else []
+    campos = listar_campos_formulario(formulario.id) if formulario else []
 
     if request.method == "POST":
         if not formulario:
-            flash("Selecione um formulário válido para continuar.", "error")
+            flash(
+                "Nenhum formulário ativo foi encontrado para este contexto de atendimento.",
+                "error",
+            )
             return redirect(request.url)
 
         dados = {}
@@ -126,7 +124,13 @@ def novo_atendimento(animal_id):
             valor = request.form.get(campo.nome_chave)
 
             if campo.tipo == "checkbox":
-                valor = campo.nome_chave in request.form
+                if campo.opcoes:
+                    valor = request.form.getlist(campo.nome_chave)
+                    valor = [v.strip() for v in valor if v and v.strip()]
+                    if not valor:
+                        valor = []
+                else:
+                    valor = campo.nome_chave in request.form
 
             elif campo.tipo == "number":
                 if valor not in (None, ""):
@@ -148,6 +152,16 @@ def novo_atendimento(animal_id):
                 else:
                     valor = None
 
+            elif campo.tipo == "datetime":
+                if valor:
+                    try:
+                        datetime.strptime(valor, "%Y-%m-%dT%H:%M")
+                    except ValueError:
+                        erro = f"O campo '{campo.rotulo}' possui uma data/hora inválida."
+                        break
+                else:
+                    valor = None
+
             else:
                 valor = (valor or "").strip() or None
 
@@ -156,6 +170,7 @@ def novo_atendimento(animal_id):
                     valor is None
                     or valor == ""
                     or (campo.tipo == "checkbox" and valor is False)
+                    or (isinstance(valor, list) and len(valor) == 0)
                 )
                 if vazio:
                     erro = f"O campo '{campo.rotulo}' é obrigatório."
@@ -197,10 +212,12 @@ def novo_atendimento(animal_id):
         "atendimento_novo.html",
         animal=animal,
         formulario=formulario,
-        formularios_disponiveis=formularios_disponiveis,
         campos=campos,
         perfil_efetivo=perfil,
+        contexto=contexto,
+        formularios_disponiveis=[formulario] if formulario else [],
     )
+
 
 @main.route("/atendimentos/<int:id>/editar", methods=["GET", "POST"])
 @login_obrigatorio
@@ -215,7 +232,7 @@ def editar_atendimento(id):
         return redirect(url_for("main.prontuario_animal", animal_id=animal.id))
 
     formulario = atendimento.formulario
-    campos = sorted(formulario.campos, key=lambda c: (c.ordem or 0, c.id)) if formulario else []
+    campos = listar_campos_formulario(formulario.id) if formulario else []
 
     if request.method == "POST":
         dados = {}
@@ -247,7 +264,13 @@ def editar_atendimento(id):
             valor = request.form.get(campo.nome_chave)
 
             if campo.tipo == "checkbox":
-                valor = campo.nome_chave in request.form
+                if campo.opcoes:
+                    valor = request.form.getlist(campo.nome_chave)
+                    valor = [v.strip() for v in valor if v and v.strip()]
+                    if not valor:
+                        valor = []
+                else:
+                    valor = campo.nome_chave in request.form
 
             elif campo.tipo == "number":
                 if valor not in (None, ""):
@@ -269,6 +292,16 @@ def editar_atendimento(id):
                 else:
                     valor = None
 
+            elif campo.tipo == "datetime":
+                if valor:
+                    try:
+                        datetime.strptime(valor, "%Y-%m-%dT%H:%M")
+                    except ValueError:
+                        erro = f"O campo '{campo.rotulo}' possui uma data/hora inválida."
+                        break
+                else:
+                    valor = None
+
             else:
                 valor = (valor or "").strip() or None
 
@@ -277,6 +310,7 @@ def editar_atendimento(id):
                     valor is None
                     or valor == ""
                     or (campo.tipo == "checkbox" and valor is False)
+                    or (isinstance(valor, list) and len(valor) == 0)
                 )
                 if vazio:
                     erro = f"O campo '{campo.rotulo}' é obrigatório."
@@ -315,6 +349,7 @@ def editar_atendimento(id):
         campos=campos,
         atendimento=atendimento,
         modo_edicao=True,
+        contexto=getattr(formulario, "tipo_contexto", "rural"),
     )
 
 

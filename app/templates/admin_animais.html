@@ -1,62 +1,115 @@
 {% extends "base.html" %}
+{% block title %}Animais{% endblock %}
+
 {% block content %}
 
-<h2>Animais</h2>
+<div class="animais-admin-shell">
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div style="margin: 10px 0;">
-      {% for category, msg in messages %}
-        <div style="padding:10px;border-radius:8px;margin-bottom:8px;
-          background:{% if category=='success' %}#e8fff0{% else %}#ffecec{% endif %};
-          border:1px solid {% if category=='success' %}#98f0b1{% else %}#ffb3b3{% endif %};">
-          {{ msg }}
+  <div class="animais-admin-topo">
+    <h2 class="animais-admin-titulo">Animais</h2>
+    <p class="animais-admin-subtitulo">
+      Cadastre e visualize os animais vinculados às propriedades, mantendo uma base organizada para acompanhamento clínico e sanitário.
+    </p>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="animais-admin-flashes">
+        {% for category, msg in messages %}
+          <div class="animais-admin-flash {{ 'success' if category == 'success' else 'error' }}">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="animais-admin-card">
+    <h3 class="animais-admin-card-titulo">Novo animal</h3>
+
+    <form method="POST" class="animais-admin-form">
+      <div class="animais-admin-form-grupo">
+        <label for="propriedade_id">Propriedade *</label>
+        <select name="propriedade_id" id="propriedade_id" required>
+          <option value="">Selecione a propriedade</option>
+          {% for p in propriedades %}
+            <option value="{{ p.id }}">{{ p.nome }} ({{ p.produtor }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="animais-admin-form-grid">
+        <div class="animais-admin-form-grupo">
+          <label for="codigo">Código do animal *</label>
+          <input id="codigo" name="codigo" placeholder="Informe o código do animal" required>
         </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
 
-<form method="POST" style="display:grid;gap:10px;max-width:520px;">
-  <select name="propriedade_id">
-    <option value="">Selecione a propriedade *</option>
-    {% for p in propriedades %}
-      <option value="{{ p.id }}">{{ p.nome }} ({{ p.produtor }})</option>
-    {% endfor %}
-  </select>
+        <div class="animais-admin-form-grupo">
+          <label for="nome">Nome</label>
+          <input id="nome" name="nome" placeholder="Nome (opcional)">
+        </div>
 
-  <input name="codigo" placeholder="Código do animal (manual) *" />
-  <input name="nome" placeholder="Nome (opcional)" />
-  <input name="raca" placeholder="Raça (opcional)" />
-  <input name="sexo" placeholder="Sexo (M/F) (opcional)" />
-  <input name="perfil_genetico" placeholder="Perfil genético (opcional)" />
+        <div class="animais-admin-form-grupo">
+          <label for="raca">Raça</label>
+          <input id="raca" name="raca" placeholder="Raça (opcional)">
+        </div>
 
-  <button type="submit">Salvar</button>
-</form>
+        <div class="animais-admin-form-grupo">
+          <label for="sexo">Sexo</label>
+          <input id="sexo" name="sexo" placeholder="Sexo (M/F) (opcional)">
+        </div>
 
-<hr style="margin:20px 0;"/>
+        <div class="animais-admin-form-grupo animais-admin-form-grupo-full">
+          <label for="perfil_genetico">Perfil genético</label>
+          <input id="perfil_genetico" name="perfil_genetico" placeholder="Perfil genético (opcional)">
+        </div>
+      </div>
 
-<table>
-  <tr>
-    <th>ID</th>
-    <th>Código</th>
-    <th>Nome</th>
-    <th>Raça</th>
-    <th>Sexo</th>
-    <th>Perfil genético</th>
-    <th>Propriedade</th>
-  </tr>
-  {% for a in animais %}
-  <tr>
-    <td>{{ a.id }}</td>
-    <td>{{ a.codigo }}</td>
-    <td>{{ a.nome or "-" }}</td>
-    <td>{{ a.raca or "-" }}</td>
-    <td>{{ a.sexo or "-" }}</td>
-    <td>{{ a.perfil_genetico or "-" }}</td>
-    <td>{{ a.propriedade.nome if a.propriedade else "-" }}</td>
-  </tr>
-  {% endfor %}
-</table>
+      <div class="animais-admin-acoes">
+        <button type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="animais-admin-card">
+    <h3 class="animais-admin-card-titulo">Lista de animais</h3>
+
+    {% if animais %}
+      <div class="table-wrap">
+        <table class="animais-admin-tabela">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Código</th>
+              <th>Nome</th>
+              <th>Raça</th>
+              <th>Sexo</th>
+              <th>Perfil genético</th>
+              <th>Propriedade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in animais %}
+            <tr>
+              <td>{{ a.id }}</td>
+              <td>{{ a.codigo }}</td>
+              <td>{{ a.nome or "-" }}</td>
+              <td>{{ a.raca or "-" }}</td>
+              <td>{{ a.sexo or "-" }}</td>
+              <td>{{ a.perfil_genetico or "-" }}</td>
+              <td>{{ a.propriedade.nome if a.propriedade else "-" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="animais-admin-vazio">
+        Nenhum animal cadastrado até o momento.
+      </div>
+    {% endif %}
+  </div>
+
+</div>
 
 {% endblock %}

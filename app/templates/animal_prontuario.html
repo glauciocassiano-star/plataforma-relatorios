@@ -4,367 +4,153 @@
 
 {% block content %}
 
-<h2 style="margin-bottom:18px;">Prontuário do Animal</h2>
+<div class="prontuario-shell">
 
-<div style="
-  margin-bottom:20px;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:18px;
-  background:#ffffff;
-  box-shadow:0 2px 4px rgba(0,0,0,0.04);
-">
-  <div style="
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
-    gap:10px 18px;
-  ">
-    <div><b>Código:</b> {{ animal.codigo }}</div>
-    <div><b>Nome:</b> {{ animal.nome or "-" }}</div>
-    <div><b>Data de nascimento:</b> {{ animal.data_nascimento.strftime("%d/%m/%Y") if animal.data_nascimento else "-" }}</div>
-    <div><b>Espécie:</b> {{ animal.especie or "-" }}</div>
-    <div><b>Raça:</b> {{ animal.raca or "-" }}</div>
-    <div><b>Sexo:</b> {{ animal.sexo or "-" }}</div>
-    <div style="grid-column:1 / -1;"><b>Perfil genético:</b> {{ animal.perfil_genetico or "-" }}</div>
+  <div class="prontuario-topo">
+    <h2 class="prontuario-titulo">Prontuário do animal</h2>
   </div>
-</div>
 
-<div style="
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin:14px 0 22px 0;
-">
-  <a class="btn" href="{{ url_for('main.novo_atendimento', animal_id=animal.id) }}">
-    + Novo atendimento
-  </a>
-  <a class="btn btn-secondary" href="{{ url_for('main.listar_animais', propriedade_id=animal.propriedade_id) }}">
-    Voltar aos animais
-  </a>
-</div>
-
-<hr style="margin:18px 0;"/>
-
-<h3 style="margin-bottom:16px;">Atendimentos</h3>
-
-{% if not atendimentos %}
-  <div style="
-    border:1px dashed #d1d5db;
-    border-radius:12px;
-    padding:16px;
-    background:#f9fafb;
-    color:#4b5563;
-  ">
-    Nenhum atendimento registrado ainda.
+  <div class="prontuario-card-info">
+    <div class="prontuario-grid">
+      <div><b>Código:</b> {{ animal.codigo }}</div>
+      <div><b>Nome:</b> {{ animal.nome or "-" }}</div>
+      <div><b>Data de nascimento:</b> {{ animal.data_nascimento.strftime("%d/%m/%Y") if animal.data_nascimento else "-" }}</div>
+      <div><b>Espécie:</b> {{ animal.especie or "-" }}</div>
+      <div><b>Raça:</b> {{ animal.raca or "-" }}</div>
+      <div><b>Sexo:</b> {{ animal.sexo or "-" }}</div>
+      <div class="full"><b>Perfil genético:</b> {{ animal.perfil_genetico or "-" }}</div>
+    </div>
   </div>
-{% else %}
-  {% for a in atendimentos %}
-    <div style="
-      border:1px solid #e5e7eb;
-      border-radius:14px;
-      padding:18px;
-      margin-bottom:18px;
-      background:#ffffff;
-      box-shadow:0 2px 4px rgba(0,0,0,0.04);
-    ">
 
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:flex-start;
-        gap:18px;
-        flex-wrap:wrap;
-      ">
-        <div style="flex:1;min-width:240px;">
-          <div style="font-size:18px;font-weight:600;color:#1f2937;margin-bottom:8px;">
-            Atendimento
+  <div class="prontuario-acoes">
+    <a class="btn" href="{{ url_for('main.novo_atendimento', animal_id=animal.id) }}">
+      + Novo atendimento
+    </a>
+
+    <a class="btn btn-secondary"
+       href="{{ url_for('main.listar_animais', propriedade_id=animal.propriedade_id) }}">
+      Voltar
+    </a>
+  </div>
+
+  <h3 class="prontuario-subtitulo">Atendimentos</h3>
+
+  {% if not atendimentos %}
+    <div class="prontuario-vazio">
+      Nenhum atendimento registrado ainda.
+    </div>
+  {% else %}
+
+    {% for a in atendimentos %}
+      <div class="prontuario-card">
+
+        <div class="prontuario-header">
+          <div>
+            <div class="prontuario-card-titulo">Atendimento</div>
+
+            <div><b>Data:</b> {{ a.data_atendimento.strftime("%d/%m/%Y") if a.data_atendimento else "-" }}</div>
+            <div class="muted">
+              <b>Registrado em:</b> {{ a.criado_em.strftime("%d/%m/%Y às %H:%M") if a.criado_em else "-" }}
+            </div>
+            <div class="muted"><b>ID:</b> {{ a.id }}</div>
           </div>
 
-          <div style="margin-bottom:6px;">
-            <b>Data do atendimento:</b>
-            {{ a.data_atendimento.strftime("%d/%m/%Y") if a.data_atendimento else "-" }}
-          </div>
+          <div class="prontuario-acoes-card">
 
-          <div style="margin-bottom:6px;color:#4b5563;">
-            <b>Registrado em:</b>
-            {{ a.criado_em.strftime("%d/%m/%Y às %H:%M") if a.criado_em else "-" }}
-          </div>
-
-          <div style="color:#6b7280;">
-            <b>ID:</b> {{ a.id }}
-          </div>
-        </div>
-
-        <div style="
-          display:grid;
-          grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));
-          gap:8px;
-          width:100%;
-          max-width:560px;
-        ">
-          <a
-            href="{{ url_for('main.exportar_atendimento_pdf', id=a.id) }}"
-            class="btn btn-secondary"
-            target="_blank"
-          >
-            📄 Exportar PDF
-          </a>
-
-          {% if not a.bloqueado_em %}
-
-            <a
-              href="{{ url_for('main.editar_atendimento', id=a.id) }}"
-              class="btn btn-secondary"
-            >
-              Editar atendimento
+            <a href="{{ url_for('main.exportar_atendimento_pdf', id=a.id) }}"
+               class="btn btn-secondary"
+               target="_blank">
+              📄 PDF
             </a>
 
-            {% if usuario_logado and usuario_logado.perfil in ["admin_master", "veterinario"] %}
+            {% if not a.bloqueado_em %}
 
-              <a
-                href="{{ url_for('main.excluir_atendimento', id=a.id) }}"
-                class="btn btn-danger"
-                onclick="return confirm('Tem certeza que deseja excluir este atendimento?');"
-              >
-                Excluir atendimento
+              <a href="{{ url_for('main.editar_atendimento', id=a.id) }}"
+                 class="btn btn-secondary">
+                Editar
               </a>
 
-              <a
-                href="{{ url_for('main.novo_exame', id=a.id) }}"
-                class="btn btn-secondary"
-              >
-                + Exame
-              </a>
+              {% if usuario_logado and usuario_logado.perfil in ["admin_master", "veterinario"] %}
 
-              <a
-                href="{{ url_for('main.bloquear_atendimento', id=a.id) }}"
-                class="btn"
-                onclick="return confirm('Deseja bloquear este atendimento? Depois disso ele não poderá mais ser editado.');"
-              >
-                🔒 Bloquear
-              </a>
+                <a href="{{ url_for('main.excluir_atendimento', id=a.id) }}"
+                   class="btn btn-soft-danger"
+                   onclick="return confirm('Tem certeza que deseja excluir este atendimento?');">
+                  Excluir
+                </a>
 
-            {% endif %}
+                <a href="{{ url_for('main.novo_exame', id=a.id) }}"
+                   class="btn btn-secondary">
+                  + Exame
+                </a>
 
-          {% else %}
+                <a href="{{ url_for('main.bloquear_atendimento', id=a.id) }}"
+                   class="btn"
+                   onclick="return confirm('Deseja bloquear este atendimento?');">
+                  🔒 Bloquear
+                </a>
 
-            {% if usuario_logado and usuario_logado.perfil in ["admin_master", "veterinario"] %}
-
-              <a
-                href="{{ url_for('main.desbloquear_atendimento', id=a.id) }}"
-                class="btn btn-secondary"
-                onclick="return confirm('Deseja desbloquear este atendimento?');"
-              >
-                🔓 Desbloquear
-              </a>
-
-              <a
-                href="{{ url_for('main.novo_exame', id=a.id) }}"
-                class="btn btn-secondary"
-              >
-                + Exame
-              </a>
+              {% endif %}
 
             {% else %}
 
-              <span style="
-                display:inline-flex;
-                align-items:center;
-                justify-content:center;
-                min-height:44px;
-                padding:8px 12px;
-                border-radius:8px;
-                background:#f3f4f6;
-                color:#374151;
-                border:1px solid #d1d5db;
-                font-weight:600;
-              ">
-                🔒 Atendimento bloqueado
-              </span>
+              {% if usuario_logado and usuario_logado.perfil in ["admin_master", "veterinario"] %}
+
+                <a href="{{ url_for('main.desbloquear_atendimento', id=a.id) }}"
+                   class="btn btn-secondary">
+                  🔓 Desbloquear
+                </a>
+
+                <a href="{{ url_for('main.novo_exame', id=a.id) }}"
+                   class="btn btn-secondary">
+                  + Exame
+                </a>
+
+              {% else %}
+
+                <span class="prontuario-badge-bloqueado">
+                  🔒 Atendimento bloqueado
+                </span>
+
+              {% endif %}
 
             {% endif %}
 
-          {% endif %}
-        </div>
-      </div>
-
-      {% if a.bloqueado_em %}
-        <div style="
-          margin-top:14px;
-          padding:10px 12px;
-          border-radius:8px;
-          background:#fef2f2;
-          color:#991b1b;
-          border:1px solid #fecaca;
-        ">
-          <b>Atendimento bloqueado em:</b>
-          {{ a.bloqueado_em.strftime("%d/%m/%Y %H:%M") }}
-        </div>
-      {% endif %}
-
-      <div style="
-        margin-top:18px;
-        padding:14px;
-        border-radius:10px;
-        background:#f9fafb;
-        border:1px solid #e5e7eb;
-      ">
-        <div style="font-weight:600;margin-bottom:10px;color:#1f2937;">
-          Resumo clínico / epidemiológico
+          </div>
         </div>
 
-        <div style="margin-bottom:6px;">
-          <b>Diagnóstico principal:</b>
-          {{ a.dados.get('diagnostico_principal', '-') if a.dados else '-' }}
+        {% if a.bloqueado_em %}
+          <div class="prontuario-alerta">
+            Atendimento bloqueado em {{ a.bloqueado_em.strftime("%d/%m/%Y %H:%M") }}
+          </div>
+        {% endif %}
+
+        <div class="prontuario-bloco">
+          <div class="titulo-bloco">Resumo clínico</div>
+
+          <div><b>Diagnóstico:</b> {{ a.dados.get('diagnostico_principal', '-') if a.dados else '-' }}</div>
+          <div><b>Categoria:</b> {{ a.dados.get('categoria_diagnostico', '-') if a.dados else '-' }}</div>
+          <div><b>Desfecho:</b> {{ a.dados.get('desfecho', '-') if a.dados else '-' }}</div>
         </div>
 
-        <div style="margin-bottom:6px;">
-          <b>Categoria diagnóstica:</b>
-          {{ a.dados.get('categoria_diagnostico', '-') if a.dados else '-' }}
-        </div>
+        <div class="prontuario-bloco">
+          <div class="titulo-bloco">Dados completos</div>
 
-        <div>
-          <b>Desfecho do caso:</b>
-          {{ a.dados.get('desfecho', '-') if a.dados else '-' }}
-        </div>
-      </div>
-
-      <div style="margin-top:18px;">
-        <div style="font-weight:600;margin-bottom:8px;color:#1f2937;">
-          Dados completos do atendimento
-        </div>
-
-        {% if a.dados %}
-          <div style="
-            border:1px solid #e5e7eb;
-            border-radius:10px;
-            padding:14px;
-            background:#ffffff;
-          ">
-            <ul style="margin:0 0 0 18px;padding:0;">
+          {% if a.dados %}
+            <ul>
               {% for k, v in a.dados.items() %}
-                <li style="margin-bottom:6px;line-height:1.5;">
-                  <b>{{ k }}:</b> {{ v if v not in [None, ""] else "-" }}
-                </li>
+                <li><b>{{ k }}:</b> {{ v if v else "-" }}</li>
               {% endfor %}
             </ul>
-          </div>
-        {% else %}
-          <p style="margin:0;color:#6b7280;">(sem dados)</p>
-        {% endif %}
+          {% else %}
+            <p class="muted">(sem dados)</p>
+          {% endif %}
+        </div>
+
       </div>
+    {% endfor %}
 
-      {% if a.exames %}
-        <div style="margin-top:18px;">
-          <div style="font-weight:600;margin-bottom:10px;color:#1f2937;">
-            Exames vinculados
-          </div>
+  {% endif %}
 
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            {% for ex in a.exames %}
-              <div style="
-                border:1px solid #e5e7eb;
-                border-radius:10px;
-                padding:14px;
-                background:#f9fafb;
-              ">
-                <div style="margin-bottom:6px;">
-                  <b>Categoria:</b> {{ ex.categoria|capitalize }}
-                </div>
-
-                <div style="margin-bottom:6px;">
-                  <b>Exame:</b> {{ ex.nome_exame }}
-                </div>
-
-                <div style="margin-bottom:6px;">
-                  <b>Data:</b> {{ ex.data_exame.strftime("%d/%m/%Y") if ex.data_exame else "-" }}
-                </div>
-
-                <div style="margin-bottom:6px;">
-                  <b>Resultado / Laudo:</b> {{ ex.resultado or "-" }}
-                </div>
-
-                <div style="margin-bottom:6px;">
-                  <b>Observações:</b> {{ ex.observacoes or "-" }}
-                </div>
-
-                {% if ex.arquivo %}
-                  <div style="margin-top:8px;">
-                    <a href="{{ url_for('static', filename=ex.arquivo) }}" target="_blank">
-                      Ver arquivo do exame
-                    </a>
-                  </div>
-                {% endif %}
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-
-      {% if a.imagens %}
-        <div style="margin-top:18px;">
-          <div style="font-weight:600;margin-bottom:10px;color:#1f2937;">
-            Imagens do atendimento
-          </div>
-
-          <div style="
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-            gap:12px;
-          ">
-            {% for img in a.imagens %}
-              <div style="
-                border:1px solid #e5e7eb;
-                border-radius:12px;
-                background:#ffffff;
-                padding:10px;
-                box-shadow:0 2px 6px rgba(0,0,0,0.04);
-              ">
-                <a
-                  href="{{ url_for('static', filename=img.caminho_arquivo) }}"
-                  target="_blank"
-                  style="display:block;"
-                >
-                  <img
-                    src="{{ url_for('static', filename=img.caminho_arquivo) }}"
-                    alt="{{ img.nome_arquivo }}"
-                    style="
-                      width:100%;
-                      height:180px;
-                      object-fit:cover;
-                      border-radius:10px;
-                      margin-bottom:8px;
-                    "
-                  >
-                </a>
-
-                <div style="
-                  font-size:12px;
-                  color:#6b7280;
-                  word-break:break-word;
-                  line-height:1.4;
-                ">
-                  {{ img.nome_arquivo }}
-                </div>
-
-                {% if img.descricao %}
-                  <div style="
-                    margin-top:6px;
-                    font-size:12px;
-                    color:#374151;
-                    line-height:1.4;
-                  ">
-                    {{ img.descricao }}
-                  </div>
-                {% endif %}
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-
-    </div>
-  {% endfor %}
-{% endif %}
+</div>
 
 {% endblock %}

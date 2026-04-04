@@ -18,7 +18,7 @@
       font-family: Arial, Helvetica, sans-serif;
       color: #1f2937;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     .header {
@@ -184,7 +184,7 @@
   </div>
 
   <div class="secao" style="margin-top:0;">
-    <h2>Ficha de Atendimento</h2>
+    <h2>Ficha de atendimento</h2>
     <div class="caixa">
       <div class="linha"><b>ID do atendimento:</b> {{ atendimento.id }}</div>
       <div class="linha">
@@ -216,7 +216,7 @@
   </div>
 
   <div class="secao">
-    <h2>Dados do Animal</h2>
+    <h2>Dados do animal</h2>
     <div class="caixa">
       <div class="linha"><b>Código:</b> {{ animal.codigo }}</div>
       <div class="linha"><b>Nome:</b> {{ animal.nome or "-" }}</div>
@@ -248,7 +248,7 @@
   </div>
 
   <div class="secao">
-    <h2>Resumo Clínico / Epidemiológico</h2>
+    <h2>Resumo clínico / epidemiológico</h2>
     <div class="resumo">
       <div class="linha">
         <b>Diagnóstico principal:</b>
@@ -266,7 +266,7 @@
   </div>
 
   <div class="secao">
-    <h2>Dados Completos do Atendimento</h2>
+    <h2>Dados completos do atendimento</h2>
     <div class="caixa">
       {% if atendimento.dados %}
         <ul>
@@ -288,7 +288,7 @@
   </div>
 
   <div class="secao">
-    <h2>Exames Vinculados</h2>
+    <h2>Exames vinculados</h2>
     <div class="caixa">
       {% if atendimento.exames %}
         <table>

@@ -4,253 +4,89 @@
 
 {% block content %}
 
-<style>
-  .admin-backup-layout {
-    display: grid;
-    gap: 24px;
-    margin-top: 20px;
-  }
+<div class="backup-shell">
 
-  .admin-card {
-    padding: 18px;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    box-sizing: border-box;
-    min-width: 0;
-  }
+  <div class="backup-topo">
+    <h2 class="backup-titulo">Backup do sistema</h2>
+    <p class="backup-subtitulo">
+      Gere cópias de segurança do banco de dados e acompanhe os arquivos de backup disponíveis para preservar a integridade das informações da plataforma.
+    </p>
+  </div>
 
-  .admin-card-compacto {
-    max-width: 720px;
-    width: 100%;
-  }
+  <div class="backup-layout">
 
-  .admin-texto-suave {
-    margin-top: 0;
-    color: #4b5563;
-    line-height: 1.6;
-  }
+    <div class="backup-card backup-card-compacto">
+      <div class="backup-aviso">
+        <strong>Recomendação:</strong> gere backups regularmente, especialmente antes de alterações estruturais, atualizações importantes ou mudanças administrativas.
+      </div>
 
-  .admin-titulo-secao {
-    margin-top: 0;
-    margin-bottom: 12px;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1f2937;
-    line-height: 1.3;
-  }
-
-  .admin-aviso {
-    color: #374151;
-    line-height: 1.5;
-    padding: 12px 14px;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    background: #f9fafb;
-  }
-
-  .admin-tabela-acoes {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    min-width: 210px;
-  }
-
-  .admin-tabela-acoes form {
-    margin: 0;
-  }
-
-  .admin-tabela-acoes .btn,
-  .admin-tabela-acoes button {
-    width: 100%;
-  }
-
-  .admin-vazio {
-    margin: 0;
-    color: #6b7280;
-  }
-
-  .admin-rodape-acoes {
-    margin-top: 24px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .table-wrap {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .admin-tabela {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 620px;
-  }
-
-  .admin-tabela thead th {
-    text-align: left;
-    padding: 14px 12px;
-    background: #f3f4f6;
-    color: #1f2937;
-    font-weight: 700;
-    border-bottom: 1px solid #e5e7eb;
-    white-space: nowrap;
-  }
-
-  .admin-tabela tbody td {
-    padding: 14px 12px;
-    border-bottom: 1px solid #eef2f7;
-    color: #1f2937;
-    vertical-align: top;
-  }
-
-  .admin-tabela tbody tr:hover {
-    background: #fafafa;
-  }
-
-  @media (max-width: 768px) {
-    .admin-card {
-      padding: 14px;
-      border-radius: 14px;
-    }
-
-    .admin-card-compacto {
-      max-width: 100%;
-    }
-
-    .admin-titulo-secao {
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-
-    .admin-aviso {
-      padding: 10px 12px;
-      font-size: 14px;
-    }
-
-    .admin-card form .btn,
-    .admin-card form button {
-      width: 100%;
-    }
-
-    .admin-tabela {
-      min-width: 560px;
-    }
-
-    .admin-tabela thead th,
-    .admin-tabela tbody td {
-      padding: 10px 8px;
-      font-size: 13px;
-    }
-
-    .admin-tabela-acoes {
-      grid-template-columns: 1fr;
-      min-width: 140px;
-    }
-
-    .admin-rodape-acoes .btn {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .admin-card {
-      padding: 12px;
-      border-radius: 12px;
-    }
-
-    .admin-tabela {
-      min-width: 520px;
-    }
-
-    .admin-tabela thead th,
-    .admin-tabela tbody td {
-      font-size: 12px;
-    }
-  }
-</style>
-
-<h2 style="margin-bottom:18px;">Backup do Sistema</h2>
-
-<p class="admin-texto-suave">
-  Gere uma cópia de segurança do banco de dados e gerencie os arquivos de backup já existentes.
-</p>
-
-<div class="admin-backup-layout">
-
-  <div class="admin-card admin-card-compacto">
-    <div class="admin-aviso">
-      <b>Recomendação:</b> gere backups regularmente antes de alterações importantes no sistema.
+      <form method="POST" action="{{ url_for('main.gerar_backup') }}" class="backup-form">
+        <button type="submit" class="btn">
+          💾 Gerar backup em ZIP
+        </button>
+      </form>
     </div>
 
-    <form method="POST" action="{{ url_for('main.gerar_backup') }}" style="margin-top:14px;">
-      <button type="submit" class="btn">
-        💾 Gerar backup em ZIP
-      </button>
-    </form>
-  </div>
+    <div class="backup-card">
+      <h3 class="backup-card-titulo">Backups disponíveis</h3>
 
-  <div class="admin-card">
-    <h3 class="admin-titulo-secao">Backups disponíveis</h3>
-
-    {% if backups %}
-      <div class="table-wrap">
-        <table class="admin-tabela">
-          <thead>
-            <tr>
-              <th>Arquivo</th>
-              <th>Data</th>
-              <th>Tamanho</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in backups %}
+      {% if backups %}
+        <div class="table-wrap">
+          <table class="backup-tabela">
+            <thead>
               <tr>
-                <td>{{ item.nome }}</td>
-                <td>{{ item.modificado_em.strftime("%d/%m/%Y %H:%M") }}</td>
-                <td>{{ item.tamanho_mb }} MB</td>
-                <td>
-                  <div class="admin-tabela-acoes">
-                    <a
-                      class="btn btn-secondary"
-                      href="{{ url_for('main.baixar_backup', nome_arquivo=item.nome) }}"
-                    >
-                      ⬇ Baixar
-                    </a>
-
-                    <form
-                      method="POST"
-                      action="{{ url_for('main.excluir_backup', nome_arquivo=item.nome) }}"
-                      onsubmit="return confirm('Tem certeza que deseja excluir este backup?');"
-                    >
-                      <button type="submit" class="btn btn-danger">
-                        🗑 Excluir
-                      </button>
-                    </form>
-                  </div>
-                </td>
+                <th>Arquivo</th>
+                <th>Data</th>
+                <th>Tamanho</th>
+                <th>Ações</th>
               </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% else %}
-      <p class="admin-vazio">
-        Nenhum backup encontrado ainda.
-      </p>
-    {% endif %}
+            </thead>
+            <tbody>
+              {% for item in backups %}
+                <tr>
+                  <td>{{ item.nome }}</td>
+                  <td>{{ item.modificado_em.strftime("%d/%m/%Y %H:%M") }}</td>
+                  <td>{{ item.tamanho_mb }} MB</td>
+                  <td>
+                    <div class="backup-tabela-acoes">
+                      <a
+                        class="btn btn-secondary"
+                        href="{{ url_for('main.baixar_backup', nome_arquivo=item.nome) }}"
+                      >
+                        ⬇ Baixar
+                      </a>
+
+                      <form
+                        method="POST"
+                        action="{{ url_for('main.excluir_backup', nome_arquivo=item.nome) }}"
+                        onsubmit="return confirm('Tem certeza que deseja excluir este backup?');"
+                      >
+                        <button type="submit" class="btn btn-soft-danger">
+                          🗑 Excluir
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="backup-vazio">
+          Nenhum backup encontrado ainda.
+        </div>
+      {% endif %}
+    </div>
+
   </div>
 
-</div>
+  <div class="backup-rodape-acoes">
+    <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">
+      Voltar à administração
+    </a>
+  </div>
 
-<div class="admin-rodape-acoes">
-  <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">
-    Voltar à administração
-  </a>
 </div>
 
 {% endblock %}

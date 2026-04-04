@@ -4,255 +4,38 @@
 
 {% block content %}
 
-<style>
-  .animal-shell {
-    display: grid;
-    gap: 18px;
-    width: 100%;
-  }
+<div class="animal-editar-shell">
 
-  .animal-topo-card,
-  .animal-form-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    padding: 18px;
-  }
-
-  .animal-topo-card h2 {
-    margin: 0 0 8px 0;
-    color: #1f2937;
-    line-height: 1.25;
-  }
-
-  .animal-topo-subtitulo {
-    margin: 0;
-    color: #6b7280;
-    line-height: 1.6;
-  }
-
-  .animal-topo-meta {
-    margin-top: 14px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .animal-meta-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: #f3f7f6;
-    border: 1px solid #d9e2df;
-    color: #1f2937;
-    font-size: 13px;
-    line-height: 1.2;
-  }
-
-  .animal-meta-tag strong {
-    color: #1f4f46;
-  }
-
-  .animal-form-card {
-    display: grid;
-    gap: 16px;
-    max-width: 1020px;
-    width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-
-  .bloco-formulario {
-    border: 1px solid #eef2f7;
-    border-radius: 12px;
-    padding: 16px;
-    background: #fafafa;
-  }
-
-  .bloco-formulario-titulo {
-    margin: 0 0 12px 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1f2937;
-  }
-
-  .form-grid-duplo {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(240px, 1fr));
-    gap: 14px;
-  }
-
-  .campo-grupo {
-    display: grid;
-    gap: 6px;
-  }
-
-  .campo-grupo label {
-    font-weight: 600;
-    color: #374151;
-    line-height: 1.4;
-  }
-
-  .campo-padrao {
-    min-height: 56px;
-    height: 56px;
-    padding: 12px 14px;
-    border: 1px solid #cfd8d5;
-    border-radius: 10px;
-    background: #ffffff;
-    color: #1f2937;
-    font-size: 16px;
-    width: 100%;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-    line-height: 1.2;
-  }
-
-  input[type="date"].campo-padrao,
-  input[type="text"].campo-padrao {
-    display: block;
-  }
-
-  select.campo-padrao {
-    display: block;
-    padding-right: 42px;
-    background-image: linear-gradient(45deg, transparent 50%, #6b7280 50%),
-                      linear-gradient(135deg, #6b7280 50%, transparent 50%);
-    background-position: calc(100% - 18px) calc(50% - 3px),
-                         calc(100% - 12px) calc(50% - 3px);
-    background-size: 6px 6px, 6px 6px;
-    background-repeat: no-repeat;
-    cursor: pointer;
-  }
-
-  .form-help {
-    color: #6b7280;
-    font-size: 13px;
-    line-height: 1.45;
-  }
-
-  .campo-obrigatorio {
-    color: #b91c1c;
-    font-weight: 700;
-  }
-
-  .animal-form-acoes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-  }
-
-  .animal-form-acoes .btn,
-  .animal-form-acoes button {
-    min-height: 44px;
-  }
-
-  .rodape-voltar {
-    margin-top: 4px;
-  }
-
-  .rodape-voltar a {
-    color: #1f8774;
-    font-weight: 600;
-  }
-
-  @media (max-width: 768px) {
-    .animal-topo-card,
-    .animal-form-card {
-      padding: 14px;
-      border-radius: 14px;
-    }
-
-    .animal-topo-card h2 {
-      font-size: 1.45rem;
-    }
-
-    .animal-topo-meta {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .animal-meta-tag {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    .bloco-formulario {
-      padding: 12px;
-    }
-
-    .form-grid-duplo {
-      grid-template-columns: 1fr;
-    }
-
-    .campo-padrao {
-      min-height: 50px;
-      height: 50px;
-      padding: 10px 12px;
-      font-size: 15px;
-    }
-
-    select.campo-padrao {
-      padding-right: 38px;
-      background-position: calc(100% - 16px) calc(50% - 3px),
-                           calc(100% - 10px) calc(50% - 3px);
-    }
-
-    .animal-form-acoes {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .animal-form-acoes .btn,
-    .animal-form-acoes button {
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .animal-topo-card h2 {
-      font-size: 1.28rem;
-    }
-  }
-</style>
-
-<div class="animal-shell">
-
-  <div class="animal-topo-card">
+  <div class="animal-editar-topo-card">
     <h2>Editar animal</h2>
 
-    <p class="animal-topo-subtitulo">
+    <p class="animal-editar-topo-subtitulo">
       Atualize os dados cadastrais e mantenha o registro do animal consistente para o acompanhamento clínico, sanitário e epidemiológico.
     </p>
 
-    <div class="animal-topo-meta">
-      <span class="animal-meta-tag">
+    <div class="animal-editar-topo-meta">
+      <span class="animal-editar-meta-tag">
         Propriedade: <strong>{{ propriedade.nome }}</strong>
       </span>
 
-      <span class="animal-meta-tag">
+      <span class="animal-editar-meta-tag">
         Código atual: <strong>{{ animal.codigo }}</strong>
       </span>
 
-      <span class="animal-meta-tag">
+      <span class="animal-editar-meta-tag">
         Nome: <strong>{{ animal.nome or "-" }}</strong>
       </span>
     </div>
   </div>
 
-  <form method="POST" class="animal-form-card">
+  <form method="POST" class="animal-editar-form-card">
 
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Identificação principal</h3>
+    <div class="animal-editar-bloco">
+      <h3 class="animal-editar-bloco-titulo">Identificação principal</h3>
 
-      <div class="form-grid-duplo">
-        <div class="campo-grupo">
-          <label for="codigo">Código do animal <span class="campo-obrigatorio">*</span></label>
+      <div class="animal-editar-grid-duplo">
+        <div class="animal-editar-campo-grupo">
+          <label for="codigo">Código do animal <span class="animal-editar-campo-obrigatorio">*</span></label>
           <input
             class="campo-padrao"
             type="text"
@@ -261,12 +44,12 @@
             value="{{ animal.codigo }}"
             required
           >
-          <small class="form-help">
+          <small class="animal-editar-form-help">
             Mantenha um código único para esta propriedade.
           </small>
         </div>
 
-        <div class="campo-grupo">
+        <div class="animal-editar-campo-grupo">
           <label for="especie">Espécie</label>
           <select class="campo-padrao" id="especie" name="especie">
             <option value="bovino" {% if animal.especie == "bovino" %}selected{% endif %}>Bovino</option>
@@ -281,11 +64,11 @@
       </div>
     </div>
 
-    <div class="bloco-formulario">
-      <h3 class="bloco-formulario-titulo">Informações complementares</h3>
+    <div class="animal-editar-bloco">
+      <h3 class="animal-editar-bloco-titulo">Informações complementares</h3>
 
-      <div class="form-grid-duplo">
-        <div class="campo-grupo">
+      <div class="animal-editar-grid-duplo">
+        <div class="animal-editar-campo-grupo">
           <label for="nome">Nome</label>
           <input
             class="campo-padrao"
@@ -296,7 +79,7 @@
           >
         </div>
 
-        <div class="campo-grupo">
+        <div class="animal-editar-campo-grupo">
           <label for="data_nascimento">Data de nascimento</label>
           <input
             class="campo-padrao"
@@ -307,7 +90,7 @@
           >
         </div>
 
-        <div class="campo-grupo">
+        <div class="animal-editar-campo-grupo">
           <label for="raca">Raça</label>
           <input
             class="campo-padrao"
@@ -318,7 +101,7 @@
           >
         </div>
 
-        <div class="campo-grupo">
+        <div class="animal-editar-campo-grupo">
           <label for="sexo">Sexo</label>
           <select class="campo-padrao" id="sexo" name="sexo">
             <option value="" {% if not animal.sexo %}selected{% endif %}>Selecione</option>
@@ -328,7 +111,7 @@
         </div>
       </div>
 
-      <div class="campo-grupo" style="margin-top: 14px;">
+      <div class="animal-editar-campo-grupo animal-editar-campo-grupo-full">
         <label for="perfil_genetico">Perfil genético</label>
         <input
           class="campo-padrao"
@@ -337,13 +120,13 @@
           name="perfil_genetico"
           value="{{ animal.perfil_genetico or '' }}"
         >
-        <small class="form-help">
+        <small class="animal-editar-form-help">
           Informação útil para análises futuras e associação com perfil clínico e epidemiológico.
         </small>
       </div>
     </div>
 
-    <div class="animal-form-acoes">
+    <div class="animal-editar-form-acoes">
       <button type="submit">Salvar alterações</button>
 
       <a
@@ -355,7 +138,7 @@
     </div>
   </form>
 
-  <div class="rodape-voltar">
+  <div class="animal-editar-rodape-voltar">
     <a href="{{ url_for('main.listar_animais', propriedade_id=propriedade.id) }}">
       ← Voltar
     </a>

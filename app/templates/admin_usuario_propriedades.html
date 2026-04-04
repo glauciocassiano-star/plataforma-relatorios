@@ -4,149 +4,74 @@
 
 {% block content %}
 
-<style>
-  .admin-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 18px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    box-sizing: border-box;
-    max-width: 820px;
-    width: 100%;
-    margin: 14px auto 0 auto;
-  }
+<div class="usuario-propriedades-shell">
 
-  .admin-subinfo {
-    margin-top: 0;
-    margin-bottom: 16px;
-    color: #4b5563;
-    line-height: 1.6;
-  }
+  <div class="usuario-propriedades-topo">
+    <h2 class="usuario-propriedades-titulo">Propriedades vinculadas</h2>
+    <p class="usuario-propriedades-subtitulo">
+      Defina quais propriedades este usuário poderá acessar, mantendo a organização dos vínculos e o controle de permissões no sistema.
+    </p>
+  </div>
 
-  .admin-vinculos-form {
-    display: grid;
-    gap: 10px;
-  }
+  <div class="usuario-propriedades-card">
 
-  .admin-checkbox-item {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-    background: #ffffff;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-  }
+    <div class="usuario-propriedades-info">
+      <p>
+        <strong>Usuário:</strong> {{ usuario.nome }} ({{ usuario.email }})
+      </p>
 
-  .admin-checkbox-item:hover {
-    background: #f9fafb;
-    border-color: #d1d5db;
-  }
-
-  .admin-checkbox-item input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #1f4f46;
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-
-  .admin-checkbox-item span {
-    color: #1f2937;
-    line-height: 1.4;
-  }
-
-  .admin-vazio {
-    padding: 14px;
-    border: 1px dashed #e5e7eb;
-    border-radius: 12px;
-    color: #6b7280;
-    background: #ffffff;
-  }
-
-  .admin-form-acoes {
-    margin-top: 14px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  @media (max-width: 768px) {
-    .admin-card {
-      padding: 14px;
-      border-radius: 14px;
-      max-width: 100%;
-    }
-
-    .admin-form-acoes {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .admin-form-acoes .btn,
-    .admin-form-acoes button {
-      width: 100%;
-    }
-  }
-</style>
-
-<h2>Propriedades vinculadas</h2>
-
-<div class="admin-card">
-
-  <p class="admin-subinfo">
-    <b>Usuário:</b> {{ usuario.nome }} ({{ usuario.email }})
-    <br>
-    <b>Perfil:</b>
-    {% if usuario.perfil == "admin_master" %}
-      Administrador principal
-    {% elif usuario.perfil == "admin_cliente" %}
-      Administrador do cliente
-    {% elif usuario.perfil == "tecnico" %}
-      Técnico
-    {% elif usuario.perfil == "veterinario" %}
-      Veterinário
-    {% else %}
-      {{ usuario.perfil }}
-    {% endif %}
-  </p>
-
-  <form method="POST" class="admin-vinculos-form">
-
-    {% if propriedades %}
-      {% for p in propriedades %}
-        <label class="admin-checkbox-item">
-          <input
-            type="checkbox"
-            name="propriedades"
-            value="{{ p.id }}"
-            {% if p.id in vinculadas %}checked{% endif %}
-          >
-
-          <span>
-            <b>{{ p.nome }}</b> — {{ p.produtor }}
-          </span>
-        </label>
-      {% endfor %}
-    {% else %}
-      <div class="admin-vazio">
-        Nenhuma propriedade disponível para vinculação.
-      </div>
-    {% endif %}
-
-    <div class="admin-form-acoes">
-      <button type="submit">Salvar vínculos</button>
-
-      <a class="btn btn-secondary"
-         href="{{ url_for('main.admin_usuarios') }}">
-         Voltar
-      </a>
+      <p>
+        <strong>Perfil:</strong>
+        {% if usuario.perfil == "admin_master" %}
+          Administrador principal
+        {% elif usuario.perfil == "admin_cliente" %}
+          Administrador do cliente
+        {% elif usuario.perfil == "tecnico" %}
+          Técnico
+        {% elif usuario.perfil == "veterinario" %}
+          Veterinário
+        {% else %}
+          {{ usuario.perfil }}
+        {% endif %}
+      </p>
     </div>
 
-  </form>
+    <form method="POST" class="usuario-propriedades-form">
+
+      {% if propriedades %}
+        <div class="usuario-propriedades-lista">
+          {% for p in propriedades %}
+            <label class="usuario-propriedades-item">
+              <input
+                type="checkbox"
+                name="propriedades"
+                value="{{ p.id }}"
+                {% if p.id in vinculadas %}checked{% endif %}
+              >
+
+              <span>
+                <strong>{{ p.nome }}</strong> — {{ p.produtor }}
+              </span>
+            </label>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="usuario-propriedades-vazio">
+          Nenhuma propriedade disponível para vinculação.
+        </div>
+      {% endif %}
+
+      <div class="usuario-propriedades-acoes">
+        <button type="submit">Salvar vínculos</button>
+
+        <a class="btn btn-secondary" href="{{ url_for('main.admin_usuarios') }}">
+          Voltar
+        </a>
+      </div>
+
+    </form>
+
+  </div>
 
 </div>
 

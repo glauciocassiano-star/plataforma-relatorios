@@ -4,190 +4,6 @@
 
 {% block content %}
 
-<style>
-  .animais-shell {
-    display: grid;
-    gap: 18px;
-    width: 100%;
-  }
-
-  .animais-topo-card,
-  .animais-lista-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    padding: 18px;
-  }
-
-  .animais-topo-card h2 {
-    margin: 0 0 8px 0;
-    color: #1f2937;
-    line-height: 1.25;
-  }
-
-  .animais-topo-subtitulo {
-    margin: 0;
-    color: #6b7280;
-    line-height: 1.6;
-  }
-
-  .animais-topo-meta {
-    margin-top: 14px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .animais-meta-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: #f3f7f6;
-    border: 1px solid #d9e2df;
-    color: #1f2937;
-    font-size: 13px;
-    line-height: 1.2;
-  }
-
-  .animais-meta-tag strong {
-    color: #1f4f46;
-  }
-
-  .animais-acoes-topo {
-    margin-top: 16px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .animais-busca {
-    max-width: 460px;
-    margin-bottom: 14px;
-  }
-
-  .animais-busca label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #374151;
-  }
-
-  .animais-busca input {
-    width: 100%;
-    min-height: 52px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid #cfd8d5;
-    background: #ffffff;
-    color: #1f2937;
-    font-size: 15px;
-  }
-
-  .animais-busca input:focus {
-    outline: none;
-    border-color: #2f855a;
-    box-shadow: 0 0 0 3px rgba(47, 133, 90, 0.12);
-  }
-
-  .animais-resumo {
-    margin-bottom: 12px;
-    color: #4b5563;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .animais-vazio {
-    padding: 16px;
-    border: 1px dashed #d1d5db;
-    border-radius: 12px;
-    color: #6b7280;
-    background: #ffffff;
-    line-height: 1.6;
-  }
-
-  .acoes-tabela {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 8px;
-    min-width: 320px;
-  }
-
-  .animais-sem-resultado {
-    display: none;
-    margin-top: 12px;
-    padding: 14px;
-    border: 1px dashed #d1d5db;
-    border-radius: 12px;
-    color: #6b7280;
-    background: #f9fafb;
-    line-height: 1.6;
-  }
-
-  @media (max-width: 768px) {
-    .animais-topo-card,
-    .animais-lista-card {
-      padding: 14px;
-      border-radius: 14px;
-    }
-
-    .animais-topo-card h2 {
-      font-size: 1.45rem;
-    }
-
-    .animais-topo-meta {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .animais-meta-tag {
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    .animais-acoes-topo {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .animais-acoes-topo .btn {
-      width: 100%;
-    }
-
-    .animais-busca {
-      max-width: 100%;
-    }
-
-    .acoes-tabela {
-      grid-template-columns: 1fr !important;
-      min-width: unset !important;
-    }
-
-    .acoes-tabela .btn {
-      width: 100%;
-    }
-
-    #tabelaAnimais th,
-    #tabelaAnimais td {
-      padding: 10px 8px;
-      font-size: 13px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .animais-topo-card h2 {
-      font-size: 1.28rem;
-    }
-
-    #tabelaAnimais th,
-    #tabelaAnimais td {
-      font-size: 12px;
-    }
-  }
-</style>
-
 <div class="animais-shell">
 
   <div class="animais-topo-card">
@@ -242,7 +58,7 @@
       </div>
 
       <div class="table-wrap">
-        <table id="tabelaAnimais">
+        <table id="tabelaAnimais" class="animais-tabela">
           <thead>
             <tr>
               <th>Código</th>
@@ -262,7 +78,7 @@
                 <td>{{ a.sexo or "-" }}</td>
 
                 <td>
-                  <div class="acoes-tabela">
+                  <div class="animais-acoes-tabela">
                     <a class="btn"
                        href="{{ url_for('main.prontuario_animal', animal_id=a.id) }}">
                       Prontuário
@@ -273,7 +89,7 @@
                       Editar
                     </a>
 
-                    <a class="btn btn-danger"
+                    <a class="btn btn-soft-danger"
                        href="{{ url_for('main.excluir_animal', animal_id=a.id) }}"
                        onclick="return confirm('Tem certeza que deseja excluir este animal?');">
                       Excluir

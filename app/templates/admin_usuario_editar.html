@@ -3,101 +3,127 @@
 
 {% block content %}
 
-<h2>Editar Usuário</h2>
+<div class="usuario-editar-shell">
 
-<div class="admin-editar-usuario-layout">
+  <div class="usuario-editar-topo">
+    <h2 class="usuario-editar-titulo">Editar usuário</h2>
+    <p class="usuario-editar-subtitulo">
+      Atualize os dados cadastrais, perfil de acesso e vínculo administrativo do usuário, mantendo a estrutura de permissões organizada e segura.
+    </p>
+  </div>
 
-  <div class="admin-card admin-card-form">
-    <h3 class="admin-titulo-secao">Atualizar dados do usuário</h3>
+  <div class="usuario-editar-layout">
 
-    <form method="POST" class="admin-form-card">
+    <div class="usuario-editar-card">
+      <h3 class="usuario-editar-card-titulo">Dados do usuário</h3>
 
-      <div class="admin-form-grupo">
-        <label for="nome">Nome *</label>
-        <input class="campo-padrao" type="text" id="nome" name="nome" value="{{ usuario.nome }}" required>
-      </div>
+      <form method="POST" class="usuario-editar-form">
 
-      <div class="admin-form-grupo">
-        <label for="email">Email *</label>
-        <input class="campo-padrao" type="email" id="email" name="email" value="{{ usuario.email }}" required>
-      </div>
+        <div class="usuario-editar-grid">
 
-      {% if usuario_logado.perfil == "admin_master" %}
-      <div class="admin-form-grupo">
-        <label for="cliente_id">Cliente *</label>
-        <select class="campo-padrao" id="cliente_id" name="cliente_id" required>
-          <option value="">Selecione o cliente</option>
-          {% for cliente in clientes %}
-          <option value="{{ cliente.id }}" {% if usuario.cliente_id == cliente.id %}selected{% endif %}>
-            {{ cliente.nome }}
-          </option>
-          {% endfor %}
-        </select>
+          <div class="usuario-editar-grupo">
+            <label for="nome">Nome *</label>
+            <input
+              class="campo-padrao"
+              type="text"
+              id="nome"
+              name="nome"
+              value="{{ usuario.nome }}"
+              required
+            >
+          </div>
 
-        <small class="admin-form-ajuda">
-          Alterar o cliente remove vínculos de propriedades por segurança.
-        </small>
-      </div>
-      {% endif %}
-
-      <div class="admin-form-grupo">
-        <label for="senha">Nova senha</label>
-
-        <div class="admin-senha-linha">
-          <input
-            class="campo-padrao"
-            type="password"
-            id="senha"
-            name="senha"
-            placeholder="Deixe em branco para manter a senha atual"
-          >
-
-          <label class="admin-mostrar-senha">
-            <input type="checkbox" id="mostrar_senha">
-            Mostrar senha
-          </label>
-        </div>
-
-        <small class="admin-form-ajuda">
-          Mínimo de 6 caracteres, com maiúscula e caractere especial.
-        </small>
-      </div>
-
-      <div class="admin-form-grupo">
-        <label for="perfil">Perfil *</label>
-
-        <select class="campo-padrao" id="perfil" name="perfil">
-
-          <option value="tecnico" {% if usuario.perfil == "tecnico" %}selected{% endif %}>
-            Técnico
-          </option>
-
-          <option value="veterinario" {% if usuario.perfil == "veterinario" %}selected{% endif %}>
-            Veterinário
-          </option>
+          <div class="usuario-editar-grupo">
+            <label for="email">Email *</label>
+            <input
+              class="campo-padrao"
+              type="email"
+              id="email"
+              name="email"
+              value="{{ usuario.email }}"
+              required
+            >
+          </div>
 
           {% if usuario_logado.perfil == "admin_master" %}
-          <option value="admin_cliente" {% if usuario.perfil == "admin_cliente" %}selected{% endif %}>
-            Administrador do cliente
-          </option>
+          <div class="usuario-editar-grupo usuario-editar-grupo-full">
+            <label for="cliente_id">Cliente *</label>
+            <select class="campo-padrao" id="cliente_id" name="cliente_id" required>
+              <option value="">Selecione o cliente</option>
+              {% for cliente in clientes %}
+              <option value="{{ cliente.id }}" {% if usuario.cliente_id == cliente.id %}selected{% endif %}>
+                {{ cliente.nome }}
+              </option>
+              {% endfor %}
+            </select>
 
-          <option value="admin_master" {% if usuario.perfil == "admin_master" %}selected{% endif %}>
-            Administrador principal
-          </option>
+            <small class="usuario-editar-ajuda">
+              Alterar o cliente remove vínculos de propriedades por segurança.
+            </small>
+          </div>
           {% endif %}
 
-        </select>
-      </div>
+          <div class="usuario-editar-grupo usuario-editar-grupo-full">
+            <label for="senha">Nova senha</label>
 
-      <div class="admin-form-acoes">
-        <button type="submit">Salvar alterações</button>
+            <div class="usuario-editar-senha-linha">
+              <input
+                class="campo-padrao"
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Deixe em branco para manter a senha atual"
+              >
 
-        <a class="btn btn-secondary" href="{{ url_for('main.admin_usuarios') }}">
-          Cancelar
-        </a>
-      </div>
+              <label class="usuario-editar-mostrar-senha">
+                <input type="checkbox" id="mostrar_senha">
+                Mostrar senha
+              </label>
+            </div>
 
-    </form>
+            <small class="usuario-editar-ajuda">
+              Preencha apenas se desejar alterar a senha atual.
+            </small>
+          </div>
+
+          <div class="usuario-editar-grupo">
+            <label for="perfil">Perfil *</label>
+            <select class="campo-padrao" id="perfil" name="perfil">
+
+              <option value="tecnico" {% if usuario.perfil == "tecnico" %}selected{% endif %}>
+                Técnico
+              </option>
+
+              <option value="veterinario" {% if usuario.perfil == "veterinario" %}selected{% endif %}>
+                Veterinário
+              </option>
+
+              {% if usuario_logado.perfil == "admin_master" %}
+              <option value="admin_cliente" {% if usuario.perfil == "admin_cliente" %}selected{% endif %}>
+                Administrador do cliente
+              </option>
+
+              <option value="admin_master" {% if usuario.perfil == "admin_master" %}selected{% endif %}>
+                Administrador principal
+              </option>
+              {% endif %}
+
+            </select>
+          </div>
+
+        </div>
+
+        <div class="usuario-editar-acoes">
+          <button type="submit">Salvar alterações</button>
+
+          <a class="btn btn-secondary" href="{{ url_for('main.admin_usuarios') }}">
+            Cancelar
+          </a>
+        </div>
+
+      </form>
+    </div>
+
   </div>
 
 </div>

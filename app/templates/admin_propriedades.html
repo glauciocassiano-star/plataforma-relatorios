@@ -4,54 +4,102 @@
 
 {% block content %}
 
-<h2>Propriedades</h2>
+<div class="propriedades-admin-shell">
 
-<form method="POST" style="max-width:500px; margin-bottom:20px;">
+  <div class="propriedades-admin-topo">
+    <h2 class="propriedades-admin-titulo">Propriedades</h2>
+    <p class="propriedades-admin-subtitulo">
+      Cadastre e gerencie propriedades rurais vinculadas ao sistema, organizando os dados para controle técnico e acompanhamento clínico.
+    </p>
+  </div>
 
-    <label>Nome da propriedade</label>
-    <input type="text" name="nome" required>
+  <div class="propriedades-admin-layout">
 
-    <label>Produtor</label>
-    <input type="text" name="produtor" required>
+    <div class="propriedades-admin-card propriedades-admin-card-form">
+      <h3 class="propriedades-admin-card-titulo">Nova propriedade</h3>
 
-    <label>Cidade</label>
-    <input type="text" name="cidade">
+      <form method="POST" class="propriedades-admin-form">
 
-    <label>Estado</label>
-    <input type="text" name="estado">
+        <div class="propriedades-admin-grid">
 
-    <button type="submit">Salvar</button>
+          <div class="propriedades-admin-grupo">
+            <label for="nome">Nome da propriedade *</label>
+            <input class="campo-padrao" id="nome" name="nome" required>
+          </div>
 
-</form>
+          <div class="propriedades-admin-grupo">
+            <label for="produtor">Produtor *</label>
+            <input class="campo-padrao" id="produtor" name="produtor" required>
+          </div>
 
-<hr>
+          <div class="propriedades-admin-grupo">
+            <label for="cidade">Cidade</label>
+            <input class="campo-padrao" id="cidade" name="cidade">
+          </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Propriedade</th>
-            <th>Produtor</th>
-            <th>Cidade</th>
-            <th></th>
-        </tr>
-    </thead>
+          <div class="propriedades-admin-grupo">
+            <label for="estado">Estado</label>
+            <input class="campo-padrao" id="estado" name="estado">
+          </div>
 
-    <tbody>
-        {% for p in propriedades %}
-        <tr>
-            <td>{{ p.id }}</td>
-            <td>{{ p.nome }}</td>
-            <td>{{ p.produtor }}</td>
-            <td>{{ p.cidade }} / {{ p.estado }}</td>
-            <td>
-                <a class="btn" href="{{ url_for('main.listar_animais', propriedade_id=p.id) }}">
-                    Animais
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </div>
+
+        <div class="propriedades-admin-acoes">
+          <button type="submit">Salvar propriedade</button>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="propriedades-admin-card">
+      <h3 class="propriedades-admin-card-titulo">Lista de propriedades</h3>
+
+      {% if propriedades %}
+        <div class="table-wrap">
+          <table class="propriedades-admin-tabela">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Propriedade</th>
+                <th>Produtor</th>
+                <th>Localização</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for p in propriedades %}
+              <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.nome }}</td>
+                <td>{{ p.produtor }}</td>
+                <td>{{ p.cidade }} / {{ p.estado }}</td>
+                <td>
+                  <div class="propriedades-admin-acoes-tabela">
+                    <a
+                      class="btn btn-secondary"
+                      href="{{ url_for('main.listar_animais', propriedade_id=p.id) }}"
+                    >
+                      Animais
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+
+          </table>
+        </div>
+      {% else %}
+        <div class="propriedades-admin-vazio">
+          Nenhuma propriedade cadastrada ainda.
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+
+</div>
 
 {% endblock %}
