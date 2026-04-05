@@ -1,85 +1,116 @@
 {% extends "base.html" %}
-{% block title %}Configurações do Sistema{% endblock %}
+{% block title %}Configurações da Landing{% endblock %}
 
 {% block content %}
 
 <div class="config-admin-shell">
 
   <div class="config-admin-topo">
-    <h2 class="config-admin-titulo">Configurações do sistema</h2>
+    <h2 class="config-admin-titulo">Configurações da Landing</h2>
     <p class="config-admin-subtitulo">
-      Personalize a identidade da plataforma, textos institucionais e elementos visuais utilizados no sistema.
+      Atualize a identidade visual e os textos principais exibidos na página inicial da plataforma.
     </p>
   </div>
 
-  <div class="config-admin-layout">
+  <div class="config-admin-card">
+    <form method="POST" class="config-admin-form">
 
-    <div class="config-admin-card">
-      <h3 class="config-admin-card-titulo">Informações gerais</h3>
-
-      <form method="POST" enctype="multipart/form-data" class="config-admin-form">
+      <div class="config-admin-bloco">
+        <h3 class="config-admin-bloco-titulo">Identidade da plataforma</h3>
 
         <div class="config-admin-grid">
-
           <div class="config-admin-grupo">
             <label for="nome_plataforma">Nome da plataforma</label>
-            <input class="campo-padrao" id="nome_plataforma" name="nome_plataforma"
-              value="{{ config.nome_plataforma or '' }}">
+            <input class="campo-padrao" type="text" id="nome_plataforma" name="nome_plataforma"
+                   value="{{ config.nome_plataforma or '' }}" placeholder="Ex: Moovet">
           </div>
 
           <div class="config-admin-grupo">
             <label for="subtitulo">Subtítulo</label>
-            <input class="campo-padrao" id="subtitulo" name="subtitulo"
-              value="{{ config.subtitulo or '' }}">
+            <input class="campo-padrao" type="text" id="subtitulo" name="subtitulo"
+                   value="{{ config.subtitulo or '' }}"
+                   placeholder="Ex: Gestão clínica e inteligência epidemiológica">
+          </div>
+
+          <div class="config-admin-grupo config-admin-grupo-full">
+            <label for="logo">Logo (caminho ou URL)</label>
+            <input class="campo-padrao" type="text" id="logo" name="logo"
+                   value="{{ config.logo or '' }}"
+                   placeholder="Ex: /static/img/logo-moovet.png">
+          </div>
+        </div>
+      </div>
+
+      <div class="config-admin-bloco">
+        <h3 class="config-admin-bloco-titulo">Banner principal</h3>
+
+        <div class="config-admin-grid">
+          <div class="config-admin-grupo config-admin-grupo-full">
+            <label for="titulo_banner">Título do banner</label>
+            <input class="campo-padrao" type="text" id="titulo_banner" name="titulo_banner"
+                   value="{{ config.titulo_banner or '' }}"
+                   placeholder="Ex: Tecnologia que acompanha você no campo">
           </div>
 
           <div class="config-admin-grupo config-admin-grupo-full">
             <label for="texto_banner">Texto do banner</label>
-            <textarea class="campo-padrao" id="texto_banner" name="texto_banner" rows="4">
-{{ config.texto_banner or '' }}</textarea>
+            <textarea class="campo-padrao campo-padrao-textarea" id="texto_banner" name="texto_banner"
+                      placeholder="Ex: Prontuário digital, coleta de dados e análise epidemiológica em uma única plataforma.">{{ config.texto_banner or '' }}</textarea>
           </div>
 
           <div class="config-admin-grupo config-admin-grupo-full">
-            <label for="aviso_sanitario">Aviso sanitário</label>
-            <textarea class="campo-padrao" id="aviso_sanitario" name="aviso_sanitario" rows="4">
-{{ config.aviso_sanitario or '' }}</textarea>
+            <label for="aviso_sanitario">Aviso sanitário / destaque</label>
+            <textarea class="campo-padrao campo-padrao-textarea" id="aviso_sanitario" name="aviso_sanitario"
+                      placeholder="Ex: Mais controle, mais precisão e decisões baseadas em dados reais.">{{ config.aviso_sanitario or '' }}</textarea>
           </div>
-
-          <div class="config-admin-grupo config-admin-grupo-full">
-            <label for="rodape">Rodapé</label>
-            <textarea class="campo-padrao" id="rodape" name="rodape" rows="4">
-{{ config.rodape or '' }}</textarea>
-          </div>
-
-          <div class="config-admin-grupo config-admin-grupo-full">
-            <label for="logo">Logo do sistema</label>
-            <input class="campo-padrao" type="file" id="logo" name="logo"
-              accept=".png,.jpg,.jpeg,.webp">
-
-            {% if config.logo %}
-              <div class="config-admin-logo-preview">
-                <div class="config-admin-logo-label">Logo atual</div>
-                <img
-                  src="{{ url_for('static', filename=config.logo) }}"
-                  alt="Logo do sistema"
-                  class="config-admin-logo-img"
-                >
-              </div>
-            {% endif %}
-          </div>
-
         </div>
+      </div>
 
-        <div class="config-admin-acoes">
-          <button type="submit">Salvar configurações</button>
-          <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">
-            Voltar
-          </a>
+      <div class="config-admin-bloco">
+        <h3 class="config-admin-bloco-titulo">Botões da landing</h3>
+
+        <div class="config-admin-grid">
+          <div class="config-admin-grupo">
+            <label for="botao_principal_texto">Texto do botão principal</label>
+            <input class="campo-padrao" type="text" id="botao_principal_texto" name="botao_principal_texto"
+                   value="{{ config.botao_principal_texto or '' }}" placeholder="Ex: Acessar sistema">
+          </div>
+
+          <div class="config-admin-grupo">
+            <label for="botao_principal_link">Link do botão principal</label>
+            <input class="campo-padrao" type="text" id="botao_principal_link" name="botao_principal_link"
+                   value="{{ config.botao_principal_link or '' }}" placeholder="Ex: /login">
+          </div>
+
+          <div class="config-admin-grupo">
+            <label for="botao_secundario_texto">Texto do botão secundário</label>
+            <input class="campo-padrao" type="text" id="botao_secundario_texto" name="botao_secundario_texto"
+                   value="{{ config.botao_secundario_texto or '' }}" placeholder="Ex: Saiba mais">
+          </div>
+
+          <div class="config-admin-grupo">
+            <label for="botao_secundario_link">Link do botão secundário</label>
+            <input class="campo-padrao" type="text" id="botao_secundario_link" name="botao_secundario_link"
+                   value="{{ config.botao_secundario_link or '' }}" placeholder="Ex: /contato">
+          </div>
         </div>
+      </div>
 
-      </form>
-    </div>
+      <div class="config-admin-bloco">
+        <h3 class="config-admin-bloco-titulo">Rodapé</h3>
 
+        <div class="config-admin-grupo">
+          <label for="rodape">Texto do rodapé</label>
+          <textarea class="campo-padrao campo-padrao-textarea" id="rodape" name="rodape"
+                    placeholder="Ex: Moovet • Plataforma veterinária">{{ config.rodape or '' }}</textarea>
+        </div>
+      </div>
+
+      <div class="config-admin-acoes">
+        <button type="submit">Salvar configurações</button>
+      </div>
+
+    </form>
   </div>
 
 </div>

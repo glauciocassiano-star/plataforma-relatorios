@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moovet</title>
+  <title>{{ config.nome_plataforma or "Moovet" }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -13,17 +13,29 @@
     <div class="container landing-topbar-inner">
 
       <div class="landing-brand">
-        <div class="landing-logo">🐄</div>
+        {% if config and config.logo %}
+          <img
+            src="{{ config.logo }}"
+            alt="Logo {{ config.nome_plataforma or 'Moovet' }}"
+            class="landing-logo-img"
+          >
+        {% else %}
+          <div class="landing-logo">🐄</div>
+        {% endif %}
 
         <div class="landing-brand-text">
-          <strong>Moovet</strong>
-          <span>Gestão clínica e inteligência epidemiológica</span>
+          <strong>{{ config.nome_plataforma or "Moovet" }}</strong>
+          <span>{{ config.subtitulo or "Gestão clínica e inteligência epidemiológica" }}</span>
         </div>
       </div>
 
       <div class="landing-actions">
-        <a class="btn-outline" href="#funcionalidades">Funcionalidades</a>
-        <a class="btn" href="{{ url_for('main.login') }}">Acessar sistema</a>
+        <a class="btn-outline" href="#funcionalidades">
+          {{ config.botao_secundario_texto or "Funcionalidades" }}
+        </a>
+        <a class="btn" href="{{ config.botao_principal_link or url_for('main.login') }}">
+          {{ config.botao_principal_texto or "Acessar sistema" }}
+        </a>
       </div>
 
     </div>
@@ -36,23 +48,24 @@
 
         <div class="landing-hero-copy">
           <div class="landing-badge">
-            Plataforma veterinária para uso técnico em campo
+            {{ config.aviso_sanitario or "Plataforma veterinária para uso técnico em campo" }}
           </div>
 
           <h1>
-            Gestão clínica e monitoramento epidemiológico
-            para propriedades rurais
+            {{ config.titulo_banner or "Gestão clínica e monitoramento epidemiológico para propriedades rurais" }}
           </h1>
 
           <p class="landing-hero-description">
-            O Moovet centraliza prontuários veterinários, atendimentos clínicos,
-            formulários padronizados e indicadores epidemiológicos em um único ambiente,
-            com foco em organização, rastreabilidade e suporte à tomada de decisão.
+            {{ config.texto_banner or "O Moovet centraliza prontuários veterinários, atendimentos clínicos, formulários padronizados e indicadores epidemiológicos em um único ambiente, com foco em organização, rastreabilidade e suporte à tomada de decisão." }}
           </p>
 
           <div class="landing-actions landing-actions-main">
-            <a class="btn" href="{{ url_for('main.login') }}">Entrar</a>
-            <a class="btn-outline" href="#contato">Solicitar apresentação</a>
+            <a class="btn" href="{{ config.botao_principal_link or url_for('main.login') }}">
+              {{ config.botao_principal_texto or "Entrar" }}
+            </a>
+            <a class="btn-outline" href="{{ config.botao_secundario_link or '#contato' }}">
+              {{ config.botao_secundario_texto or "Solicitar apresentação" }}
+            </a>
           </div>
 
           <div class="landing-quick-highlights">
@@ -193,8 +206,12 @@
           </div>
 
           <div class="landing-actions">
-            <a class="btn" href="{{ url_for('main.login') }}">Entrar</a>
-            <a class="btn-outline" href="mailto:contato@moovet.com.br">Contato</a>
+            <a class="btn" href="{{ config.botao_principal_link or url_for('main.login') }}">
+              {{ config.botao_principal_texto or "Entrar" }}
+            </a>
+            <a class="btn-outline" href="{{ config.botao_secundario_link or 'mailto:contato@moovet.com.br' }}">
+              {{ config.botao_secundario_texto or "Contato" }}
+            </a>
           </div>
         </div>
       </div>
@@ -204,8 +221,8 @@
 
   <footer class="landing-footer">
     <div class="container landing-footer-inner">
-      <div>Moovet • Plataforma veterinária</div>
-      <div>Gestão clínica • Monitoramento sanitário • Inteligência epidemiológica</div>
+      <div>{{ config.rodape or "Moovet • Plataforma veterinária" }}</div>
+      <div>{{ config.subtitulo or "Gestão clínica • Monitoramento sanitário • Inteligência epidemiológica" }}</div>
     </div>
   </footer>
 
