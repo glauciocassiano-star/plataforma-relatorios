@@ -1,2 +1,8 @@
 #!/bin/bash
-gunicorn run:app
+set -e
+
+echo "🔄 Executando bootstrap do sistema..."
+python bootstrap_render.py
+
+echo "🚀 Iniciando aplicação..."
+exec gunicorn run:app
