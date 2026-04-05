@@ -6726,3 +6726,74 @@ select.campo-padrao {
   border-color: #1f7a63;
   box-shadow: 0 0 0 3px rgba(31, 122, 99, 0.12);
 }
+
+/* =====================================
+   MENU MOBILE - CAMADAS E CLIQUE
+===================================== */
+
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 90;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.mobile-menu-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.navbar {
+  position: relative;
+  z-index: 120;
+}
+
+.navbar-shell {
+  position: relative;
+  z-index: 121;
+}
+
+@media (max-width: 768px) {
+  .navbar-inner {
+    position: fixed;
+    top: 118px; /* ajuste conforme altura real do topbar/navbar */
+    left: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+    padding: 14px;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+
+    z-index: 121;
+  }
+
+  .navbar-inner.menu-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .navbar-inner .nav-link {
+    display: block;
+    width: 100%;
+    position: relative;
+    z-index: 122;
+  }
+}
