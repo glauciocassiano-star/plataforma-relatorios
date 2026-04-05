@@ -6,8 +6,11 @@ from werkzeug.security import generate_password_hash
 print("🔄 Iniciando bootstrap do Render...")
 
 with app.app_context():
+    print("⚠️ Removendo estrutura antiga do banco...")
+    db.drop_all()
+
+    print("✅ Criando estrutura nova do banco...")
     db.create_all()
-    print("✅ Tabelas verificadas/criadas com sucesso.")
 
     email_admin = "glaucio.cassiano@gmail.com"
     admin_existente = Usuario.query.filter_by(email=email_admin).first()
