@@ -6900,3 +6900,10 @@ select.campo-padrao {
     width: 100%;
   }
 }
+
+.landing-logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+}
