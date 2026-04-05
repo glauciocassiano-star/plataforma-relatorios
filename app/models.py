@@ -1,204 +1,235 @@
+from __future__ import annotations
+
 from datetime import datetime
-from app import db
+import uuid
+
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from . import db
 
 
-# ===============================
-# USUÁRIO
-# ===============================
-class Usuario(db.Model):
-    __tablename__ = "usuarios"
-
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(120), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    senha_hash = db.Column(db.String(255), nullable=False)
-
-    perfil = db.Column(db.String(50), nullable=False)  # admin_master, admin_cliente, tecnico, veterinario
-
-    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), nullable=True)
-    criado_por_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=True)
-
-    ativo = db.Column(db.Boolean, default=True)
-    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
-
-    cliente = db.relationship("Cliente", backref="usuarios")
-
-
-# ===============================
-# CLIENTE
-# ===============================
+# =========================
+# CLIENTE (SaaS)
+# =========================
 class Cliente(db.Model):
     __tablename__ = "clientes"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(120), nullable=False)
+    nome = db.Column(db.String(150), nullable=False)
+    nome_fantasia = db.Column(db.String(150), nullable=True)
+    documento = db.Column(db.String(30), nullable=True, unique=True)
+    email = db.Column(db.String(150), nullable=True)
+    telefone = db.Column(db.String(30), nullable=True)
+    ativo = db.Column(db.Boolean, default=True, nullable=False)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    observacoes = db.Column(db.Text, nullable=True)
 
-    ativo = db.Column(db.Boolean, default=True)
-    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+    usuarios = db.relationship("Usuario", backref=db.backref("cliente", lazy=True), lazy=True)
+    propriedades = db.relationship("Propriedade", backref=db.backref("cliente", lazy=True), lazy=True)
+    formularios = db.relationship(
+        "Formulario",
+        backref=db.backref("cliente", lazy=True),
+        lazy=True,
+        foreign_keys="Formulario.cliente_id",
+    )
+
+    def __repr__(self):
+        return f"<Cliente {self.id} {self.nome}>"
 
 
-# ===============================
+# =========================
+# USUÁRIO
+# =========================
+class Usuario(db.Model):
+    __tablename__ = "usuarios"
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    senha_hash = db.Column(db.String(255), nullable=False)
+
+    perfil = db.Column(db.String(30), nullable=False)
+
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id", ondelete="SET NULL"), nullable=True, index=True)
+
+    criado_por_id = db.Column(db.Integer, db.ForeignKey("usuarios.id", ondelete="SET NULL"), nullable=True, index=True)
+
+    criado_por = db.relationship("Usuario", remote_side=[id], backref=db.backref("usuarios_criados", lazy=True))
+
+    ativo = db.Column(db.Boolean, default=True, nullable=False)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    def set_password(self, senha):
+        self.senha_hash = generate_password_hash(senha)
+
+    def check_password(self, senha):
+        return check_password_hash(self.senha_hash, senha)
+
+
+# =========================
 # PROPRIEDADE
-# ===============================
+# =========================
 class Propriedade(db.Model):
     __tablename__ = "propriedades"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(120), nullable=False)
+    nome = db.Column(db.String(150), nullable=False)
+    produtor = db.Column(db.String(150), nullable=False)
+    cidade = db.Column(db.String(100))
+    estado = db.Column(db.String(50))
 
-    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), nullable=False)
-
-    cidade = db.Column(db.String(120), nullable=True)
-    estado = db.Column(db.String(10), nullable=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id", ondelete="CASCADE"), nullable=False, index=True)
 
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
 
-    cliente = db.relationship("Cliente", backref="propriedades")
 
-
-# ===============================
-# VÍNCULO USUÁRIO - PROPRIEDADE
-# ===============================
+# =========================
+# VÍNCULO USUÁRIO-PROPRIEDADE
+# =========================
 class UsuarioPropriedade(db.Model):
     __tablename__ = "usuarios_propriedades"
 
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"))
-    propriedade_id = db.Column(db.Integer, db.ForeignKey("propriedades.id"))
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuarios.id", ondelete="CASCADE"))
+    propriedade_id = db.Column(db.Integer, db.ForeignKey("propriedades.id", ondelete="CASCADE"))
+
+    __table_args__ = (
+        db.UniqueConstraint("usuario_id", "propriedade_id"),
+    )
 
 
-# ===============================
+# =========================
 # ANIMAL
-# ===============================
+# =========================
 class Animal(db.Model):
     __tablename__ = "animais"
 
     id = db.Column(db.Integer, primary_key=True)
-
     codigo = db.Column(db.String(50), nullable=False)
-    nome = db.Column(db.String(120), nullable=True)
-    especie = db.Column(db.String(50), default="bovino")
-
-    data_nascimento = db.Column(db.Date, nullable=True)
-    raca = db.Column(db.String(100), nullable=True)
-    sexo = db.Column(db.String(20), nullable=True)
-
-    perfil_genetico = db.Column(db.String(120), nullable=True)
+    especie = db.Column(db.String(30), default="bovino")
+    nome = db.Column(db.String(100))
+    data_nascimento = db.Column(db.Date)
+    raca = db.Column(db.String(100))
+    sexo = db.Column(db.String(20))
+    perfil_genetico = db.Column(db.String(200))
 
     propriedade_id = db.Column(db.Integer, db.ForeignKey("propriedades.id"), nullable=False)
 
-    propriedade = db.relationship("Propriedade", backref="animais")
-
     __table_args__ = (
-        db.UniqueConstraint("propriedade_id", "codigo", name="uq_animais_propriedade_codigo"),
+        db.UniqueConstraint("propriedade_id", "codigo"),
     )
 
 
-# ===============================
+# =========================
 # FORMULÁRIO
-# ===============================
+# =========================
 class Formulario(db.Model):
     __tablename__ = "formularios"
 
     id = db.Column(db.Integer, primary_key=True)
-
     nome = db.Column(db.String(120), nullable=False)
-    perfil_alvo = db.Column(db.String(50), nullable=False)
-
-    tipo_contexto = db.Column(db.String(50), default="rural")
-
+    perfil_alvo = db.Column(db.String(20), default="tecnico")
     ativo = db.Column(db.Boolean, default=True)
 
-    template_base = db.Column(db.Boolean, default=False)
+    tipo_contexto = db.Column(db.String(30), default="rural", index=True)
+    template_base = db.Column(db.Boolean, default=False, index=True)
 
-    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), nullable=True)
-
-    formulario_origem_id = db.Column(db.Integer, db.ForeignKey("formularios.id"), nullable=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey("clientes.id"), index=True)
+    formulario_origem_id = db.Column(db.Integer, db.ForeignKey("formularios.id"))
 
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
 
-    cliente = db.relationship("Cliente", backref="formularios")
 
-
-# ===============================
+# =========================
 # CAMPOS DO FORMULÁRIO
-# ===============================
+# =========================
 class CampoFormulario(db.Model):
     __tablename__ = "campos_formulario"
 
     id = db.Column(db.Integer, primary_key=True)
+    formulario_id = db.Column(db.Integer, db.ForeignKey("formularios.id"))
 
-    formulario_id = db.Column(db.Integer, db.ForeignKey("formularios.id"), nullable=False)
-
-    rotulo = db.Column(db.String(120), nullable=False)
-    nome_chave = db.Column(db.String(120), nullable=False)
-
-    tipo = db.Column(db.String(50), default="text")
-
+    rotulo = db.Column(db.String(120))
+    nome_chave = db.Column(db.String(80))
+    tipo = db.Column(db.String(20), default="text")
     obrigatorio = db.Column(db.Boolean, default=False)
-
-    opcoes = db.Column(db.JSON, nullable=True)
-
+    opcoes = db.Column(db.JSON)
     ordem = db.Column(db.Integer, default=0)
 
-    # Novos campos (UX avançada)
-    grupo = db.Column(db.String(120), nullable=True)
-    ajuda = db.Column(db.String(255), nullable=True)
-    placeholder = db.Column(db.String(255), nullable=True)
+    grupo = db.Column(db.String(80))
+    ajuda = db.Column(db.String(255))
+    placeholder = db.Column(db.String(120))
 
     visivel = db.Column(db.Boolean, default=True)
     editavel = db.Column(db.Boolean, default=True)
 
 
-# ===============================
+# =========================
 # ATENDIMENTO
-# ===============================
+# =========================
 class Atendimento(db.Model):
     __tablename__ = "atendimentos"
 
     id = db.Column(db.Integer, primary_key=True)
 
-    animal_id = db.Column(db.Integer, db.ForeignKey("animais.id"), nullable=False)
-    tecnico_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)
+    animal_id = db.Column(db.Integer, db.ForeignKey("animais.id"))
+    tecnico_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"))
+    formulario_id = db.Column(db.Integer, db.ForeignKey("formularios.id"))
 
-    formulario_id = db.Column(db.Integer, db.ForeignKey("formularios.id"), nullable=True)
-
-    data_atendimento = db.Column(db.Date, nullable=False)
-
-    dados = db.Column(db.JSON, nullable=True)
-
+    data_atendimento = db.Column(db.Date)
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
-    bloqueado_em = db.Column(db.DateTime, nullable=True)
-
-    animal = db.relationship("Animal", backref="atendimentos")
+    dados = db.Column(db.JSON)
 
 
-# ===============================
-# CONFIGURAÇÃO DO SISTEMA (LANDING)
-# ===============================
+# =========================
+# CONFIGURAÇÃO DO SISTEMA (ATUALIZADA)
+# =========================
 class ConfiguracaoSistema(db.Model):
     __tablename__ = "configuracao_sistema"
 
     id = db.Column(db.Integer, primary_key=True)
 
-    # Identidade
-    nome_plataforma = db.Column(db.String(120), nullable=True)
-    subtitulo = db.Column(db.String(200), nullable=True)
+    nome_plataforma = db.Column(db.String(120))
+    subtitulo = db.Column(db.String(200))
 
-    # Banner
-    titulo_banner = db.Column(db.String(200), nullable=True)
-    texto_banner = db.Column(db.Text, nullable=True)
-    aviso_sanitario = db.Column(db.Text, nullable=True)
+    titulo_banner = db.Column(db.String(200))
+    texto_banner = db.Column(db.Text)
+    aviso_sanitario = db.Column(db.Text)
 
-    # Botões
-    botao_principal_texto = db.Column(db.String(80), nullable=True)
-    botao_principal_link = db.Column(db.String(200), nullable=True)
+    botao_principal_texto = db.Column(db.String(80))
+    botao_principal_link = db.Column(db.String(200))
 
-    botao_secundario_texto = db.Column(db.String(80), nullable=True)
-    botao_secundario_link = db.Column(db.String(200), nullable=True)
+    botao_secundario_texto = db.Column(db.String(80))
+    botao_secundario_link = db.Column(db.String(200))
 
-    # Visual
-    logo = db.Column(db.String(200), nullable=True)
+    rodape = db.Column(db.Text)
+    logo = db.Column(db.String(200))
 
-    # Rodapé
-    rodape = db.Column(db.Text, nullable=True)
+
+# =========================
+# IMAGENS DO ATENDIMENTO
+# =========================
+class AtendimentoImagem(db.Model):
+    __tablename__ = "atendimentos_imagens"
+
+    id = db.Column(db.Integer, primary_key=True)
+    atendimento_id = db.Column(db.Integer, db.ForeignKey("atendimentos.id"))
+    nome_arquivo = db.Column(db.String(255))
+    caminho_arquivo = db.Column(db.String(500))
+
+
+# =========================
+# EXAMES (MANTIDO PARA NÃO QUEBRAR)
+# =========================
+class Exame(db.Model):
+    __tablename__ = "exames"
+
+    id = db.Column(db.Integer, primary_key=True)
+    atendimento_id = db.Column(db.Integer, db.ForeignKey("atendimentos.id"))
+
+    categoria = db.Column(db.String(30))
+    nome_exame = db.Column(db.String(150))
+    data_exame = db.Column(db.Date)
+    resultado = db.Column(db.Text)
+    observacoes = db.Column(db.Text)
+    arquivo = db.Column(db.String(500))
