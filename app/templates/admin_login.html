@@ -9,9 +9,22 @@
   <div class="admin-login-card">
 
     <div class="admin-login-topo">
-      <h2 class="admin-login-titulo">Acesso administrativo</h2>
+      {% if config and config.logo %}
+        <div style="margin-bottom: 14px; text-align: center;">
+          <img
+            src="{{ config.logo }}"
+            alt="Logo da plataforma"
+            style="max-width: 120px; max-height: 120px; object-fit: contain;"
+          >
+        </div>
+      {% endif %}
+
+      <h2 class="admin-login-titulo">
+        {{ config.titulo_banner or "Acesso administrativo" }}
+      </h2>
+
       <p class="admin-login-subtitulo">
-        Utilize suas credenciais para acessar o painel administrativo do sistema.
+        {{ config.texto_banner or "Utilize suas credenciais para acessar o painel administrativo do sistema." }}
       </p>
     </div>
 

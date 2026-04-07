@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ config.nome_plataforma or "Moovet" }}</title>
+  <title>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -16,25 +16,24 @@
         {% if config and config.logo %}
           <img
             src="{{ config.logo }}"
-            alt="Logo {{ config.nome_plataforma or 'Moovet' }}"
+            alt="Logo {{ config.nome_plataforma if config and config.nome_plataforma else 'Moovet' }}"
             class="landing-logo-img"
           >
-        {% else %}
-          <div class="landing-logo">🐄</div>
         {% endif %}
 
         <div class="landing-brand-text">
-          <strong>{{ config.nome_plataforma or "Moovet" }}</strong>
-          <span>{{ config.subtitulo or "Gestão clínica e inteligência epidemiológica" }}</span>
+          <strong>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</strong>
+          <span>{{ config.subtitulo if config and config.subtitulo else "Gestão clínica e inteligência epidemiológica" }}</span>
         </div>
       </div>
 
-      <div class="landing-actions">
+      <div class="landing-actions landing-actions-topbar">
         <a class="btn-outline" href="#funcionalidades">
-          {{ config.botao_secundario_texto or "Funcionalidades" }}
+          {{ config.botao_secundario_texto if config and config.botao_secundario_texto else "Funcionalidades" }}
         </a>
-        <a class="btn" href="{{ config.botao_principal_link or url_for('main.login') }}">
-          {{ config.botao_principal_texto or "Acessar sistema" }}
+
+        <a class="btn" href="{{ config.botao_principal_link if config and config.botao_principal_link else url_for('main.login') }}">
+          {{ config.botao_principal_texto if config and config.botao_principal_texto else "Acessar sistema" }}
         </a>
       </div>
 
@@ -48,77 +47,81 @@
 
         <div class="landing-hero-copy">
           <div class="landing-badge">
-            {{ config.aviso_sanitario or "Plataforma veterinária para uso técnico em campo" }}
+            {{ config.aviso_sanitario if config and config.aviso_sanitario else "Plataforma veterinária para uso técnico em campo" }}
           </div>
 
           <h1>
-            {{ config.titulo_banner or "Gestão clínica e monitoramento epidemiológico para propriedades rurais" }}
+            {{ config.titulo_banner if config and config.titulo_banner else "Gestão clínica e monitoramento epidemiológico para propriedades rurais" }}
           </h1>
 
           <p class="landing-hero-description">
-            {{ config.texto_banner or "O Moovet centraliza prontuários veterinários, atendimentos clínicos, formulários padronizados e indicadores epidemiológicos em um único ambiente, com foco em organização, rastreabilidade e suporte à tomada de decisão." }}
+            {{ config.texto_banner if config and config.texto_banner else "O Moovet centraliza prontuários veterinários, atendimentos clínicos, organização de rotina e base de dados para análise epidemiológica em um único ambiente." }}
           </p>
 
           <div class="landing-actions landing-actions-main">
-            <a class="btn" href="{{ config.botao_principal_link or url_for('main.login') }}">
-              {{ config.botao_principal_texto or "Entrar" }}
+            <a class="btn" href="{{ config.botao_principal_link if config and config.botao_principal_link else url_for('main.login') }}">
+              {{ config.botao_principal_texto if config and config.botao_principal_texto else "Entrar" }}
             </a>
-            <a class="btn-outline" href="{{ config.botao_secundario_link or '#contato' }}">
-              {{ config.botao_secundario_texto or "Solicitar apresentação" }}
+
+            <a class="btn-outline" href="{{ config.botao_secundario_link if config and config.botao_secundario_link else '#funcionalidades' }}">
+              {{ config.botao_secundario_texto if config and config.botao_secundario_texto else "Saiba mais" }}
             </a>
           </div>
 
-          <div class="landing-quick-highlights">
-            <div class="landing-quick-item">
-              <strong>Prontuário por animal</strong>
-              <span>Histórico clínico estruturado e acessível.</span>
-            </div>
-
-            <div class="landing-quick-item">
-              <strong>Coleta padronizada</strong>
-              <span>Formulários dinâmicos para rotina técnica.</span>
-            </div>
-
-            <div class="landing-quick-item">
-              <strong>Base analítica</strong>
-              <span>Relatórios e leitura epidemiológica dos dados.</span>
-            </div>
+          <div class="landing-trust-row">
+            <span>Uso clínico e técnico</span>
+            <span>Organização por propriedade</span>
+            <span>Base para análise sanitária</span>
           </div>
         </div>
 
-        <aside class="landing-hero-panel">
-          <div class="landing-panel-header">
-            <span class="landing-panel-label">Visão da plataforma</span>
-            <h2>Clínico + Epidemiológico</h2>
+        <aside class="landing-hero-showcase">
+          <div class="landing-showcase-card landing-showcase-card-main">
+            <div class="landing-showcase-label">Visão geral</div>
+            <h2>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</h2>
             <p>
-              Estrutura preparada para uso em campo, acompanhamento sanitário
-              e consolidação técnica das informações.
+              {{ config.subtitulo if config and config.subtitulo else "Gestão clínica e inteligência epidemiológica" }}
             </p>
+
+            <div class="landing-mini-stats">
+              <div class="landing-mini-stat">
+                <strong>Prontuário</strong>
+                <span>Registro clínico individual</span>
+              </div>
+              <div class="landing-mini-stat">
+                <strong>Atendimento</strong>
+                <span>Coleta técnica padronizada</span>
+              </div>
+              <div class="landing-mini-stat">
+                <strong>Relatórios</strong>
+                <span>Leitura epidemiológica</span>
+              </div>
+            </div>
           </div>
 
-          <div class="landing-panel-grid">
-            <div class="landing-panel-card">
-              <span class="label">Módulo</span>
-              <div class="value">Animais</div>
-              <p>Cadastro, vínculo por propriedade e histórico individual.</p>
+          <div class="landing-showcase-grid">
+            <div class="landing-showcase-card">
+              <div class="landing-feature-icon">🐄</div>
+              <h3>Animais</h3>
+              <p>Cadastro individual com vínculo por propriedade.</p>
             </div>
 
-            <div class="landing-panel-card">
-              <span class="label">Módulo</span>
-              <div class="value">Atendimentos</div>
-              <p>Registro clínico estruturado com formulários dinâmicos.</p>
+            <div class="landing-showcase-card">
+              <div class="landing-feature-icon">📋</div>
+              <h3>Atendimentos</h3>
+              <p>Registro clínico estruturado e histórico contínuo.</p>
             </div>
 
-            <div class="landing-panel-card">
-              <span class="label">Módulo</span>
-              <div class="value">Relatórios</div>
-              <p>Indicadores, padrões e leitura epidemiológica dos registros.</p>
+            <div class="landing-showcase-card">
+              <div class="landing-feature-icon">📊</div>
+              <h3>Relatórios</h3>
+              <p>Indicadores e organização dos dados sanitários.</p>
             </div>
 
-            <div class="landing-panel-card">
-              <span class="label">Módulo</span>
-              <div class="value">Administração</div>
-              <p>Gestão de usuários, acessos, formulários e estrutura do sistema.</p>
+            <div class="landing-showcase-card">
+              <div class="landing-feature-icon">🧭</div>
+              <h3>Gestão</h3>
+              <p>Rotina mais clara para campo, clínica e administração.</p>
             </div>
           </div>
         </aside>
@@ -130,36 +133,40 @@
       <div class="container">
 
         <div class="landing-section-header">
-          <h2>Funcionalidades principais</h2>
+          <span class="landing-section-tag">Funcionalidades</span>
+          <h2>Estrutura completa para rotina veterinária e organização sanitária</h2>
           <p>
-            Organização clínica, rastreabilidade de dados e apoio à análise sanitária
-            em uma estrutura pensada para a prática veterinária.
+            Um sistema pensado para integrar cadastro, atendimento, histórico clínico
+            e consolidação de dados em uma base útil para acompanhamento técnico.
           </p>
         </div>
 
         <div class="landing-grid-4">
-
           <div class="landing-card">
+            <div class="landing-card-icon">🏡</div>
             <h3>Propriedades</h3>
-            <p>Gestão por unidade produtiva com controle de vínculo e acesso.</p>
+            <p>Gestão por unidade produtiva com separação clara de contexto e acesso.</p>
           </div>
 
           <div class="landing-card">
+            <div class="landing-card-icon">🐄</div>
             <h3>Animais</h3>
-            <p>Cadastro individual, identificação e acompanhamento por propriedade.</p>
+            <p>Cadastro individual, rastreabilidade e histórico por propriedade.</p>
           </div>
 
           <div class="landing-card">
+            <div class="landing-card-icon">🩺</div>
             <h3>Atendimentos</h3>
-            <p>Registro clínico estruturado com formulários adaptáveis à rotina.</p>
+            <p>Registro clínico padronizado, com foco em organização e continuidade.</p>
           </div>
 
           <div class="landing-card">
+            <div class="landing-card-icon">📈</div>
             <h3>Relatórios</h3>
-            <p>Leitura epidemiológica, consolidação de padrões e suporte analítico.</p>
+            <p>Leitura analítica para apoiar monitoramento e decisões sanitárias.</p>
           </div>
-
         </div>
+
       </div>
     </section>
 
@@ -167,27 +174,28 @@
       <div class="container">
 
         <div class="landing-section-header">
-          <h2>Aplicação prática</h2>
+          <span class="landing-section-tag">Aplicação prática</span>
+          <h2>Feito para quem precisa registrar, acompanhar e interpretar dados</h2>
           <p>
-            O sistema foi pensado para unir operação clínica, organização dos registros
-            e construção de base técnica para análises futuras.
+            Do atendimento individual ao acompanhamento populacional, a plataforma ajuda
+            a transformar registros dispersos em informação organizada.
           </p>
         </div>
 
         <div class="landing-grid-3">
           <div class="landing-card landing-card-feature">
             <h3>Uso em campo</h3>
-            <p>Fluxo orientado para coleta técnica, registro rápido e continuidade do atendimento.</p>
+            <p>Fluxo adequado à rotina técnica, com navegação clara e registro objetivo.</p>
           </div>
 
           <div class="landing-card landing-card-feature">
-            <h3>Padronização</h3>
-            <p>Estrutura consistente para reduzir dispersão de dados e melhorar comparabilidade.</p>
+            <h3>Padronização clínica</h3>
+            <p>Estrutura consistente para melhorar qualidade dos registros e comparabilidade.</p>
           </div>
 
           <div class="landing-card landing-card-feature">
-            <h3>Base para inteligência sanitária</h3>
-            <p>Dados organizados para apoiar monitoramento clínico e epidemiológico ao longo do tempo.</p>
+            <h3>Inteligência epidemiológica</h3>
+            <p>Base organizada para leitura de padrões, tendências e distribuição de ocorrências.</p>
           </div>
         </div>
 
@@ -198,19 +206,17 @@
       <div class="container">
         <div class="landing-cta-card">
           <div class="landing-cta-copy">
-            <h2>Transforme registros em informação útil para a decisão clínica.</h2>
+            <span class="landing-section-tag landing-section-tag-light">Pronto para usar</span>
+            <h2>Leve mais organização, consistência e inteligência para sua rotina veterinária.</h2>
             <p>
-              Organize a rotina veterinária, consolide dados de campo e fortaleça
-              a análise sanitária com uma estrutura única.
+              Centralize dados, acompanhe atendimentos e fortaleça a leitura sanitária
+              com uma plataforma feita para uso técnico real.
             </p>
           </div>
 
-          <div class="landing-actions">
-            <a class="btn" href="{{ config.botao_principal_link or url_for('main.login') }}">
-              {{ config.botao_principal_texto or "Entrar" }}
-            </a>
-            <a class="btn-outline" href="{{ config.botao_secundario_link or 'mailto:contato@moovet.com.br' }}">
-              {{ config.botao_secundario_texto or "Contato" }}
+          <div class="landing-actions landing-actions-center">
+            <a class="btn landing-btn-light" href="{{ config.botao_principal_link if config and config.botao_principal_link else url_for('main.login') }}">
+              {{ config.botao_principal_texto if config and config.botao_principal_texto else "Entrar no sistema" }}
             </a>
           </div>
         </div>
@@ -221,8 +227,13 @@
 
   <footer class="landing-footer">
     <div class="container landing-footer-inner">
-      <div>{{ config.rodape or "Moovet • Plataforma veterinária" }}</div>
-      <div>{{ config.subtitulo or "Gestão clínica • Monitoramento sanitário • Inteligência epidemiológica" }}</div>
+      <div>
+        {{ config.rodape if config and config.rodape else "Moovet • Plataforma veterinária" }}
+      </div>
+
+      <div>
+        {{ config.subtitulo if config and config.subtitulo else "Gestão clínica • Monitoramento sanitário • Inteligência epidemiológica" }}
+      </div>
     </div>
   </footer>
 
