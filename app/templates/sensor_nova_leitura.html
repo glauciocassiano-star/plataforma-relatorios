@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Nova leitura do sensor{% endblock %}
+
+{% block content %}
+
+<div class="sensor-shell">
+  <div class="sensor-topo">
+    <h2 class="sensor-titulo">Nova leitura do sensor</h2>
+    <p class="sensor-subtitulo">
+      Registre os parâmetros coletados em campo para estimar a probabilidade de inflamação compatível com mastite subclínica.
+    </p>
+  </div>
+
+  <div class="sensor-card">
+    <div class="sensor-contexto">
+      <span><strong>Animal:</strong> {{ animal.nome if animal.nome else animal.codigo }}</span>
+      <span><strong>Atendimento:</strong> #{{ atendimento.id }}</span>
+      {% if animal.propriedade %}
+        <span><strong>Propriedade:</strong> {{ animal.propriedade.nome }}</span>
+      {% endif %}
+    </div>
+
+    <form method="POST" class="sensor-form">
+      <div class="sensor-grid">
+        <div class="sensor-grupo">
+          <label for="condutividade">Condutividade (mS/cm) *</label>
+          <input class="campo-padrao" type="number" step="0.01" id="condutividade" name="condutividade" value="5.80" required>
+        </div>
+
+        <div class="sensor-grupo">
+          <label for="temperatura">Temperatura (°C) *</label>
+          <input class="campo-padrao" type="number" step="0.1" id="temperatura" name="temperatura" value="25.0" required>
+        </div>
+
+        <div class="sensor-grupo">
+          <label for="variacao">Variação entre leituras (%) *</label>
+          <input class="campo-padrao" type="number" step="0.1" id="variacao" name="variacao" value="9.0" required>
+        </div>
+
+        <div class="sensor-grupo">
+          <label for="consistencia">Consistência (0 a 100) *</label>
+          <input class="campo-padrao" type="number" step="0.1" min="0" max="100" id="consistencia" name="consistencia" value="82" required>
+        </div>
+
+        <div class="sensor-grupo">
+          <label for="quantidade_leituras">Quantidade de leituras *</label>
+          <input class="campo-padrao" type="number" step="1" min="1" id="quantidade_leituras" name="quantidade_leituras" value="4" required>
+        </div>
+
+        <div class="sensor-grupo">
+          <label for="quarto_mamario">Quarto mamário</label>
+          <select class="campo-padrao" id="quarto_mamario" name="quarto_mamario">
+            <option value="">Não informado</option>
+            <option value="anterior_direito">Anterior direito</option>
+            <option value="anterior_esquerdo">Anterior esquerdo</option>
+            <option value="posterior_direito">Posterior direito</option>
+            <option value="posterior_esquerdo">Posterior esquerdo</option>
+          </select>
+        </div>
+
+        <div class="sensor-grupo sensor-grupo-full">
+          <label for="observacoes">Observações</label>
+          <textarea class="campo-padrao campo-padrao-textarea" id="observacoes" name="observacoes" placeholder="Observações de campo, comportamento do animal ou condições da coleta."></textarea>
+        </div>
+      </div>
+
+      <div class="sensor-acoes">
+        <button type="submit">Calcular e salvar leitura</button>
+        <a class="btn btn-secondary" href="{{ url_for('main.prontuario_animal', animal_id=animal.id) }}">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

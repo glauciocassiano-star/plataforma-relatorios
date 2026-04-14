@@ -67,9 +67,3 @@ def admin_configuracoes():
         return redirect(url_for("main.admin_configuracoes"))
 
     return render_template("admin_configuracoes.html", config=config)
-
-
-@main.route("/")
-def landing():
-    config = ConfiguracaoSistema.query.first()
-    return render_template("landing.html", config=config)

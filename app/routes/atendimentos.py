@@ -10,6 +10,7 @@ from ..helpers.decorators import (
     acesso_animal,
     acesso_atendimento,
     login_obrigatorio,
+    usuario_pode_acessar_sensor,
 )
 from ..models import Animal, Atendimento, Exame, Formulario, Propriedade
 from ..services.animal_service import listar_animais_da_propriedade
@@ -206,6 +207,25 @@ def novo_atendimento(animal_id):
         else:
             flash("Atendimento cadastrado com sucesso!", "success")
 
+        if (
+            formulario
+            and getattr(formulario, "usa_sensor_mastite", False)
+            and getattr(formulario, "sensor_obrigatorio", False)
+            and usuario_pode_acessar_sensor(usuario)
+        ):
+            return redirect(url_for("main.nova_leitura_sensor", atendimento_id=atendimento.id))
+
+        if (
+            formulario
+            and getattr(formulario, "usa_sensor_mastite", False)
+            and getattr(formulario, "sensor_obrigatorio", False)
+            and not usuario_pode_acessar_sensor(usuario)
+        ):
+            flash(
+                "O formulário exige leitura do sensor, mas este usuário ainda não possui permissão para operar o módulo.",
+                "error",
+            )
+
         return redirect(url_for("main.prontuario_animal", animal_id=animal.id))
 
     return render_template(
@@ -216,6 +236,7 @@ def novo_atendimento(animal_id):
         perfil_efetivo=perfil,
         contexto=contexto,
         formularios_disponiveis=[formulario] if formulario else [],
+        usuario_pode_usar_sensor=usuario_pode_acessar_sensor(usuario),
     )
 
 
@@ -350,6 +371,7 @@ def editar_atendimento(id):
         atendimento=atendimento,
         modo_edicao=True,
         contexto=getattr(formulario, "tipo_contexto", "rural"),
+        usuario_pode_usar_sensor=usuario_pode_acessar_sensor(usuario),
     )
 
 

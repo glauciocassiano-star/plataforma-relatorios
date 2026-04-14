@@ -96,17 +96,16 @@
                 class="campo-padrao"
                 id="cliente_id"
                 name="cliente_id"
-                required
                 {% if not clientes %}disabled{% endif %}
               >
-                <option value="">Selecione o cliente</option>
+                <option value="">Sem vínculo de cliente</option>
                 {% for cliente in clientes %}
                   <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
                 {% endfor %}
               </select>
 
               <small class="usuarios-admin-ajuda">
-                O administrador principal define a qual cliente este usuário pertence.
+                O administrador principal define a qual cliente este usuário pertence. Se o perfil for administrador principal, o vínculo com cliente pode ficar vazio.
               </small>
             </div>
           {% endif %}
@@ -124,6 +123,17 @@
 
             <small class="usuarios-admin-ajuda">
               Técnicos e veterinários operam o sistema. O administrador do cliente gerencia usuários e propriedades da própria conta.
+            </small>
+          </div>
+
+          <div class="usuarios-admin-grupo usuarios-admin-grupo-full">
+            <label class="usuarios-admin-checkbox-linha" for="pode_usar_sensor">
+              <input type="checkbox" id="pode_usar_sensor" name="pode_usar_sensor">
+              Liberar acesso ao módulo do sensor
+            </label>
+
+            <small class="usuarios-admin-ajuda">
+              Administradores já possuem acesso integral. Use esta opção para técnicos e veterinários autorizados.
             </small>
           </div>
         </div>
@@ -159,6 +169,7 @@
                   <th>Cliente</th>
                 {% endif %}
                 <th>Perfil</th>
+                <th>Sensor</th>
                 <th>Status</th>
                 <th>Ações</th>
               </tr>
@@ -168,11 +179,23 @@
               {% for u in usuarios %}
               <tr>
                 <td>{{ u.id }}</td>
-                <td>{{ u.nome }}</td>
-                <td>{{ u.email }}</td>
+                <td>
+                  <div class="usuarios-admin-texto-limitado" title="{{ u.nome }}">
+                    {{ u.nome }}
+                  </div>
+                </td>
+                <td>
+                  <div class="usuarios-admin-texto-limitado" title="{{ u.email }}">
+                    {{ u.email }}
+                  </div>
+                </td>
 
                 {% if usuario_logado.perfil == "admin_master" %}
-                  <td>{{ u.cliente.nome if u.cliente else "-" }}</td>
+                  <td>
+                    <div class="usuarios-admin-texto-limitado" title="{{ u.cliente.nome if u.cliente else '-' }}">
+                      {{ u.cliente.nome if u.cliente else "-" }}
+                    </div>
+                  </td>
                 {% endif %}
 
                 <td>
@@ -194,6 +217,14 @@
                       {{ u.perfil }}
                     {% endif %}
                   </span>
+                </td>
+
+                <td>
+                  {% if u.perfil in ["admin_master", "admin_cliente"] or u.pode_usar_sensor %}
+                    <span class="usuarios-admin-badge-status ativo">Liberado</span>
+                  {% else %}
+                    <span class="usuarios-admin-badge-status inativo">Bloqueado</span>
+                  {% endif %}
                 </td>
 
                 <td>
@@ -244,11 +275,23 @@
   (function () {
     const campoSenha = document.getElementById("senha");
     const mostrarSenha = document.getElementById("mostrar_senha");
+    const perfil = document.getElementById("perfil");
+    const cliente = document.getElementById("cliente_id");
 
     if (campoSenha && mostrarSenha) {
       mostrarSenha.addEventListener("change", function () {
         campoSenha.type = this.checked ? "text" : "password";
       });
+    }
+
+    function atualizarObrigatoriedadeCliente() {
+      if (!perfil || !cliente) return;
+      cliente.required = perfil.value !== "admin_master";
+    }
+
+    if (perfil && cliente) {
+      atualizarObrigatoriedadeCliente();
+      perfil.addEventListener("change", atualizarObrigatoriedadeCliente);
     }
   })();
 </script>

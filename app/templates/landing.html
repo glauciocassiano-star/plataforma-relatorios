@@ -7,20 +7,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
-<body class="landing-page">
+<body class="landing-page{% if modo_login %} landing-page-login{% endif %}">
 
   <header class="landing-topbar">
     <div class="container landing-topbar-inner">
 
       <div class="landing-brand">
-        {% if config and config.logo %}
-          <img
-            src="{{ config.logo }}"
-            alt="Logo {{ config.nome_plataforma if config and config.nome_plataforma else 'Moovet' }}"
-            class="landing-logo-img"
-          >
-        {% endif %}
-
         <div class="landing-brand-text">
           <strong>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</strong>
           <span>{{ config.subtitulo if config and config.subtitulo else "Gestão clínica e inteligência epidemiológica" }}</span>
@@ -31,21 +23,15 @@
         <a class="btn-outline" href="#funcionalidades">
           {{ config.botao_secundario_texto if config and config.botao_secundario_texto else "Funcionalidades" }}
         </a>
-
-        <a class="btn" href="{{ config.botao_principal_link if config and config.botao_principal_link else url_for('main.login') }}">
-          {{ config.botao_principal_texto if config and config.botao_principal_texto else "Acessar sistema" }}
-        </a>
       </div>
 
     </div>
   </header>
 
   <main>
-
     <section class="landing-hero">
       <div class="container landing-hero-grid">
-
-        <div class="landing-hero-copy">
+        <div class="landing-hero-copy landing-hero-panel">
           <div class="landing-badge">
             {{ config.aviso_sanitario if config and config.aviso_sanitario else "Plataforma veterinária para uso técnico em campo" }}
           </div>
@@ -58,147 +44,163 @@
             {{ config.texto_banner if config and config.texto_banner else "O Moovet centraliza prontuários veterinários, atendimentos clínicos, organização de rotina e base de dados para análise epidemiológica em um único ambiente." }}
           </p>
 
-          <div class="landing-actions landing-actions-main">
-            <a class="btn" href="{{ config.botao_principal_link if config and config.botao_principal_link else url_for('main.login') }}">
-              {{ config.botao_principal_texto if config and config.botao_principal_texto else "Entrar" }}
-            </a>
-
-            <a class="btn-outline" href="{{ config.botao_secundario_link if config and config.botao_secundario_link else '#funcionalidades' }}">
-              {{ config.botao_secundario_texto if config and config.botao_secundario_texto else "Saiba mais" }}
-            </a>
+          <div class="landing-hero-bullets">
+            <div class="landing-hero-bullet">
+              <strong>Prontuário veterinário</strong>
+              <span>Histórico clínico individual com organização por animal e propriedade.</span>
+            </div>
+            <div class="landing-hero-bullet">
+              <strong>Operação em campo</strong>
+              <span>Fluxo pensado para rotina técnica, clínica e apoio à decisão.</span>
+            </div>
+            <div class="landing-hero-bullet">
+              <strong>Base para inteligência sanitária</strong>
+              <span>Registros consistentes para leitura epidemiológica e pesquisa aplicada.</span>
+            </div>
           </div>
 
-          <div class="landing-trust-row">
-            <span>Uso clínico e técnico</span>
-            <span>Organização por propriedade</span>
-            <span>Base para análise sanitária</span>
+          <div class="landing-contact-inline">
+            <div class="landing-contact-inline-copy">
+              <strong>Solicite uma apresentação</strong>
+              <span>Deixe seu email para conhecer melhor a plataforma e suas possibilidades.</span>
+            </div>
+
+            <form class="landing-contact-inline-form" action="#contato" method="GET">
+              <label class="sr-only" for="email_contato">Email para contato</label>
+              <input
+                type="email"
+                id="email_contato"
+                name="email_contato"
+                placeholder="seuemail@exemplo.com"
+              >
+              <button type="submit" class="btn-outline">Solicitar contato</button>
+            </form>
           </div>
         </div>
 
         <aside class="landing-hero-showcase">
-          <div class="landing-showcase-card landing-showcase-card-main">
-            <div class="landing-showcase-label">Visão geral</div>
-            <h2>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</h2>
-            <p>
-              {{ config.subtitulo if config and config.subtitulo else "Gestão clínica e inteligência epidemiológica" }}
-            </p>
-
-            <div class="landing-mini-stats">
-              <div class="landing-mini-stat">
-                <strong>Prontuário</strong>
-                <span>Registro clínico individual</span>
+          <div class="landing-showcase-card landing-access-card" id="acesso">
+            <div class="landing-access-card-header">
+              <div>
+                <div class="landing-showcase-label">Acesso seguro</div>
+                <h2>Entrar no sistema</h2>
+                <p>Use seu email e senha para acessar a plataforma e continuar a rotina de campo, clínica e gestão.</p>
               </div>
-              <div class="landing-mini-stat">
-                <strong>Atendimento</strong>
-                <span>Coleta técnica padronizada</span>
+
+              {% if config and config.logo %}
+                <img
+                  src="{{ config.logo }}"
+                  alt="Logo {{ config.nome_plataforma if config and config.nome_plataforma else 'Moovet' }}"
+                  class="landing-access-logo"
+                >
+              {% endif %}
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="landing-alert-stack">
+                  {% for category, message in messages %}
+                    <div class="landing-alert landing-alert-{{ category }}">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('main.login') }}" class="landing-login-form" id="landing-login-form">
+              <div class="landing-form-grid">
+                <div class="landing-form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" autocomplete="username" placeholder="glaucio@exemplo.com" required>
+                </div>
+
+                <div class="landing-form-group">
+                  <label for="senha">Senha</label>
+                  <input type="password" id="senha" name="senha" autocomplete="current-password" placeholder="Sua senha" required>
+                </div>
               </div>
-              <div class="landing-mini-stat">
-                <strong>Relatórios</strong>
-                <span>Leitura epidemiológica</span>
+
+              <div class="landing-login-actions">
+                <button type="submit" class="btn landing-login-submit" id="landing-login-button">
+                  <span class="landing-login-submit-text">Entrar no sistema</span>
+                  <span class="landing-login-submit-loader" aria-hidden="true"></span>
+                </button>
               </div>
-            </div>
-          </div>
+            </form>
 
-          <div class="landing-showcase-grid">
-            <div class="landing-showcase-card">
-              <div class="landing-feature-icon">🐄</div>
-              <h3>Animais</h3>
-              <p>Cadastro individual com vínculo por propriedade.</p>
-            </div>
-
-            <div class="landing-showcase-card">
-              <div class="landing-feature-icon">📋</div>
-              <h3>Atendimentos</h3>
-              <p>Registro clínico estruturado e histórico contínuo.</p>
-            </div>
-
-            <div class="landing-showcase-card">
-              <div class="landing-feature-icon">📊</div>
-              <h3>Relatórios</h3>
-              <p>Indicadores e organização dos dados sanitários.</p>
-            </div>
-
-            <div class="landing-showcase-card">
-              <div class="landing-feature-icon">🧭</div>
-              <h3>Gestão</h3>
-              <p>Rotina mais clara para campo, clínica e administração.</p>
+            <div class="landing-login-footnote">
+              <span>Acesso institucional para equipe técnica, administração e operação clínica.</span>
             </div>
           </div>
         </aside>
-
       </div>
     </section>
 
-    <section class="landing-section" id="funcionalidades">
+    <section class="landing-section landing-feature-band" id="funcionalidades">
       <div class="container">
-
-        <div class="landing-section-header">
+        <div class="landing-section-header landing-section-header-wide">
           <span class="landing-section-tag">Funcionalidades</span>
-          <h2>Estrutura completa para rotina veterinária e organização sanitária</h2>
+          <h2>Estrutura completa para rotina veterinária, operação clínica e acompanhamento sanitário</h2>
           <p>
-            Um sistema pensado para integrar cadastro, atendimento, histórico clínico
-            e consolidação de dados em uma base útil para acompanhamento técnico.
+            Uma base única para organizar propriedades, animais, atendimentos, relatórios e novas camadas técnicas como sensores e validação laboratorial.
           </p>
         </div>
 
-        <div class="landing-grid-4">
-          <div class="landing-card">
+        <div class="landing-feature-grid">
+          <article class="landing-feature-panel">
             <div class="landing-card-icon">🏡</div>
             <h3>Propriedades</h3>
-            <p>Gestão por unidade produtiva com separação clara de contexto e acesso.</p>
-          </div>
+            <p>Gestão por unidade produtiva com contexto, acesso e histórico organizados.</p>
+          </article>
 
-          <div class="landing-card">
+          <article class="landing-feature-panel">
             <div class="landing-card-icon">🐄</div>
             <h3>Animais</h3>
-            <p>Cadastro individual, rastreabilidade e histórico por propriedade.</p>
-          </div>
+            <p>Cadastro individual, rastreabilidade e organização clínica por propriedade.</p>
+          </article>
 
-          <div class="landing-card">
+          <article class="landing-feature-panel">
             <div class="landing-card-icon">🩺</div>
             <h3>Atendimentos</h3>
-            <p>Registro clínico padronizado, com foco em organização e continuidade.</p>
-          </div>
+            <p>Registro padronizado para rotina veterinária, campo e hospital.</p>
+          </article>
 
-          <div class="landing-card">
+          <article class="landing-feature-panel landing-feature-panel-accent">
             <div class="landing-card-icon">📈</div>
             <h3>Relatórios</h3>
-            <p>Leitura analítica para apoiar monitoramento e decisões sanitárias.</p>
-          </div>
+            <p>Leitura epidemiológica, monitoramento de padrões e apoio à decisão técnica.</p>
+          </article>
         </div>
-
       </div>
     </section>
 
     <section class="landing-section landing-section-soft">
-      <div class="container">
-
-        <div class="landing-section-header">
+      <div class="container landing-practical-shell">
+        <div class="landing-practical-copy">
           <span class="landing-section-tag">Aplicação prática</span>
-          <h2>Feito para quem precisa registrar, acompanhar e interpretar dados</h2>
+          <h2>Feito para registrar, acompanhar e interpretar dados com clareza</h2>
           <p>
-            Do atendimento individual ao acompanhamento populacional, a plataforma ajuda
-            a transformar registros dispersos em informação organizada.
+            Do atendimento individual ao acompanhamento populacional, a plataforma transforma registros dispersos em informação organizada e útil para a rotina técnica.
           </p>
         </div>
 
-        <div class="landing-grid-3">
-          <div class="landing-card landing-card-feature">
-            <h3>Uso em campo</h3>
-            <p>Fluxo adequado à rotina técnica, com navegação clara e registro objetivo.</p>
+        <div class="landing-practical-list">
+          <div class="landing-practical-item">
+            <strong>Uso em campo</strong>
+            <span>Fluxo adequado à rotina técnica, com navegação clara e registro objetivo.</span>
           </div>
 
-          <div class="landing-card landing-card-feature">
-            <h3>Padronização clínica</h3>
-            <p>Estrutura consistente para melhorar qualidade dos registros e comparabilidade.</p>
+          <div class="landing-practical-item">
+            <strong>Padronização clínica</strong>
+            <span>Estrutura consistente para melhorar qualidade dos registros e comparabilidade.</span>
           </div>
 
-          <div class="landing-card landing-card-feature">
-            <h3>Inteligência epidemiológica</h3>
-            <p>Base organizada para leitura de padrões, tendências e distribuição de ocorrências.</p>
+          <div class="landing-practical-item">
+            <strong>Inteligência epidemiológica</strong>
+            <span>Base organizada para leitura de padrões, tendências e distribuição de ocorrências.</span>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -215,7 +217,7 @@
           </div>
 
           <div class="landing-actions landing-actions-center">
-            <a class="btn landing-btn-light" href="{{ config.botao_principal_link if config and config.botao_principal_link else url_for('main.login') }}">
+            <a class="btn landing-btn-light" href="#acesso">
               {{ config.botao_principal_texto if config and config.botao_principal_texto else "Entrar no sistema" }}
             </a>
           </div>
@@ -238,4 +240,29 @@
   </footer>
 
 </body>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("landing-login-form");
+    const button = document.getElementById("landing-login-button");
+    const email = document.getElementById("email");
+    const accessSection = document.getElementById("acesso");
+
+    {% if modo_login %}
+    if (accessSection) {
+      accessSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    if (email) {
+      email.focus();
+    }
+    {% endif %}
+
+    if (form && button) {
+      form.addEventListener("submit", () => {
+        button.classList.add("is-loading");
+        button.disabled = true;
+      });
+    }
+  });
+</script>
 </html>

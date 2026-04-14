@@ -113,6 +113,27 @@
         </div>
       </div>
 
+      {% if formulario and formulario.usa_sensor_mastite %}
+        <div class="atendimento-card atendimento-card-sensor">
+          <h3 class="atendimento-card-titulo">Módulo de sensor</h3>
+
+          <p class="atendimento-sensor-copy">
+            Este formulário está configurado para uso com o sensor de triagem de mastite subclínica.
+            {% if formulario.sensor_obrigatorio %}
+              Após salvar o atendimento, a plataforma direcionará você para registrar a leitura do sensor.
+            {% else %}
+              Após salvar o atendimento, você poderá adicionar a leitura do sensor pelo prontuário.
+            {% endif %}
+          </p>
+
+          {% if not usuario_pode_usar_sensor %}
+            <div class="atendimento-alerta">
+              Seu usuário ainda não possui liberação para operar o módulo do sensor.
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
       {% set ns = namespace(grupo_atual=None) %}
 
       {% for campo in campos %}

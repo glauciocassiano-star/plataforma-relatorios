@@ -8,6 +8,7 @@ from . import animais
 from . import atendimentos
 from . import relatorios
 from . import sync
+from . import sensor
 
 # Admin
 from . import admin_formularios

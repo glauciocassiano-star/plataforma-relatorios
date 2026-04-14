@@ -2,7 +2,35 @@ import os
 from flask import Flask, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
 
+from werkzeug.security import generate_password_hash
+
 db = SQLAlchemy()
+
+
+def garantir_admin_master_padrao():
+    from .models import Usuario
+
+    email_admin = os.getenv("ADMIN_MASTER_EMAIL", "glaucio.cassiano@gmail.com")
+    senha_admin = os.getenv("ADMIN_MASTER_PASSWORD", "159951baB=")
+
+    admin_existente = Usuario.query.filter_by(email=email_admin).first()
+
+    if admin_existente:
+        if not getattr(admin_existente, "pode_usar_sensor", False):
+            admin_existente.pode_usar_sensor = True
+            db.session.commit()
+        return
+
+    admin = Usuario(
+        nome="Administrador Master",
+        email=email_admin,
+        senha_hash=generate_password_hash(senha_admin),
+        perfil="admin_master",
+        ativo=True,
+        pode_usar_sensor=True,
+    )
+    db.session.add(admin)
+    db.session.commit()
 
 
 def create_app():
@@ -93,5 +121,6 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        garantir_admin_master_padrao()
 
     return app

@@ -31,6 +31,16 @@ def _usuario_pode_usar_sistema(usuario):
     return True, None
 
 
+def usuario_pode_acessar_sensor(usuario):
+    if not usuario:
+        return False
+
+    if getattr(usuario, "perfil", None) in ["admin_master", "admin_cliente"]:
+        return True
+
+    return bool(getattr(usuario, "pode_usar_sensor", False))
+
+
 def login_obrigatorio(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -160,6 +170,25 @@ def acesso_atendimento(f):
         if not usuario_tem_acesso_animal(usuario, animal):
             flash("Você não tem acesso a esse atendimento.", "error")
             return redirect(url_for("main.propriedades"))
+
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def acesso_sensor_obrigatorio(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        usuario = obter_usuario_logado()
+        permitido, mensagem = _usuario_pode_usar_sistema(usuario)
+
+        if not permitido:
+            flash(mensagem, "error")
+            return redirect(url_for("main.login"))
+
+        if not usuario_pode_acessar_sensor(usuario):
+            flash("Você não tem permissão para usar o módulo do sensor.", "error")
+            return redirect(url_for("main.painel"))
 
         return f(*args, **kwargs)
 

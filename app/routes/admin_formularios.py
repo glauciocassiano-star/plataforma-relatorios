@@ -24,6 +24,8 @@ def admin_formularios():
         tipo_contexto = normalizar_contexto(request.form.get("tipo_contexto"))
         ativo = True if request.form.get("ativo") else False
         template_base = True if request.form.get("template_base") else False
+        usa_sensor_mastite = True if request.form.get("usa_sensor_mastite") else False
+        sensor_obrigatorio = True if request.form.get("sensor_obrigatorio") else False
 
         cliente_id_raw = (request.form.get("cliente_id") or "").strip()
         cliente_id = int(cliente_id_raw) if cliente_id_raw.isdigit() else None
@@ -35,12 +37,18 @@ def admin_formularios():
         if template_base:
             cliente_id = None
 
+        if sensor_obrigatorio and not usa_sensor_mastite:
+            flash("Para tornar o sensor obrigatório, primeiro habilite o módulo do sensor.", "error")
+            return redirect(request.url)
+
         formulario = Formulario(
             nome=nome,
             perfil_alvo=perfil_alvo,
             ativo=ativo,
             tipo_contexto=tipo_contexto,
             template_base=template_base,
+            usa_sensor_mastite=usa_sensor_mastite,
+            sensor_obrigatorio=sensor_obrigatorio,
             cliente_id=cliente_id,
             formulario_origem_id=None,
         )

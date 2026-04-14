@@ -33,6 +33,40 @@
     </a>
   </div>
 
+  {% if animal.leituras_sensor %}
+    <h3 class="prontuario-subtitulo">Leituras do sensor</h3>
+
+    <div class="prontuario-sensor-lista">
+      {% for leitura in animal.leituras_sensor %}
+        <div class="prontuario-card prontuario-card-sensor">
+          <div class="prontuario-header">
+            <div>
+              <div class="prontuario-card-titulo">Triagem por sensor</div>
+              <div><b>Data:</b> {{ leitura.criado_em.strftime("%d/%m/%Y às %H:%M") if leitura.criado_em else "-" }}</div>
+              <div class="muted"><b>Classificação:</b> {{ leitura.classificacao.replace("_", " ")|title }}</div>
+            </div>
+          </div>
+
+          <div class="prontuario-grid">
+            <div><b>Condutividade:</b> {{ leitura.condutividade }} mS/cm</div>
+            <div><b>Temperatura:</b> {{ leitura.temperatura if leitura.temperatura is not none else "-" }} °C</div>
+            <div><b>Variação:</b> {{ leitura.variacao if leitura.variacao is not none else "-" }}%</div>
+            <div><b>Consistência:</b> {{ leitura.consistencia if leitura.consistencia is not none else "-" }}</div>
+            <div><b>Risco estimado:</b> {{ leitura.risco_estimado }}%</div>
+            <div><b>Confiança:</b> {{ leitura.confianca }}%</div>
+            <div><b>Intervalo:</b> {{ leitura.intervalo_inferior }}% a {{ leitura.intervalo_superior }}%</div>
+            <div><b>Quarto mamário:</b> {{ leitura.quarto_mamario or "-" }}</div>
+          </div>
+
+          <div class="prontuario-bloco">
+            <div class="titulo-bloco">Recomendação</div>
+            <p>{{ leitura.recomendacao or "-" }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <h3 class="prontuario-subtitulo">Atendimentos</h3>
 
   {% if not atendimentos %}
@@ -69,6 +103,13 @@
                  class="btn btn-secondary">
                 Editar
               </a>
+
+              {% if usuario_logado and a.formulario and a.formulario.usa_sensor_mastite and (usuario_logado.perfil in ["admin_master", "admin_cliente"] or usuario_logado.pode_usar_sensor) %}
+                <a href="{{ url_for('main.nova_leitura_sensor', atendimento_id=a.id) }}"
+                   class="btn btn-secondary">
+                  + Sensor
+                </a>
+              {% endif %}
 
               {% if usuario_logado and usuario_logado.perfil in ["admin_master", "veterinario"] %}
 

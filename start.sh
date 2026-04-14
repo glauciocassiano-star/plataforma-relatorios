@@ -1,8 +1,8 @@
-#!/bin/bash
-set -e
+from app import create_app, db
 
-echo "🔄 Executando bootstrap do sistema..."
-python bootstrap_render.py
+app = create_app()
 
-echo "🚀 Iniciando aplicação..."
-exec gunicorn run:app
+with app.app_context():
+    print("🔄 Criando/atualizando tabelas...")
+    db.create_all()
+    print("✅ Banco de dados atualizado com sucesso!")

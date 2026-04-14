@@ -1,7 +1,7 @@
 from flask import flash, redirect, render_template, request, session, url_for
 
 from .base import main
-from ..models import Usuario
+from ..models import ConfiguracaoSistema, Usuario
 
 
 @main.route("/login", methods=["GET", "POST"])
@@ -30,7 +30,13 @@ def login():
         flash("Email ou senha inválidos.", "error")
         return redirect(url_for("main.login"))
 
-    return render_template("login.html", ocultar_layout=True)
+    config = ConfiguracaoSistema.query.first()
+    return render_template(
+        "landing.html",
+        config=config,
+        modo_login=True,
+        ocultar_layout=True,
+    )
 
 
 @main.route("/logout")

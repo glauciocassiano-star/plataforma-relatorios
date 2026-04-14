@@ -48,8 +48,8 @@
           {% if usuario_logado.perfil == "admin_master" %}
           <div class="usuario-editar-grupo usuario-editar-grupo-full">
             <label for="cliente_id">Cliente *</label>
-            <select class="campo-padrao" id="cliente_id" name="cliente_id" required>
-              <option value="">Selecione o cliente</option>
+            <select class="campo-padrao" id="cliente_id" name="cliente_id">
+              <option value="">Sem vínculo de cliente</option>
               {% for cliente in clientes %}
               <option value="{{ cliente.id }}" {% if usuario.cliente_id == cliente.id %}selected{% endif %}>
                 {{ cliente.nome }}
@@ -58,7 +58,7 @@
             </select>
 
             <small class="usuario-editar-ajuda">
-              Alterar o cliente remove vínculos de propriedades por segurança.
+              Alterar o cliente remove vínculos de propriedades por segurança. Usuários com perfil administrador principal podem permanecer sem vínculo.
             </small>
           </div>
           {% endif %}
@@ -111,6 +111,22 @@
             </select>
           </div>
 
+          <div class="usuario-editar-grupo usuario-editar-grupo-full">
+            <label class="usuarios-admin-checkbox-linha" for="pode_usar_sensor">
+              <input
+                type="checkbox"
+                id="pode_usar_sensor"
+                name="pode_usar_sensor"
+                {% if usuario.pode_usar_sensor %}checked{% endif %}
+              >
+              Liberar acesso ao módulo do sensor
+            </label>
+
+            <small class="usuario-editar-ajuda">
+              Use esta opção para definir quais usuários podem registrar leituras e operar o módulo em campo.
+            </small>
+          </div>
+
         </div>
 
         <div class="usuario-editar-acoes">
@@ -131,11 +147,23 @@
 <script>
   const campoSenha = document.getElementById("senha");
   const mostrarSenha = document.getElementById("mostrar_senha");
+  const perfil = document.getElementById("perfil");
+  const cliente = document.getElementById("cliente_id");
 
   if (campoSenha && mostrarSenha) {
     mostrarSenha.addEventListener("change", function () {
       campoSenha.type = this.checked ? "text" : "password";
     });
+  }
+
+  function atualizarObrigatoriedadeCliente() {
+    if (!perfil || !cliente) return;
+    cliente.required = perfil.value !== "admin_master";
+  }
+
+  if (perfil && cliente) {
+    atualizarObrigatoriedadeCliente();
+    perfil.addEventListener("change", atualizarObrigatoriedadeCliente);
   }
 </script>
 

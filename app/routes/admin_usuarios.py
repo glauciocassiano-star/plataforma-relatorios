@@ -56,6 +56,7 @@ def admin_usuarios():
         email = (request.form.get("email") or "").strip().lower()
         senha = (request.form.get("senha") or "").strip()
         perfil = (request.form.get("perfil") or "tecnico").strip()
+        pode_usar_sensor = True if request.form.get("pode_usar_sensor") else False
 
         if not nome or not email or not senha:
             flash("Nome, email e senha são obrigatórios.", "error")
@@ -84,21 +85,23 @@ def admin_usuarios():
 
         if usuario_eh_admin_master(usuario_logado):
             cliente_id_raw = request.form.get("cliente_id", "").strip()
+            if perfil == "admin_master":
+                cliente_id = None
+            else:
+                if not cliente_id_raw:
+                    flash("Selecione o cliente do usuário.", "error")
+                    return redirect(request.url)
 
-            if not cliente_id_raw:
-                flash("Selecione o cliente do usuário.", "error")
-                return redirect(request.url)
+                try:
+                    cliente_id = int(cliente_id_raw)
+                except ValueError:
+                    flash("Cliente inválido.", "error")
+                    return redirect(request.url)
 
-            try:
-                cliente_id = int(cliente_id_raw)
-            except ValueError:
-                flash("Cliente inválido.", "error")
-                return redirect(request.url)
-
-            cliente = db.session.get(Cliente, cliente_id)
-            if not cliente or not cliente.ativo:
-                flash("Cliente inválido ou inativo.", "error")
-                return redirect(request.url)
+                cliente = db.session.get(Cliente, cliente_id)
+                if not cliente or not cliente.ativo:
+                    flash("Cliente inválido ou inativo.", "error")
+                    return redirect(request.url)
 
             criado_por_id = None
         else:
@@ -119,6 +122,7 @@ def admin_usuarios():
             perfil=perfil,
             cliente_id=cliente_id,
             ativo=True,
+            pode_usar_sensor=pode_usar_sensor,
             criado_por_id=criado_por_id,
         )
         novo_usuario.set_password(senha)
@@ -264,6 +268,7 @@ def admin_editar_usuario(usuario_id):
         email = (request.form.get("email") or "").strip().lower()
         perfil = (request.form.get("perfil") or "tecnico").strip()
         senha = (request.form.get("senha") or "").strip()
+        pode_usar_sensor = True if request.form.get("pode_usar_sensor") else False
 
         if not nome or not email:
             flash("Nome e email são obrigatórios.", "error")
@@ -286,29 +291,35 @@ def admin_editar_usuario(usuario_id):
         usuario.nome = nome
         usuario.email = email
         usuario.perfil = perfil
+        usuario.pode_usar_sensor = pode_usar_sensor
 
         if usuario_eh_admin_master(usuario_logado):
             cliente_id_raw = (request.form.get("cliente_id") or "").strip()
+            if perfil == "admin_master":
+                if usuario.cliente_id is not None:
+                    usuario.cliente_id = None
+                    usuario.criado_por_id = None
+                    UsuarioPropriedade.query.filter_by(usuario_id=usuario.id).delete()
+            else:
+                if not cliente_id_raw:
+                    flash("Selecione o cliente do usuário.", "error")
+                    return redirect(request.url)
 
-            if not cliente_id_raw:
-                flash("Selecione o cliente do usuário.", "error")
-                return redirect(request.url)
+                try:
+                    cliente_id = int(cliente_id_raw)
+                except ValueError:
+                    flash("Cliente inválido.", "error")
+                    return redirect(request.url)
 
-            try:
-                cliente_id = int(cliente_id_raw)
-            except ValueError:
-                flash("Cliente inválido.", "error")
-                return redirect(request.url)
+                cliente = db.session.get(Cliente, cliente_id)
+                if not cliente or not cliente.ativo:
+                    flash("Cliente inválido ou inativo.", "error")
+                    return redirect(request.url)
 
-            cliente = db.session.get(Cliente, cliente_id)
-            if not cliente or not cliente.ativo:
-                flash("Cliente inválido ou inativo.", "error")
-                return redirect(request.url)
-
-            if usuario.cliente_id != cliente.id:
-                usuario.cliente_id = cliente.id
-                usuario.criado_por_id = None
-                UsuarioPropriedade.query.filter_by(usuario_id=usuario.id).delete()
+                if usuario.cliente_id != cliente.id:
+                    usuario.cliente_id = cliente.id
+                    usuario.criado_por_id = None
+                    UsuarioPropriedade.query.filter_by(usuario_id=usuario.id).delete()
 
         if senha:
             if not senha_forte_valida(senha):

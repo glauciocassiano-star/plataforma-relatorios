@@ -4,20 +4,62 @@
 {% block content %}
 
 <div class="formularios-admin-shell">
+  {% set ns = namespace(total=0, templates=0, personalizados=0, sensor=0) %}
+  {% for item in formularios_info %}
+    {% set ns.total = ns.total + 1 %}
+    {% if item.obj.template_base %}
+      {% set ns.templates = ns.templates + 1 %}
+    {% else %}
+      {% set ns.personalizados = ns.personalizados + 1 %}
+    {% endif %}
+    {% if item.obj.usa_sensor_mastite %}
+      {% set ns.sensor = ns.sensor + 1 %}
+    {% endif %}
+  {% endfor %}
 
   <div class="formularios-admin-topo">
-    <h2 class="formularios-admin-titulo">Formulários</h2>
-    <p class="formularios-admin-subtitulo">
-      Crie modelos base, personalize formulários por cliente e organize estruturas de coleta
-      conforme o contexto de atendimento e o perfil de uso.
-    </p>
+    <div class="formularios-admin-topo-texto">
+      <span class="page-kicker">Administração de formulários</span>
+      <h2 class="formularios-admin-titulo">Modelos clínicos com estrutura, contexto e governança</h2>
+      <p class="formularios-admin-subtitulo">
+        Crie modelos base, personalize formulários por cliente e organize estruturas de coleta
+        conforme o contexto de atendimento, o perfil de uso e a integração com módulos especializados.
+      </p>
+    </div>
+
+    <div class="formularios-admin-resumo">
+      <div class="formularios-admin-resumo-item">
+        <span>Total</span>
+        <strong>{{ ns.total }}</strong>
+      </div>
+      <div class="formularios-admin-resumo-item">
+        <span>Templates base</span>
+        <strong>{{ ns.templates }}</strong>
+      </div>
+      <div class="formularios-admin-resumo-item">
+        <span>Personalizados</span>
+        <strong>{{ ns.personalizados }}</strong>
+      </div>
+      <div class="formularios-admin-resumo-item">
+        <span>Com sensor</span>
+        <strong>{{ ns.sensor }}</strong>
+      </div>
+    </div>
   </div>
 
-  <div class="formularios-admin-layout">
+  <div class="formularios-admin-grid-top">
 
     <!-- NOVO FORMULÁRIO -->
     <div class="formularios-admin-card formularios-admin-card-form">
-      <h3 class="formularios-admin-card-titulo">Novo formulário</h3>
+      <div class="formularios-admin-card-head">
+        <div>
+          <h3 class="formularios-admin-card-titulo">Novo formulário</h3>
+          <p class="formularios-admin-card-copy">
+            Monte a estrutura principal do atendimento e defina desde já se haverá integração com o sensor.
+          </p>
+        </div>
+        <span class="formularios-admin-card-tag">Criação</span>
+      </div>
 
       <form method="POST" class="formularios-admin-form">
 
@@ -32,7 +74,7 @@
           >
         </div>
 
-        <div class="formularios-admin-duplo">
+        <div class="formularios-admin-duplo formularios-admin-duplo-equilibrado">
           <div class="formularios-admin-grupo">
             <label for="perfil_alvo">Perfil alvo</label>
             <select class="campo-padrao" id="perfil_alvo" name="perfil_alvo">
@@ -62,15 +104,42 @@
           </select>
         </div>
 
+        <div class="formularios-admin-bloco-label">
+          <span>Configurações do modelo</span>
+          <small>Escolha como o formulário será disponibilizado e se o fluxo do sensor fará parte dele.</small>
+        </div>
+
         <div class="formularios-admin-check-list">
           <label class="formularios-admin-checkbox" for="ativo">
             <input type="checkbox" id="ativo" name="ativo" checked>
-            Formulário ativo
+            <span>
+              <strong>Formulário ativo</strong>
+              <small>Disponível para uso imediato na operação.</small>
+            </span>
           </label>
 
           <label class="formularios-admin-checkbox" for="template_base">
             <input type="checkbox" id="template_base" name="template_base">
-            Definir como template-base do sistema
+            <span>
+              <strong>Template-base do sistema</strong>
+              <small>Protege o modelo original e permite clonagem por cliente.</small>
+            </span>
+          </label>
+
+          <label class="formularios-admin-checkbox" for="usa_sensor_mastite">
+            <input type="checkbox" id="usa_sensor_mastite" name="usa_sensor_mastite">
+            <span>
+              <strong>Habilitar módulo do sensor</strong>
+              <small>Permite registrar leituras técnicas vinculadas ao atendimento.</small>
+            </span>
+          </label>
+
+          <label class="formularios-admin-checkbox" for="sensor_obrigatorio">
+            <input type="checkbox" id="sensor_obrigatorio" name="sensor_obrigatorio">
+            <span>
+              <strong>Leitura obrigatória</strong>
+              <small>Direciona o fluxo para o sensor logo após salvar o atendimento.</small>
+            </span>
           </label>
         </div>
 
@@ -88,7 +157,15 @@
 
     <!-- CLONAR MODELO -->
     <div class="formularios-admin-card formularios-admin-card-form">
-      <h3 class="formularios-admin-card-titulo">Clonar modelo base</h3>
+      <div class="formularios-admin-card-head">
+        <div>
+          <h3 class="formularios-admin-card-titulo">Clonar modelo base</h3>
+          <p class="formularios-admin-card-copy">
+            Reaproveite uma estrutura validada e personalize rapidamente um modelo para um cliente específico.
+          </p>
+        </div>
+        <span class="formularios-admin-card-tag formularios-admin-card-tag-soft">Clonagem</span>
+      </div>
 
       <form method="POST" action="{{ url_for('main.admin_clonar_formulario_base') }}" class="formularios-admin-form">
 
@@ -138,9 +215,21 @@
       </form>
     </div>
 
+  </div>
+
+  <div class="formularios-admin-layout">
+
     <!-- LISTA -->
-    <div class="formularios-admin-card">
-      <h3 class="formularios-admin-card-titulo">Lista de formulários</h3>
+    <div class="formularios-admin-card formularios-admin-card-lista">
+      <div class="formularios-admin-card-head">
+        <div>
+          <h3 class="formularios-admin-card-titulo">Biblioteca de formulários</h3>
+          <p class="formularios-admin-card-copy">
+            Visualize rapidamente contexto, perfil, ativação do sensor e status operacional de cada modelo.
+          </p>
+        </div>
+        <span class="formularios-admin-card-tag formularios-admin-card-tag-outline">Visão geral</span>
+      </div>
 
       {% if formularios_info %}
         <div class="table-wrap">
@@ -207,6 +296,12 @@
                       <span class="formularios-admin-badge-template">Template base</span>
                     {% else %}
                       <span class="formularios-admin-badge-cliente">Personalizado</span>
+                    {% endif %}
+
+                    {% if f.usa_sensor_mastite %}
+                      <div class="formularios-admin-item-meta">
+                        Sensor: {{ "obrigatório" if f.sensor_obrigatorio else "opcional" }}
+                      </div>
                     {% endif %}
                   </td>
 

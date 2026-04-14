@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, session
 from .base import main
 from ..helpers.auth import obter_usuario_logado
 from ..helpers.decorators import login_obrigatorio
-from ..models import Animal, Atendimento
+from ..models import Animal, Atendimento, ConfiguracaoSistema
 from ..services.propriedade_service import listar_propriedades_do_usuario
 
 
@@ -11,7 +11,14 @@ from ..services.propriedade_service import listar_propriedades_do_usuario
 def index():
     if session.get("usuario_id"):
         return redirect(url_for("main.painel"))
-    return render_template("landing.html")
+
+    config = ConfiguracaoSistema.query.first()
+    return render_template(
+        "landing.html",
+        config=config,
+        modo_login=False,
+        ocultar_layout=True,
+    )
 
 
 @main.route("/painel")

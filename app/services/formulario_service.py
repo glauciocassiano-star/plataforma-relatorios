@@ -124,6 +124,8 @@ def clonar_formulario_base(
         ativo=ativo,
         tipo_contexto=formulario_base.tipo_contexto,
         template_base=False,
+        usa_sensor_mastite=getattr(formulario_base, "usa_sensor_mastite", False),
+        sensor_obrigatorio=getattr(formulario_base, "sensor_obrigatorio", False),
         cliente_id=cliente_id,
         formulario_origem_id=formulario_base.id,
     )
