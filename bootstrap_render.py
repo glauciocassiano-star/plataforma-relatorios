@@ -5,10 +5,11 @@ print("🔄 Iniciando bootstrap do Render...")
 app = create_app()
 
 with app.app_context():
-    print("🔄 Criando/atualizando estrutura do banco...")
+    print("⚠️ Removendo estrutura antiga do banco...")
+    db.drop_all()
+
+    print("✅ Criando estrutura nova do banco...")
     db.create_all()
 
-    print("🔐 Garantindo existência do administrador master...")
     garantir_admin_master_padrao()
-
-    print("✅ Bootstrap concluído com sucesso.")
+    print("✅ Admin master garantido com sucesso.")

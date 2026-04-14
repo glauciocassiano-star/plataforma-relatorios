@@ -1,7 +1,6 @@
 import os
 from flask import Flask, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
-
 from werkzeug.security import generate_password_hash
 
 db = SQLAlchemy()
@@ -63,11 +62,8 @@ def create_app():
     # ===============================
 
     app.config["UPLOAD_FOLDER"] = os.path.join(BASE_DIR, "static", "uploads")
-
-    # limite de upload (8 MB)
     app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 
-    # cria pasta uploads automaticamente
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     # ===============================
@@ -114,13 +110,5 @@ def create_app():
     def arquivo_muito_grande(e):
         flash("O arquivo enviado é muito grande. O limite é 8 MB.", "error")
         return redirect(request.url)
-
-    # ===============================
-    # CRIA TABELAS
-    # ===============================
-
-    with app.app_context():
-        db.create_all()
-        garantir_admin_master_padrao()
 
     return app
