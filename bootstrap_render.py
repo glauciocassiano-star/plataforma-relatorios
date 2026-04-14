@@ -1,14 +1,14 @@
-from run import app
-from app import db, garantir_admin_master_padrao
+from app import create_app, db, garantir_admin_master_padrao
 
 print("🔄 Iniciando bootstrap do Render...")
 
-with app.app_context():
-    print("⚠️ Removendo estrutura antiga do banco...")
-    db.drop_all()
+app = create_app()
 
-    print("✅ Criando estrutura nova do banco...")
+with app.app_context():
+    print("🔄 Criando/atualizando estrutura do banco...")
     db.create_all()
 
+    print("🔐 Garantindo existência do administrador master...")
     garantir_admin_master_padrao()
-    print("✅ Admin master garantido com sucesso.")
+
+    print("✅ Bootstrap concluído com sucesso.")
