@@ -223,7 +223,6 @@
 
   tr {
     page-break-inside: avoid;
-    page-break-after: auto;
   }
 
   th {
@@ -244,30 +243,6 @@
     text-align: center;
   }
 
-  .risco-baixo,
-  .prob-baixa,
-  .taxa-alta,
-  .tendencia-caindo {
-    color: #166534;
-    font-weight: bold;
-  }
-
-  .risco-moderado,
-  .prob-media,
-  .taxa-media,
-  .tendencia-estavel {
-    color: #b45309;
-    font-weight: bold;
-  }
-
-  .risco-alto,
-  .prob-alta,
-  .taxa-baixa,
-  .tendencia-subindo {
-    color: #b91c1c;
-    font-weight: bold;
-  }
-
   .footer {
     margin-top: 28px;
     padding-top: 10px;
@@ -285,14 +260,11 @@
 
 <body>
 
+  <!-- CABEÇALHO -->
   <div class="header">
     <div class="header-left">
-      {% if config_sistema and config_sistema.logo %}
-        <img
-          class="logo"
-          src="{{ url_for('static', filename=config_sistema.logo) }}"
-          alt="Logo"
-        >
+      {% if logo_url %}
+        <img class="logo" src="{{ logo_url }}" alt="Logo">
       {% else %}
         <div class="logo-fallback">🐄</div>
       {% endif %}
@@ -308,8 +280,10 @@
     </div>
   </div>
 
+  <!-- TÍTULO -->
   <div class="secao-titulo primeira-secao">Relatório Epidemiológico</div>
 
+  <!-- INFORMAÇÕES -->
   <div class="info-box">
     <p><b>Gerado em:</b> {{ gerado_em.strftime("%d/%m/%Y %H:%M") }}</p>
 
@@ -340,6 +314,7 @@
     </div>
   {% endif %}
 
+  <!-- RESUMO EXECUTIVO -->
   <div class="secao-titulo">Resumo executivo</div>
 
   <div class="resumo-grid">
@@ -353,365 +328,32 @@
     <div class="resumo-item">
       <div class="resumo-card">
         <div class="resumo-label">Diagnóstico mais frequente</div>
-        <div class="resumo-valor">{{ diagnostico_top if diagnostico_top else "—" }}</div>
+        <div class="resumo-valor">{{ diagnostico_top or "—" }}</div>
       </div>
     </div>
 
     <div class="resumo-item">
       <div class="resumo-card">
         <div class="resumo-label">Propriedade com mais casos</div>
-        <div class="resumo-valor">{{ propriedade_top if propriedade_top else "—" }}</div>
+        <div class="resumo-valor">{{ propriedade_top or "—" }}</div>
       </div>
     </div>
 
     <div class="resumo-item">
       <div class="resumo-card">
         <div class="resumo-label">Perfil genético mais associado</div>
-        <div class="resumo-valor">{{ genetica_top if genetica_top else "—" }}</div>
+        <div class="resumo-valor">{{ genetica_top or "—" }}</div>
       </div>
     </div>
   </div>
 
-  <div class="secao-titulo">Painel epidemiológico visual</div>
-
-  <div class="painel-duplo">
-    <div class="painel-coluna painel-coluna-esquerda">
-      <div class="bloco">
-        <h2>Diagnósticos principais</h2>
-
-        {% if grafico_diagnostico_img %}
-          <img
-            class="grafico-img"
-            src="{{ grafico_diagnostico_img }}"
-            alt="Gráfico de diagnósticos principais"
-          >
-        {% else %}
-          <p class="muted">Gráfico não disponível.</p>
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="painel-coluna painel-coluna-direita">
-      <div class="bloco">
-        <h2>Evolução temporal dos casos</h2>
-
-        {% if grafico_mensal_img %}
-          <img
-            class="grafico-img"
-            src="{{ grafico_mensal_img }}"
-            alt="Gráfico de evolução temporal"
-          >
-        {% else %}
-          <p class="muted">Gráfico não disponível.</p>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-
-  <div class="page-break"></div>
-
-  <div class="secao-titulo primeira-secao">Tabelas analíticas</div>
-
-  <div class="bloco">
-    <h2>Diagnósticos principais</h2>
-
-    {% if contagem_diagnostico %}
-      <table>
-        <thead>
-          <tr>
-            <th>Diagnóstico</th>
-            <th class="num">Total</th>
-            <th class="num">Confirmados</th>
-            <th class="num">% confirmação</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for nome, total in contagem_diagnostico.items() %}
-          {% set confirmados = contagem_confirmados.get(nome, 0) %}
-          <tr>
-            <td>{{ nome }}</td>
-            <td class="num">{{ total }}</td>
-            <td class="num">{{ confirmados }}</td>
-            <td class="num">
-              {% if total > 0 %}
-                {% set perc = ((confirmados / total) * 100) | round(1) %}
-                {% if perc >= 70 %}
-                  <span class="taxa-alta">{{ perc }}%</span>
-                {% elif perc >= 40 %}
-                  <span class="taxa-media">{{ perc }}%</span>
-                {% else %}
-                  <span class="taxa-baixa">{{ perc }}%</span>
-                {% endif %}
-              {% else %}
-                0%
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhum diagnóstico principal registrado.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Evolução temporal dos casos</h2>
-
-    {% if contagem_mensal %}
-      <table>
-        <thead>
-          <tr>
-            <th>Mês</th>
-            <th class="num">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for mes, total in contagem_mensal.items() %}
-          <tr>
-            <td>{{ mes }}</td>
-            <td class="num">{{ total }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhum dado temporal disponível.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Categorias diagnósticas</h2>
-
-    {% if contagem_categoria %}
-      <table>
-        <thead>
-          <tr>
-            <th>Categoria</th>
-            <th class="num">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for nome, total in contagem_categoria.items() %}
-          <tr>
-            <td>{{ nome }}</td>
-            <td class="num">{{ total }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhuma categoria diagnóstica registrada.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Desfechos dos casos</h2>
-
-    {% if contagem_desfecho %}
-      <table>
-        <thead>
-          <tr>
-            <th>Desfecho</th>
-            <th class="num">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for nome, total in contagem_desfecho.items() %}
-          <tr>
-            <td>{{ nome }}</td>
-            <td class="num">{{ total }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhum desfecho registrado.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Ranking de propriedades por atendimentos</h2>
-
-    {% if contagem_propriedade %}
-      <table>
-        <thead>
-          <tr>
-            <th>Propriedade</th>
-            <th class="num">Total de atendimentos</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for nome, total in contagem_propriedade.items() %}
-          <tr>
-            <td>{{ nome }}</td>
-            <td class="num">{{ total }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhum dado por propriedade disponível.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Correlação genética por diagnóstico</h2>
-
-    {% if correlacao_genetica_resumo %}
-      <table>
-        <thead>
-          <tr>
-            <th>Diagnóstico</th>
-            <th class="num">Total</th>
-            <th>Perfil mais associado</th>
-            <th class="num">% do perfil líder</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for diagnostico, info in correlacao_genetica_resumo.items() %}
-          <tr>
-            <td>{{ diagnostico }}</td>
-            <td class="num">{{ info.total }}</td>
-            <td>{{ info.perfil_top if info.perfil_top else "—" }}</td>
-            <td class="num">{{ info.percentual_top }}%</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhuma correlação genética disponível.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Probabilidade observada por perfil genético</h2>
-
-    {% if probabilidade_ocorrencia %}
-      {% for diagnostico, linhas in probabilidade_ocorrencia.items() %}
-        <div class="prob-bloco">
-          <div class="prob-titulo">{{ diagnostico }}</div>
-
-          {% if linhas %}
-            <table>
-              <thead>
-                <tr>
-                  <th>Perfil genético</th>
-                  <th class="num">Casos</th>
-                  <th class="num">Total de animais</th>
-                  <th class="num">Probabilidade (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in linhas %}
-                <tr>
-                  <td>{{ item.perfil }}</td>
-                  <td class="num">{{ item.casos }}</td>
-                  <td class="num">{{ item.total_animais }}</td>
-                  <td class="num">
-                    {% if item.probabilidade >= 20 %}
-                      <span class="prob-alta">{{ item.probabilidade }}%</span>
-                    {% elif item.probabilidade >= 10 %}
-                      <span class="prob-media">{{ item.probabilidade }}%</span>
-                    {% else %}
-                      <span class="prob-baixa">{{ item.probabilidade }}%</span>
-                    {% endif %}
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          {% else %}
-            <p class="muted">Sem dados para este diagnóstico.</p>
-          {% endif %}
-        </div>
-      {% endfor %}
-    {% else %}
-      <p class="muted">Nenhuma probabilidade observada disponível.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Diagnósticos por perfil genético</h2>
-
-    {% if contagem_genetica %}
-      <table>
-        <thead>
-          <tr>
-            <th>Perfil genético e diagnóstico</th>
-            <th class="num">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for chave, total in contagem_genetica.items() %}
-          <tr>
-            <td>{{ chave }}</td>
-            <td class="num">{{ total }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhum dado genético disponível.</p>
-    {% endif %}
-  </div>
-
-  <div class="bloco">
-    <h2>Risco epidemiológico por propriedade</h2>
-
-    {% if risco_propriedades %}
-      <table>
-        <thead>
-          <tr>
-            <th>Propriedade</th>
-            <th class="num">Animais</th>
-            <th class="num">Atendimentos</th>
-            <th class="num">Taxa (%)</th>
-            <th class="num">Classificação</th>
-            <th class="num">Tendência</th>
-            <th class="num">30d / 30d</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in risco_propriedades %}
-          <tr>
-            <td>{{ item.nome }}</td>
-            <td class="num">{{ item.total_animais }}</td>
-            <td class="num">{{ item.total_atendimentos }}</td>
-            <td class="num">{{ item.taxa }}</td>
-            <td class="num">
-              {% if item.classificacao == "Baixo" %}
-                <span class="risco-baixo">Baixo</span>
-              {% elif item.classificacao == "Moderado" %}
-                <span class="risco-moderado">Moderado</span>
-              {% else %}
-                <span class="risco-alto">Alto</span>
-              {% endif %}
-            </td>
-            <td class="num">
-              {% if item.tendencia == "Subindo" %}
-                <span class="tendencia-subindo">Subindo</span>
-              {% elif item.tendencia == "Caindo" %}
-                <span class="tendencia-caindo">Caindo</span>
-              {% else %}
-                <span class="tendencia-estavel">Estável</span>
-              {% endif %}
-            </td>
-            <td class="num">{{ item.ultimos_30 }} / {{ item.anteriores_30 }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p class="muted">Nenhum dado de risco disponível.</p>
-    {% endif %}
-  </div>
-
+  <!-- RODAPÉ -->
   <div class="footer">
     <p>Relatório gerado automaticamente pelo sistema.</p>
 
     <p>
-      {{ config_sistema.rodape if config_sistema and config_sistema.rodape else "Plataforma voltada ao registro de prontuário veterinário, acompanhamento clínico e apoio à análise epidemiológica em propriedades rurais." }}
+      {{ config_sistema.rodape if config_sistema and config_sistema.rodape else
+      "Plataforma voltada ao registro de prontuário veterinário, acompanhamento clínico e apoio à análise epidemiológica em propriedades rurais." }}
     </p>
 
     {% if config_sistema and config_sistema.aviso_sanitario %}
