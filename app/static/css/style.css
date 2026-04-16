@@ -5544,16 +5544,18 @@ th {
 .relatorio-checkbox {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
+  width: 100%;
   margin-top: 8px;
 }
 
 .relatorio-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   margin: 0;
   cursor: pointer;
-  flex-shrink: 0;
+  flex: 0 0 auto;
 }
 
 .relatorio-checkbox label {
@@ -5563,18 +5565,10 @@ th {
   color: var(--cor-texto-principal);
   cursor: pointer;
   line-height: 1.2;
+  white-space: nowrap;
 }
 
-/* Ajuste para telas pequenas */
-@media (max-width: 768px) {
-  .relatorio-checkbox {
-    gap: 8px;
-  }
-
-  .relatorio-checkbox label {
-    font-size: 14px;
-  }
-}
+/* ações */
 
 .relatorio-acoes {
   display: flex;
@@ -5593,6 +5587,13 @@ th {
   box-sizing: border-box;
 }
 
+/* evita que o checkbox herde largura de 100% */
+.relatorio-checkbox input[type="checkbox"] {
+  width: 22px;
+  max-width: 22px;
+  min-width: 22px;
+}
+
 /* ajuste específico para data no mobile */
 .relatorio-filtro input[type="date"] {
   display: block;
@@ -5608,7 +5609,7 @@ th {
 
 .relatorio-resumo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
 }
 
@@ -5629,7 +5630,7 @@ th {
   font-size: 18px;
 }
 
-/* graficos */
+/* gráficos */
 
 .relatorio-graficos {
   display: grid;
@@ -5662,6 +5663,15 @@ th {
 
   .relatorio-filtro {
     overflow-x: hidden;
+  }
+
+  .relatorio-checkbox {
+    gap: 8px;
+  }
+
+  .relatorio-checkbox label {
+    font-size: 14px;
+    white-space: normal;
   }
 }
 

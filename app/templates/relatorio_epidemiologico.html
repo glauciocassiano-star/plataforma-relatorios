@@ -19,8 +19,8 @@
   <form method="GET" class="relatorio-filtro">
 
     <div class="relatorio-grupo">
-      <label>Propriedade</label>
-      <select name="propriedade_id" class="campo-padrao">
+      <label for="propriedade_id">Propriedade</label>
+      <select id="propriedade_id" name="propriedade_id" class="campo-padrao">
         <option value="">Todas</option>
         {% for p in propriedades %}
           <option value="{{ p.id }}" {% if propriedade_id == p.id %}selected{% endif %}>
@@ -32,25 +32,35 @@
 
     <div class="relatorio-duplo">
       <div class="relatorio-grupo">
-        <label>Data inicial</label>
-        <input type="date" name="data_inicio" class="campo-padrao"
+        <label for="data_inicio">Data inicial</label>
+        <input
+          id="data_inicio"
+          type="date"
+          name="data_inicio"
+          class="campo-padrao"
           value="{{ request.args.get('data_inicio', '') }}">
       </div>
 
       <div class="relatorio-grupo">
-        <label>Data final</label>
-        <input type="date" name="data_fim" class="campo-padrao"
+        <label for="data_fim">Data final</label>
+        <input
+          id="data_fim"
+          type="date"
+          name="data_fim"
+          class="campo-padrao"
           value="{{ request.args.get('data_fim', '') }}">
       </div>
     </div>
 
-  <div class="relatorio-checkbox">
-    <label>
-    <input type="checkbox" name="somente_confirmados"
-      {% if request.args.get('somente_confirmados') %}checked{% endif %}>
-    Apenas confirmados
-    </label>
-  </div>
+    <div class="relatorio-checkbox">
+      <input
+        type="checkbox"
+        id="somente_confirmados"
+        name="somente_confirmados"
+        {% if request.args.get('somente_confirmados') %}checked{% endif %}
+      >
+      <label for="somente_confirmados">Apenas confirmados</label>
+    </div>
 
     <div class="relatorio-acoes">
       <button type="submit">Aplicar</button>
@@ -123,16 +133,18 @@
           </thead>
           <tbody>
             {% for nome, total in contagem_diagnostico.items() %}
-            <tr>
-              <td>{{ nome }}</td>
-              <td>{{ total }}</td>
-              <td>{{ contagem_confirmados.get(nome, 0) }}</td>
-              <td>
-                {% if total > 0 %}
-                  {{ ((contagem_confirmados.get(nome, 0) / total) * 100) | round(1) }}%
-                {% else %}0%{% endif %}
-              </td>
-            </tr>
+              <tr>
+                <td>{{ nome }}</td>
+                <td>{{ total }}</td>
+                <td>{{ contagem_confirmados.get(nome, 0) }}</td>
+                <td>
+                  {% if total > 0 %}
+                    {{ ((contagem_confirmados.get(nome, 0) / total) * 100) | round(1) }}%
+                  {% else %}
+                    0%
+                  {% endif %}
+                </td>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -145,8 +157,12 @@
 </div>
 
 <!-- FORM PDF -->
-<form id="formExportarPdf" method="POST"
-  action="{{ url_for('main.relatorio_epidemiologico_pdf') }}" style="display:none;">
+<form
+  id="formExportarPdf"
+  method="POST"
+  action="{{ url_for('main.relatorio_epidemiologico_pdf') }}"
+  style="display:none;"
+>
   <input type="hidden" name="propriedade_id" value="{{ propriedade_id or '' }}">
   <input type="hidden" name="data_inicio" value="{{ request.args.get('data_inicio', '') }}">
   <input type="hidden" name="data_fim" value="{{ request.args.get('data_fim', '') }}">
