@@ -5523,17 +5523,22 @@ th {
   background: white;
   display: grid;
   gap: 12px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .relatorio-grupo {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
 .relatorio-duplo {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  min-width: 0;
 }
 
 .relatorio-checkbox {
@@ -5546,6 +5551,28 @@ th {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+/* garante que campos não ultrapassem o card */
+.relatorio-filtro input,
+.relatorio-filtro select,
+.relatorio-filtro textarea,
+.relatorio-filtro button {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ajuste específico para data no mobile */
+.relatorio-filtro input[type="date"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 /* resumo */
@@ -5577,7 +5604,7 @@ th {
 
 .relatorio-graficos {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -5602,6 +5629,10 @@ th {
   .relatorio-acoes .btn,
   .relatorio-acoes button {
     width: 100%;
+  }
+
+  .relatorio-filtro {
+    overflow-x: hidden;
   }
 }
 
@@ -8600,5 +8631,39 @@ select.campo-padrao {
 
   .usuarios-admin-checkbox-linha {
     align-items: flex-start;
+  }
+}
+
+.relatorio-filtro,
+.relatorio-grupo,
+.relatorio-duplo {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.relatorio-filtro input,
+.relatorio-filtro select,
+.relatorio-filtro textarea {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.relatorio-filtro input[type="date"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+@media (max-width: 768px) {
+  .relatorio-duplo {
+    grid-template-columns: 1fr !important;
+  }
+
+  .relatorio-filtro {
+    overflow-x: hidden !important;
   }
 }
