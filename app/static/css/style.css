@@ -5543,8 +5543,37 @@ th {
 
 .relatorio-checkbox {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.relatorio-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.relatorio-checkbox label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--cor-texto-principal);
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+/* Ajuste para telas pequenas */
+@media (max-width: 768px) {
+  .relatorio-checkbox {
+    gap: 8px;
+  }
+
+  .relatorio-checkbox label {
+    font-size: 14px;
+  }
 }
 
 .relatorio-acoes {
