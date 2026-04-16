@@ -52,15 +52,15 @@
       </div>
     </div>
 
-    <div class="relatorio-checkbox">
-      <input
-        type="checkbox"
-        id="somente_confirmados"
-        name="somente_confirmados"
-        {% if request.args.get('somente_confirmados') %}checked{% endif %}
-      >
-      <label for="somente_confirmados">Apenas confirmados</label>
-    </div>
+   <div class="relatorio-checkbox">
+  <input
+    type="checkbox"
+    id="somente_confirmados"
+    name="somente_confirmados"
+    {% if request.args.get('somente_confirmados') %}checked{% endif %}
+  >
+  <label for="somente_confirmados">Apenas confirmados</label>
+</div>
 
     <div class="relatorio-acoes">
       <button type="submit">Aplicar</button>

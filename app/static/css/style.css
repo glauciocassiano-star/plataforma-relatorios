@@ -5545,17 +5545,17 @@ th {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   margin-top: 8px;
 }
 
 .relatorio-checkbox input[type="checkbox"] {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   margin: 0;
+  flex: 0 0 18px;
   cursor: pointer;
-  flex: 0 0 auto;
 }
 
 .relatorio-checkbox label {
@@ -5565,7 +5565,7 @@ th {
   color: var(--cor-texto-principal);
   cursor: pointer;
   line-height: 1.2;
-  white-space: nowrap;
+  display: inline;
 }
 
 /* ações */
@@ -5577,7 +5577,8 @@ th {
 }
 
 /* garante que campos não ultrapassem o card */
-.relatorio-filtro input,
+/* checkbox fica fora dessa regra */
+.relatorio-filtro input:not([type="checkbox"]),
 .relatorio-filtro select,
 .relatorio-filtro textarea,
 .relatorio-filtro button {
@@ -5585,13 +5586,6 @@ th {
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-}
-
-/* evita que o checkbox herde largura de 100% */
-.relatorio-checkbox input[type="checkbox"] {
-  width: 22px;
-  max-width: 22px;
-  min-width: 22px;
 }
 
 /* ajuste específico para data no mobile */
@@ -5671,7 +5665,6 @@ th {
 
   .relatorio-checkbox label {
     font-size: 14px;
-    white-space: normal;
   }
 }
 
