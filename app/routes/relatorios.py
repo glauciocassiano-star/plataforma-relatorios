@@ -63,16 +63,36 @@ def relatorio_epidemiologico_pdf():
 
     config_sistema = ConfiguracaoSistema.query.first()
 
+    logo_url = None
+    if config_sistema and config_sistema.logo:
+        caminho_logo = config_sistema.logo.strip()
+
+        if caminho_logo.startswith("static/"):
+            caminho_logo = caminho_logo.replace("static/", "", 1)
+
+        if caminho_logo.startswith("/static/"):
+            caminho_logo = caminho_logo.replace("/static/", "", 1)
+
+        logo_url = url_for(
+            "static",
+            filename=caminho_logo,
+            _external=True
+        )
+
     html = render_template(
         "relatorio_epidemiologico_pdf.html",
         **dados,
         grafico_diagnostico_img=grafico_diagnostico_img,
         grafico_mensal_img=grafico_mensal_img,
         config_sistema=config_sistema,
+        logo_url=logo_url,
         gerado_em=datetime.now(),
     )
 
-    pdf = HTML(string=html).write_pdf()
+    pdf = HTML(
+        string=html,
+        base_url=request.root_url
+    ).write_pdf()
 
     return Response(
         pdf,
