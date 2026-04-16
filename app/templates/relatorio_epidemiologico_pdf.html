@@ -261,24 +261,33 @@
 <body>
 
   <!-- CABEÇALHO -->
-  <div class="header">
-    <div class="header-left">
-      {% if logo_url %}
-        <img class="logo" src="{{ logo_url }}" alt="Logo">
-      {% else %}
-        <div class="logo-fallback">🐄</div>
-      {% endif %}
-    </div>
-
-    <div class="header-right">
-      <h1>
-        {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Plataforma de Prontuário Veterinário" }}
-      </h1>
-      <p class="subtitulo">
-        {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else "Monitoramento clínico, epidemiológico e sanitário" }}
-      </p>
-    </div>
+<div class="header">
+  <div class="header-left">
+    {% if logo_url %}
+      <img
+        class="logo"
+        src="{{ logo_url }}"
+        alt="Logo do Sistema"
+      >
+    {% else %}
+      <div class="logo-fallback">🐄</div>
+    {% endif %}
   </div>
+
+  <div class="header-right">
+    <h1>
+      {{ config_sistema.nome_plataforma
+         if config_sistema and config_sistema.nome_plataforma
+         else "Plataforma de Prontuário Veterinário" }}
+    </h1>
+
+    <p class="subtitulo">
+      {{ config_sistema.subtitulo
+         if config_sistema and config_sistema.subtitulo
+         else "Monitoramento clínico, epidemiológico e sanitário" }}
+    </p>
+  </div>
+</div>
 
   <!-- TÍTULO -->
   <div class="secao-titulo primeira-secao">Relatório Epidemiológico</div>
