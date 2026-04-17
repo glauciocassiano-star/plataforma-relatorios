@@ -6739,6 +6739,8 @@ th {
 
 .campo-padrao {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   height: 52px;
 
   padding: 0 16px;
@@ -6752,12 +6754,50 @@ th {
   font-size: 14px;
   font-weight: 500;
 
-  display: flex;
-  align-items: center;
-
   box-sizing: border-box;
 
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* INPUT */
+input.campo-padrao {
+  display: block;
+  line-height: normal;
+}
+
+/* SELECT */
+select.campo-padrao {
+  display: block;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding-right: 40px;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7280' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+
+  line-height: normal;
+}
+
+/* DATE (IMPORTANTE) */
+input[type="date"].campo-padrao {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* FOCUS */
+.campo-padrao:focus {
+  outline: none;
+  border-color: #1f7a63;
+  box-shadow: 0 0 0 3px rgba(31, 122, 99, 0.12);
 }
 
 /* INPUT (já fica correto) */
