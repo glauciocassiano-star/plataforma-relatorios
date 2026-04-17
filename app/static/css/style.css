@@ -8751,3 +8751,89 @@ input[type="date"].relatorio-input-data {
     white-space: nowrap;
   }
 }
+
+/* =====================================
+   TESTE DEFINITIVO - RELATÓRIO MOBILE
+===================================== */
+@media (max-width: 768px) {
+  .main-content,
+  .content,
+  .page-content,
+  .container,
+  .container-fluid,
+  .app-main,
+  .dashboard-main,
+  .relatorio-shell,
+  .relatorio-filtro,
+  .relatorio-grupo,
+  .relatorio-duplo,
+  .relatorio-duplo-datas,
+  .card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .relatorio-duplo,
+  .relatorio-duplo-datas {
+    display: block !important;
+  }
+
+  .relatorio-duplo > .relatorio-grupo,
+  .relatorio-duplo-datas > .relatorio-grupo {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .relatorio-filtro .campo-padrao,
+  .relatorio-filtro input:not([type="checkbox"]),
+  .relatorio-filtro select,
+  .relatorio-filtro textarea,
+  .relatorio-filtro button,
+  .relatorio-filtro a.btn {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .relatorio-filtro input[type="date"] {
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .relatorio-checkbox {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .relatorio-checkbox input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    max-width: 18px !important;
+    margin: 0 !important;
+    flex: 0 0 18px !important;
+  }
+
+  .relatorio-checkbox label {
+    display: inline-block !important;
+    width: auto !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+}
