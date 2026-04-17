@@ -5498,6 +5498,8 @@ th {
 .relatorio-shell {
   display: grid;
   gap: 20px;
+  width: 100%;
+  min-width: 0;
 }
 
 .relatorio-topo h2 {
@@ -5523,17 +5525,27 @@ th {
   background: white;
   display: grid;
   gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .relatorio-grupo {
   display: grid;
   gap: 4px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .relatorio-duplo {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .relatorio-checkbox {
@@ -5548,11 +5560,32 @@ th {
   flex-wrap: wrap;
 }
 
+/* proteção local dos campos */
+.relatorio-filtro .campo-padrao,
+.relatorio-filtro input:not([type="checkbox"]),
+.relatorio-filtro select,
+.relatorio-filtro textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.relatorio-filtro input[type="date"] {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* resumo */
 
 .relatorio-resumo {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
 }
 
@@ -5577,7 +5610,7 @@ th {
 
 .relatorio-graficos {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -5602,6 +5635,10 @@ th {
   .relatorio-acoes .btn,
   .relatorio-acoes button {
     width: 100%;
+  }
+
+  .relatorio-filtro {
+    overflow-x: hidden;
   }
 }
 
