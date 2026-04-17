@@ -8837,3 +8837,117 @@ input[type="date"].relatorio-input-data {
     overflow-x: hidden !important;
   }
 }
+
+/* =====================================
+   CORREÇÃO ESTRUTURAL - BASE + RELATÓRIO
+===================================== */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.page-shell,
+.page-shell--full {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.content-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.relatorio-shell,
+.relatorio-filtro,
+.relatorio-grupo,
+.relatorio-duplo,
+.relatorio-duplo-datas {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.relatorio-duplo,
+.relatorio-duplo-datas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.relatorio-filtro .campo-padrao,
+.relatorio-filtro input:not([type="checkbox"]),
+.relatorio-filtro select,
+.relatorio-filtro textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.relatorio-input-data,
+input[type="date"].relatorio-input-data {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.relatorio-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.relatorio-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  max-width: 18px;
+  margin: 0;
+  flex: 0 0 18px;
+}
+
+.relatorio-checkbox label {
+  margin: 0;
+  width: auto;
+  display: inline-block;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .page-shell,
+  .page-shell--full {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box;
+  }
+
+  .content-card {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box;
+  }
+
+  .relatorio-duplo,
+  .relatorio-duplo-datas {
+    grid-template-columns: 1fr !important;
+  }
+
+  .relatorio-filtro {
+    overflow-x: hidden;
+  }
+}
