@@ -8679,3 +8679,58 @@ select.campo-padrao {
     align-items: flex-start;
   }
 }
+
+/* =====================================
+   HOTFIX MOBILE - RELATÓRIO EPIDEMIOLÓGICO
+===================================== */
+@media (max-width: 768px) {
+  .relatorio-shell,
+  .relatorio-filtro,
+  .relatorio-grupo,
+  .relatorio-duplo {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .relatorio-duplo > * {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .relatorio-filtro .campo-padrao,
+  .relatorio-filtro input:not([type="checkbox"]),
+  .relatorio-filtro select,
+  .relatorio-filtro textarea {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .relatorio-filtro input[type="date"] {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  .relatorio-filtro label {
+    display: block !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+}
