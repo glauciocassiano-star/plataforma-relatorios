@@ -8602,3 +8602,31 @@ select.campo-padrao {
     align-items: flex-start;
   }
 }
+.relatorio-filtro,
+.relatorio-grupo,
+.relatorio-duplo {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.relatorio-filtro input:not([type="checkbox"]),
+.relatorio-filtro select,
+.relatorio-filtro textarea,
+.relatorio-filtro .campo-padrao {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .relatorio-duplo {
+    grid-template-columns: 1fr;
+  }
+
+  .relatorio-filtro {
+    overflow-x: hidden;
+  }
+}
