@@ -1,5 +1,129 @@
 {% extends "base.html" %}
+
 {% block title %}Relatório Epidemiológico{% endblock %}
+
+{% block extra_css %}
+<style>
+  @media (max-width: 768px) {
+    html,
+    body {
+      overflow-x: hidden !important;
+    }
+
+    .page-shell,
+    .page-shell--full,
+    .content-card,
+    .relatorio-shell,
+    .relatorio-filtro,
+    .relatorio-grupo,
+    .relatorio-duplo,
+    .relatorio-duplo-datas,
+    .relatorio-resumo,
+    .relatorio-graficos,
+    .card {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      overflow-x: hidden !important;
+    }
+
+    .page-shell,
+    .page-shell--full {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+      box-sizing: border-box !important;
+    }
+
+    .content-card {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+      box-sizing: border-box !important;
+    }
+
+    .relatorio-duplo,
+    .relatorio-duplo-datas,
+    .relatorio-graficos {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+    }
+
+    .relatorio-duplo > *,
+    .relatorio-duplo-datas > *,
+    .relatorio-graficos > * {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .relatorio-filtro .campo-padrao,
+    .relatorio-filtro input:not([type="checkbox"]),
+    .relatorio-filtro select,
+    .relatorio-filtro textarea,
+    .relatorio-filtro button,
+    .relatorio-filtro .btn {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .relatorio-input-data,
+    input[type="date"].relatorio-input-data,
+    .relatorio-filtro input[type="date"] {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      appearance: auto !important;
+      -webkit-appearance: auto !important;
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+
+    .relatorio-acoes {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+
+    .relatorio-acoes .btn,
+    .relatorio-acoes button {
+      width: 100% !important;
+    }
+
+    .relatorio-checkbox {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 8px !important;
+      width: 100% !important;
+    }
+
+    .relatorio-checkbox input[type="checkbox"] {
+      width: 18px !important;
+      height: 18px !important;
+      min-width: 18px !important;
+      max-width: 18px !important;
+      margin: 0 !important;
+      flex: 0 0 18px !important;
+    }
+
+    .relatorio-checkbox label {
+      display: inline-block !important;
+      width: auto !important;
+      max-width: none !important;
+      margin: 0 !important;
+      line-height: 1.2 !important;
+      white-space: nowrap !important;
+    }
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 
