@@ -7,6 +7,7 @@ from . import propriedades
 from . import animais
 from . import atendimentos
 from . import relatorios
+from . import relatorios_atividades
 from . import sync
 from . import sensor
 
