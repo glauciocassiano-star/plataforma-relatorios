@@ -29,15 +29,11 @@
       <div class="topbar-inner">
         <div class="brand">
           <div class="brand-badge">
-            {% if config_sistema and config_sistema.logo %}
-              <img
-              src="{{ config_sistema.logo }}?v=4"
-               alt="Logo"
+            <img
+              src="{% if config_sistema and config_sistema.logo %}{{ config_sistema.logo }}?v=5{% else %}{{ url_for('static', filename='uploads/config/logo_sistema.jpg') }}?v=5{% endif %}"
+              alt="Logo"
               class="brand-logo"
->
-            {% else %}
-              🐄
-            {% endif %}
+            >
           </div>
 
           <div class="brand-text">
