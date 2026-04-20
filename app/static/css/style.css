@@ -5498,6 +5498,8 @@ th {
 .relatorio-shell {
   display: grid;
   gap: 20px;
+  width: 100%;
+  min-width: 0;
 }
 
 .relatorio-topo h2 {
@@ -5524,6 +5526,7 @@ th {
   display: grid;
   gap: 12px;
   width: 100%;
+  max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
 }
@@ -5531,6 +5534,8 @@ th {
 .relatorio-grupo {
   display: grid;
   gap: 4px;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -5538,6 +5543,8 @@ th {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -5576,19 +5583,17 @@ th {
   flex-wrap: wrap;
 }
 
-/* garante que campos não ultrapassem o card */
-/* checkbox fica fora dessa regra */
+/* proteção local dos campos */
+.relatorio-filtro .campo-padrao,
 .relatorio-filtro input:not([type="checkbox"]),
 .relatorio-filtro select,
-.relatorio-filtro textarea,
-.relatorio-filtro button {
+.relatorio-filtro textarea {
   width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
 }
 
-/* ajuste específico para data no mobile */
 .relatorio-filtro input[type="date"] {
   display: block;
   width: 100%;
@@ -6802,6 +6807,8 @@ th {
 
 .campo-padrao {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   height: 52px;
 
   padding: 0 16px;
@@ -6815,12 +6822,50 @@ th {
   font-size: 14px;
   font-weight: 500;
 
-  display: flex;
-  align-items: center;
-
   box-sizing: border-box;
 
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* INPUT */
+input.campo-padrao {
+  display: block;
+  line-height: normal;
+}
+
+/* SELECT */
+select.campo-padrao {
+  display: block;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding-right: 40px;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7280' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+
+  line-height: normal;
+}
+
+/* DATE (IMPORTANTE) */
+input[type="date"].campo-padrao {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* FOCUS */
+.campo-padrao:focus {
+  outline: none;
+  border-color: #1f7a63;
+  box-shadow: 0 0 0 3px rgba(31, 122, 99, 0.12);
 }
 
 /* INPUT (já fica correto) */
@@ -8666,36 +8711,273 @@ select.campo-padrao {
   }
 }
 
+/* =====================================
+   AJUSTE FINAL - RELATÓRIO EPIDEMIOLÓGICO
+===================================== */
+
 .relatorio-filtro,
 .relatorio-grupo,
-.relatorio-duplo {
-  min-width: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
+.relatorio-duplo,
+.relatorio-duplo-datas {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-.relatorio-filtro input,
-.relatorio-filtro select,
-.relatorio-filtro textarea {
+/* =====================================
+   AJUSTE FINAL - RELATÓRIO EPIDEMIOLÓGICO
+===================================== */
+
+.relatorio-filtro,
+.relatorio-grupo,
+.relatorio-duplo,
+.relatorio-duplo-datas {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.relatorio-duplo-datas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.relatorio-input-data,
+input[type="date"].relatorio-input-data {
   display: block !important;
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
   box-sizing: border-box !important;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.relatorio-filtro input[type="date"] {
-  -webkit-appearance: none !important;
-  appearance: none !important;
+.relatorio-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.relatorio-checkbox input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  margin: 0 !important;
+  flex: 0 0 18px;
+}
+
+.relatorio-checkbox label {
+  margin: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  display: inline-block !important;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* =====================================
+   TESTE DEFINITIVO - RELATÓRIO MOBILE
+===================================== */
+@media (max-width: 768px) {
+  .main-content,
+  .content,
+  .page-content,
+  .container,
+  .container-fluid,
+  .app-main,
+  .dashboard-main,
+  .relatorio-shell,
+  .relatorio-filtro,
+  .relatorio-grupo,
+  .relatorio-duplo,
+  .relatorio-duplo-datas,
+  .card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .relatorio-duplo,
+  .relatorio-duplo-datas {
+    display: block !important;
+  }
+
+  .relatorio-duplo > .relatorio-grupo,
+  .relatorio-duplo-datas > .relatorio-grupo {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  .relatorio-filtro .campo-padrao,
+  .relatorio-filtro input:not([type="checkbox"]),
+  .relatorio-filtro select,
+  .relatorio-filtro textarea,
+  .relatorio-filtro button,
+  .relatorio-filtro a.btn {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .relatorio-filtro input[type="date"] {
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .relatorio-checkbox {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .relatorio-checkbox input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    max-width: 18px !important;
+    margin: 0 !important;
+    flex: 0 0 18px !important;
+  }
+
+  .relatorio-checkbox label {
+    display: inline-block !important;
+    width: auto !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  html,
+  body {
+    overflow-x: hidden !important;
+  }
+}
+
+/* =====================================
+   CORREÇÃO ESTRUTURAL - BASE + RELATÓRIO
+===================================== */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.page-shell,
+.page-shell--full {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.content-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.relatorio-shell,
+.relatorio-filtro,
+.relatorio-grupo,
+.relatorio-duplo,
+.relatorio-duplo-datas {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.relatorio-duplo,
+.relatorio-duplo-datas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.relatorio-filtro .campo-padrao,
+.relatorio-filtro input:not([type="checkbox"]),
+.relatorio-filtro select,
+.relatorio-filtro textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.relatorio-input-data,
+input[type="date"].relatorio-input-data {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.relatorio-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.relatorio-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  max-width: 18px;
+  margin: 0;
+  flex: 0 0 18px;
+}
+
+.relatorio-checkbox label {
+  margin: 0;
+  width: auto;
+  display: inline-block;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
-  .relatorio-duplo {
+  .page-shell,
+  .page-shell--full {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box;
+  }
+
+  .content-card {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box;
+  }
+
+  .relatorio-duplo,
+  .relatorio-duplo-datas {
     grid-template-columns: 1fr !important;
   }
 
   .relatorio-filtro {
-    overflow-x: hidden !important;
+    overflow-x: hidden;
   }
 }

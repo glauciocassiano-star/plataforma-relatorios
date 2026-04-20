@@ -18,6 +18,7 @@ def relatorio_epidemiologico():
     propriedade_id = request.args.get("propriedade_id", type=int)
     data_inicio = request.args.get("data_inicio")
     data_fim = request.args.get("data_fim")
+    somente_confirmados = request.args.get("somente_confirmados")
 
     try:
         dados = gerar_relatorio_epidemiologico(
@@ -25,6 +26,7 @@ def relatorio_epidemiologico():
             propriedade_id=propriedade_id,
             data_inicio=data_inicio,
             data_fim=data_fim,
+            somente_confirmados=somente_confirmados,
         )
     except ValueError as e:
         flash(str(e), "error")
@@ -34,7 +36,6 @@ def relatorio_epidemiologico():
         "relatorio_epidemiologico.html",
         **dados
     )
-
 
 @main.route("/relatorios/epidemiologico/pdf", methods=["POST"])
 @login_obrigatorio
