@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=3">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -42,13 +42,13 @@
             </h1>
 
             <p>
-              {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else "Gestão clínica, monitoramento sanitário e inteligência epidemiológica para propriedades rurais" }}
+              {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else "Plataforma para assistência técnica rural, saúde animal, produção e inteligência territorial para propriedades e municípios." }}
             </p>
           </div>
         </div>
 
         <div class="topbar-right">
-          Plataforma técnica para rotina veterinária, gestão clínica e vigilância epidemiológica
+          Gestão pública rural, assistência técnica de campo e inteligência estratégica municipal.
         </div>
       </div>
     </header>
@@ -128,11 +128,11 @@
         </div>
 
         <div class="navbar-inner" id="navbar-inner">
-  <a class="nav-link" href="{{ url_for('main.painel') }}">Painel</a>
-  <a class="nav-link" href="{{ url_for('main.propriedades') }}">Propriedades</a>
-  <a class="nav-link" href="{{ url_for('main.selecionar_atendimento') }}">Atendimentos</a>
-  <a class="nav-link" href="{{ url_for('main.central_relatorios') }}">Relatórios</a>
-  
+          <a class="nav-link" href="{{ url_for('main.painel') }}">Painel</a>
+          <a class="nav-link" href="{{ url_for('main.propriedades') }}">Propriedades</a>
+          <a class="nav-link" href="{{ url_for('main.selecionar_atendimento') }}">Atendimentos</a>
+          <a class="nav-link" href="{{ url_for('main.central_relatorios') }}">Relatórios</a>
+
           {% if session.get("usuario_id") and session.get("perfil") in ["admin_master", "admin_cliente"] %}
             <a class="nav-link" href="{{ url_for('main.admin_painel') }}">Administração</a>
           {% endif %}
@@ -187,7 +187,7 @@
         <div>
           <h4>Sobre o sistema</h4>
           <p>
-            {{ config_sistema.rodape if config_sistema and config_sistema.rodape else "O Moovet é uma plataforma voltada ao registro de prontuário veterinário, acompanhamento clínico e apoio à análise epidemiológica em propriedades rurais." }}
+            {{ config_sistema.rodape if config_sistema and config_sistema.rodape else "O Moovet é uma plataforma voltada à organização da assistência técnica rural, saúde animal, produção agropecuária e geração de indicadores estratégicos para propriedades e municípios." }}
           </p>
         </div>
 
@@ -195,24 +195,24 @@
           <h4>Módulos</h4>
           <ul>
             <li>Painel e indicadores</li>
-            <li>Propriedades e animais</li>
-            <li>Atendimentos clínicos</li>
-            <li>Relatórios epidemiológicos</li>
+            <li>Propriedades e produção rural</li>
+            <li>Assistência técnica de campo</li>
+            <li>Relatórios estratégicos</li>
           </ul>
         </div>
 
         <div>
           <h4>Institucional</h4>
           <ul>
-            <li>Desenvolvimento acadêmico e técnico</li>
-            <li>Uso em extensão, pesquisa e assistência</li>
-            <li>Base para vigilância sanitária veterinária</li>
+            <li>Desenvolvimento acadêmico e tecnológico</li>
+            <li>Uso em extensão, gestão e assistência rural</li>
+            <li>Base para inteligência pública municipal</li>
           </ul>
         </div>
       </div>
 
       <div class="footer-bottom">
-        {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }} • Uso técnico, acadêmico e sanitário
+        {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }} • Uso técnico, institucional e estratégico
       </div>
     </footer>
   {% endif %}
