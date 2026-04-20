@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório de Atividades</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #1f2937;
+      font-size: 14px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 4px;
+      color: #1f4f46;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 4px;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin-top: 16px;
+      margin-bottom: 10px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 20px;
+    }
+
+    .logo {
+      height: 60px;
+      max-width: 120px;
+      object-fit: contain;
+    }
+
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .grid-resumo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card-resumo {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .card-resumo .titulo {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .card-resumo .valor {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f4f46;
+    }
+
+    .bloco-registro {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+      background: #ffffff;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+      margin-bottom: 12px;
+    }
+
+    .meta-item strong {
+      display: block;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+
+    .campos {
+      margin-top: 10px;
+    }
+
+    .campo-linha {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .campo-linha strong {
+      color: #1f4f46;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div>
+      <h1>{{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }}</h1>
+      <p>Relatório de Atividades</p>
+    </div>
+
+    {% if config_sistema and config_sistema.logo %}
+      <img src="{{ config_sistema.logo }}" alt="Logo" class="logo">
+    {% endif %}
+  </div>
+
+  <div class="info-box">
+    <strong>Perfil:</strong>
+    {% if perfil == "tecnico" %}
+      Técnico
+    {% elif perfil == "veterinario" %}
+      Veterinário
+    {% else %}
+      Todos
+    {% endif %}
+    <br>
+
+    <strong>Propriedade:</strong> {{ propriedade_nome or "Todas" }}<br>
+
+    <strong>Período:</strong>
+    {% if data_inicio or data_fim %}
+      {{ data_inicio or "..." }} até {{ data_fim or "..." }}
+    {% else %}
+      Todos
+    {% endif %}<br>
+
+    <strong>Gerado em:</strong> {{ gerado_em.strftime("%d/%m/%Y %H:%M") }}
+  </div>
+
+  <div class="grid-resumo">
+    <div class="card-resumo">
+      <div class="titulo">Total de registros</div>
+      <div class="valor">{{ total_atendimentos }}</div>
+    </div>
+  </div>
+
+  <h2>Atividades registradas</h2>
+
+  {% if registros %}
+    {% for item in registros %}
+      <div class="bloco-registro">
+        <div class="meta">
+          <div class="meta-item">
+            <strong>Data</strong>
+            {{ item.atendimento.data_atendimento.strftime("%d/%m/%Y") if item.atendimento.data_atendimento else "—" }}
+          </div>
+
+          <div class="meta-item">
+            <strong>Profissional</strong>
+            {{ item.usuario.nome if item.usuario else "—" }}
+          </div>
+
+          <div class="meta-item">
+            <strong>Propriedade</strong>
+            {{ item.propriedade.nome if item.propriedade else "—" }}
+          </div>
+
+          <div class="meta-item">
+            <strong>Animal</strong>
+            {% if item.animal %}
+              {{ item.animal.codigo }}{% if item.animal.nome %} - {{ item.animal.nome }}{% endif %}
+            {% else %}
+              —
+            {% endif %}
+          </div>
+
+          <div class="meta-item">
+            <strong>Formulário</strong>
+            {{ item.formulario.nome if item.formulario else "—" }}
+          </div>
+        </div>
+
+        <div class="campos">
+          {% if item.campos %}
+            {% for campo in item.campos %}
+              <div class="campo-linha">
+                <strong>{{ campo.rotulo }}:</strong> {{ campo.valor }}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="campo-linha">Sem dados adicionais visíveis.</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Nenhum registro encontrado para os filtros informados.</p>
+  {% endif %}
+
+  <div class="footer">
+    {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }}
+    • Relatório técnico gerado automaticamente
+  </div>
+
+</body>
+</html>
