@@ -80,14 +80,14 @@ def relatorio_atividades():
         filtros_aplicados = True
 
         query = (
-            Atendimento.query
-            .options(
-                joinedload(Atendimento.animal).joinedload("propriedade"),
-                joinedload(Atendimento.formulario),
-                joinedload(Atendimento.tecnico),
-            )
-            .join(Formulario, Atendimento.formulario_id == Formulario.id)
-        )
+    Atendimento.query
+    .options(
+        joinedload(Atendimento.animal),
+        joinedload(Atendimento.formulario),
+        joinedload(Atendimento.tecnico),
+    )
+    .join(Formulario, Atendimento.formulario_id == Formulario.id)
+)
 
         if perfil in ["tecnico", "veterinario"]:
             query = query.filter(Formulario.perfil_alvo == perfil)
@@ -146,15 +146,14 @@ def relatorio_atividades_pdf():
     data_fim = (request.form.get("data_fim") or "").strip()
 
     query = (
-        Atendimento.query
-        .options(
-            joinedload(Atendimento.animal).joinedload("propriedade"),
-            joinedload(Atendimento.formulario),
-            joinedload(Atendimento.tecnico),
-        )
-        .join(Formulario, Atendimento.formulario_id == Formulario.id)
+    Atendimento.query
+    .options(
+        joinedload(Atendimento.animal),
+        joinedload(Atendimento.formulario),
+        joinedload(Atendimento.tecnico),
     )
-
+    .join(Formulario, Atendimento.formulario_id == Formulario.id)
+)
     if perfil in ["tecnico", "veterinario"]:
         query = query.filter(Formulario.perfil_alvo == perfil)
 

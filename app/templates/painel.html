@@ -11,7 +11,7 @@
     <div class="painel-banner-card">
       <div>
         <div class="painel-banner-badge">
-          Vigilância veterinária e análise sanitária
+          Gestão rural integrada e inteligência territorial
         </div>
 
         <h2>
@@ -19,7 +19,7 @@
         </h2>
 
         <p class="painel-banner-texto">
-          {{ config_sistema.texto_banner if config_sistema and config_sistema.texto_banner else "Plataforma para acompanhamento clínico, registro de atendimentos, análise epidemiológica e apoio ao monitoramento sanitário em propriedades rurais." }}
+          {{ config_sistema.texto_banner if config_sistema and config_sistema.texto_banner else "Plataforma para assistência técnica rural, saúde animal, produção agropecuária e geração de indicadores estratégicos para propriedades e municípios." }}
         </p>
 
         {% if usuario_logado %}
@@ -58,26 +58,25 @@
           Novo atendimento
         </a>
 
-        <a class="btn" href="{{ url_for('main.relatorio_epidemiologico') }}">
-          Relatório epidemiológico
+        <a class="btn" href="{{ url_for('main.central_relatorios') }}">
+          Central de relatórios
         </a>
       </div>
     </div>
 
     <div class="painel-aviso-card">
-      <h3>Aviso sanitário do período</h3>
+      <h3>Resumo estratégico do período</h3>
 
       <p>
-        {{ config_sistema.aviso_sanitario if config_sistema and config_sistema.aviso_sanitario else "Em períodos de maior umidade e calor, recomenda-se reforçar a vigilância para ocorrências parasitárias, doenças infecciosas e alterações reprodutivas." }}
+        {{ config_sistema.aviso_sanitario if config_sistema and config_sistema.aviso_sanitario else "Acompanhe continuamente a assistência técnica de campo, os indicadores sanitários e os registros produtivos para fortalecer a tomada de decisão no território rural." }}
       </p>
 
       <p>
-        Mantenha os atendimentos atualizados e registre corretamente diagnóstico,
-        categoria diagnóstica e desfecho para fortalecer a qualidade analítica do sistema.
+        Registros completos, padronizados e atualizados ampliam a capacidade de análise do sistema e fortalecem a gestão pública rural.
       </p>
 
       <div class="painel-aviso-destaque">
-        Campanha recomendada: reforço de prevenção, monitoramento clínico e registro padronizado dos casos.
+        Prioridade recomendada: consolidar visitas técnicas, monitoramento sanitário e indicadores produtivos em uma base única de acompanhamento.
       </div>
     </div>
 
@@ -86,7 +85,7 @@
   <div class="painel-indicadores-grid">
 
     <div class="painel-indicador-card">
-      <div class="painel-indicador-rotulo">Propriedades</div>
+      <div class="painel-indicador-rotulo">Propriedades acompanhadas</div>
       <div class="painel-indicador-valor">{{ total_propriedades }}</div>
     </div>
 
@@ -101,11 +100,59 @@
     </div>
 
     <div class="painel-indicador-card">
-      <div class="painel-indicador-rotulo">Diagnóstico mais frequente</div>
+      <div class="painel-indicador-rotulo">Atendimentos no mês</div>
+      <div class="painel-indicador-valor">{{ atendimentos_mes_atual }}</div>
+    </div>
 
+    <div class="painel-indicador-card">
+      <div class="painel-indicador-rotulo">Profissionais ativos</div>
+      <div class="painel-indicador-valor">{{ total_profissionais_ativos }}</div>
+    </div>
+
+    <div class="painel-indicador-card">
+      <div class="painel-indicador-rotulo">Ocorrência mais frequente</div>
       {% if diagnostico_mais_comum %}
         <div class="painel-indicador-texto">
           {{ diagnostico_mais_comum }}
+        </div>
+      {% else %}
+        <div class="painel-vazio">Sem dados</div>
+      {% endif %}
+    </div>
+
+    <div class="painel-indicador-card">
+      <div class="painel-indicador-rotulo">Formulário mais utilizado</div>
+      {% if formulario_mais_utilizado %}
+        <div class="painel-indicador-texto">
+          {{ formulario_mais_utilizado }}
+        </div>
+      {% else %}
+        <div class="painel-vazio">Sem dados</div>
+      {% endif %}
+    </div>
+
+    <div class="painel-indicador-card">
+      <div class="painel-indicador-rotulo">Perfil mais atuante</div>
+      {% if perfil_mais_atuante %}
+        <div class="painel-indicador-texto">
+          {% if perfil_mais_atuante == "tecnico" %}
+            Técnico
+          {% elif perfil_mais_atuante == "veterinario" %}
+            Veterinário
+          {% else %}
+            {{ perfil_mais_atuante }}
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="painel-vazio">Sem dados</div>
+      {% endif %}
+    </div>
+
+    <div class="painel-indicador-card">
+      <div class="painel-indicador-rotulo">Propriedade mais assistida</div>
+      {% if propriedade_mais_assistida %}
+        <div class="painel-indicador-texto">
+          {{ propriedade_mais_assistida }}
         </div>
       {% else %}
         <div class="painel-vazio">Sem dados</div>
@@ -117,7 +164,7 @@
   <div class="painel-base-grid">
 
     <div class="painel-grafico-card">
-      <h3>Casos por mês</h3>
+      <h3>Atendimentos por mês</h3>
 
       {% if contagem_mensal %}
         <div class="painel-grafico-wrap">
@@ -134,7 +181,7 @@
       <div class="painel-acesso-botoes">
         <a class="btn" href="{{ url_for('main.propriedades') }}">Gerenciar propriedades</a>
         <a class="btn" href="{{ url_for('main.selecionar_atendimento') }}">Registrar atendimento</a>
-        <a class="btn" href="{{ url_for('main.relatorio_epidemiologico') }}">Abrir relatório epidemiológico</a>
+        <a class="btn" href="{{ url_for('main.central_relatorios') }}">Abrir central de relatórios</a>
 
         {% if usuario_logado and usuario_logado.perfil in ["admin_master", "admin_cliente"] %}
           <a class="btn btn-secondary" href="{{ url_for('main.admin_painel') }}">
@@ -156,7 +203,7 @@
       <div class="painel-orientacao">
         <strong>Orientação de uso</strong>
         <span>
-          Registros completos e padronizados fortalecem a análise clínica e melhoram a qualidade dos indicadores epidemiológicos.
+          Registros completos e padronizados fortalecem a gestão da assistência técnica rural, ampliam a qualidade dos indicadores e apoiam a decisão pública municipal.
         </span>
       </div>
     </div>
@@ -182,7 +229,7 @@
         labels: Object.keys(mensaisPainel),
         datasets: [
           {
-            label: "Casos por mês",
+            label: "Atendimentos por mês",
             data: Object.values(mensaisPainel)
           }
         ]

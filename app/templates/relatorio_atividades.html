@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% block title %}Relatório de Atividades{% endblock %}
+
+{% block extra_css %}
+<style>
+  @media (max-width: 768px) {
+    html,
+    body {
+      overflow-x: hidden !important;
+    }
+
+    .relatorio-shell,
+    .relatorio-filtro,
+    .relatorio-grupo,
+    .relatorio-duplo,
+    .relatorio-duplo-datas,
+    .relatorio-resumo,
+    .card {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .relatorio-duplo,
+    .relatorio-duplo-datas {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 10px !important;
+    }
+
+    .relatorio-duplo > *,
+    .relatorio-duplo-datas > * {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .relatorio-filtro .campo-padrao,
+    .relatorio-filtro select,
+    .relatorio-filtro textarea,
+    .relatorio-filtro button,
+    .relatorio-filtro .btn {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    .relatorio-input-data,
+    input[type="date"].relatorio-input-data,
+    .relatorio-filtro input[type="date"] {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      height: 52px !important;
+      padding: 0 44px 0 16px !important;
+      box-sizing: border-box !important;
+      border: 1px solid #d8e0e5 !important;
+      border-radius: 10px !important;
+      background: #ffffff !important;
+      color: #1f2937 !important;
+      font-size: 14px !important;
+      line-height: normal !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      position: relative !important;
+    }
+
+    .relatorio-filtro input[type="date"]::-webkit-date-and-time-value {
+      text-align: left !important;
+    }
+
+    .relatorio-filtro input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 1 !important;
+      display: block !important;
+      position: absolute !important;
+      right: 12px !important;
+      color: #6b7280 !important;
+    }
+
+    .relatorio-acoes {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+
+    .relatorio-acoes .btn,
+    .relatorio-acoes button {
+      width: 100% !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="relatorio-shell">
+
+  <div class="relatorio-topo">
+    <h2>Relatório de Atividades</h2>
+    <p class="texto-vazio">
+      Gere relatórios por perfil profissional, propriedade e período.
+    </p>
+  </div>
+
+  <form method="GET" class="relatorio-filtro">
+    <div class="relatorio-duplo">
+      <div class="relatorio-grupo">
+        <label for="perfil">Perfil</label>
+        <select id="perfil" name="perfil" class="campo-padrao">
+          <option value="">Todos</option>
+          <option value="tecnico" {% if perfil == "tecnico" %}selected{% endif %}>Técnico</option>
+          <option value="veterinario" {% if perfil == "veterinario" %}selected{% endif %}>Veterinário</option>
+        </select>
+      </div>
+
+      <div class="relatorio-grupo">
+        <label for="propriedade_id">Propriedade</label>
+        <select id="propriedade_id" name="propriedade_id" class="campo-padrao">
+          <option value="">Todas</option>
+          {% for p in propriedades %}
+            <option value="{{ p.id }}" {% if propriedade_id == p.id %}selected{% endif %}>
+              {{ p.nome }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="relatorio-duplo relatorio-duplo-datas">
+      <div class="relatorio-grupo">
+        <label for="data_inicio">Data inicial</label>
+        <input
+          id="data_inicio"
+          type="date"
+          name="data_inicio"
+          class="relatorio-input-data"
+          value="{{ data_inicio or '' }}"
+        >
+      </div>
+
+      <div class="relatorio-grupo">
+        <label for="data_fim">Data final</label>
+        <input
+          id="data_fim"
+          type="date"
+          name="data_fim"
+          class="relatorio-input-data"
+          value="{{ data_fim or '' }}"
+        >
+      </div>
+    </div>
+
+    <div class="relatorio-acoes">
+      <button type="submit">Aplicar</button>
+
+      <a class="btn btn-secondary" href="{{ url_for('main.relatorio_atividades') }}">
+        Limpar
+      </a>
+
+      <button type="submit" form="formExportarPdf" class="btn">
+        Exportar PDF
+      </button>
+    </div>
+  </form>
+
+  {% if filtros_aplicados %}
+    <div class="relatorio-resumo">
+      <div class="relatorio-resumo-item">
+        <span>Total de registros</span>
+        <strong>{{ total_atendimentos }}</strong>
+      </div>
+
+      <div class="relatorio-resumo-item">
+        <span>Perfil</span>
+        <strong>
+          {% if perfil == "tecnico" %}
+            Técnico
+          {% elif perfil == "veterinario" %}
+            Veterinário
+          {% else %}
+            Todos
+          {% endif %}
+        </strong>
+      </div>
+
+      <div class="relatorio-resumo-item">
+        <span>Período</span>
+        <strong>
+          {% if data_inicio or data_fim %}
+            {{ data_inicio or "..." }} até {{ data_fim or "..." }}
+          {% else %}
+            Todos
+          {% endif %}
+        </strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Registros encontrados</h3>
+
+      {% if registros %}
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Profissional</th>
+                <th>Propriedade</th>
+                <th>Animal</th>
+                <th>Formulário</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in registros %}
+                <tr>
+                  <td>
+                    {{ item.atendimento.data_atendimento.strftime("%d/%m/%Y") if item.atendimento.data_atendimento else "—" }}
+                  </td>
+                  <td>{{ item.usuario.nome if item.usuario else "—" }}</td>
+                  <td>{{ item.propriedade.nome if item.propriedade else "—" }}</td>
+                  <td>
+                    {% if item.animal %}
+                      {{ item.animal.codigo }}{% if item.animal.nome %} - {{ item.animal.nome }}{% endif %}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                  <td>{{ item.formulario.nome if item.formulario else "—" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="texto-vazio">Nenhum registro encontrado para os filtros informados.</p>
+      {% endif %}
+    </div>
+
+    {% if registros %}
+      <div class="card">
+        <h3>Pré-visualização dos dados</h3>
+
+        {% for item in registros %}
+          <div style="padding: 14px 0; border-bottom: 1px solid #e5e7eb;">
+            <p style="margin: 0 0 8px 0;">
+              <strong>Data:</strong>
+              {{ item.atendimento.data_atendimento.strftime("%d/%m/%Y") if item.atendimento.data_atendimento else "—" }}
+              &nbsp;|&nbsp;
+              <strong>Profissional:</strong> {{ item.usuario.nome if item.usuario else "—" }}
+              &nbsp;|&nbsp;
+              <strong>Animal:</strong>
+              {% if item.animal %}
+                {{ item.animal.codigo }}{% if item.animal.nome %} - {{ item.animal.nome }}{% endif %}
+              {% else %}
+                —
+              {% endif %}
+            </p>
+
+            {% if item.campos %}
+              <div style="display:grid; gap:6px;">
+                {% for campo in item.campos %}
+                  <div>
+                    <strong>{{ campo.rotulo }}:</strong> {{ campo.valor }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="texto-vazio" style="margin: 0;">Sem dados visíveis para este registro.</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+<form
+  id="formExportarPdf"
+  method="POST"
+  action="{{ url_for('main.relatorio_atividades_pdf') }}"
+  style="display:none;"
+>
+  <input type="hidden" name="perfil" value="{{ perfil or '' }}">
+  <input type="hidden" name="propriedade_id" value="{{ propriedade_id or '' }}">
+  <input type="hidden" name="data_inicio" value="{{ data_inicio or '' }}">
+  <input type="hidden" name="data_fim" value="{{ data_fim or '' }}">
+</form>
+{% endblock %}

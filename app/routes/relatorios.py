@@ -10,6 +10,12 @@ from ..models import ConfiguracaoSistema
 from ..services.relatorio_service import gerar_relatorio_epidemiologico
 
 
+@main.route("/relatorios")
+@login_obrigatorio
+def central_relatorios():
+    return render_template("relatorios_central.html")
+
+
 @main.route("/relatorios/epidemiologico")
 @login_obrigatorio
 def relatorio_epidemiologico():
@@ -37,6 +43,7 @@ def relatorio_epidemiologico():
         **dados
     )
 
+
 @main.route("/relatorios/epidemiologico/pdf", methods=["POST"])
 @login_obrigatorio
 def relatorio_epidemiologico_pdf():
@@ -62,7 +69,11 @@ def relatorio_epidemiologico_pdf():
         flash(str(e), "error")
         return redirect(url_for("main.relatorio_epidemiologico"))
 
-    config_sistema = ConfiguracaoSistema.query.first()
+    config_sistema = (
+        ConfiguracaoSistema.query
+        .order_by(ConfiguracaoSistema.id.desc())
+        .first()
+    )
 
     logo_url = None
     if config_sistema and config_sistema.logo:

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Central de Relatórios{% endblock %}
+
+{% block content %}
+<div class="admin-home-shell">
+
+  <div class="admin-home-topo">
+    <h2 class="admin-home-titulo">Central de Relatórios</h2>
+
+    <p class="admin-home-subtitulo">
+      Painel integrado de informações rurais para acompanhamento técnico,
+      produtivo, sanitário e estratégico do município.
+    </p>
+  </div>
+
+  <div class="admin-home-grid">
+
+    <a class="admin-home-card" href="{{ url_for('main.relatorio_epidemiologico') }}">
+      <div class="admin-home-card-titulo">
+        Relatório Epidemiológico Animal
+      </div>
+
+      <div class="admin-home-card-texto">
+        Frequência de doenças, distribuição de ocorrências, padrões sanitários
+        e apoio à vigilância rural.
+      </div>
+    </a>
+
+    <a class="admin-home-card" href="{{ url_for('main.relatorio_atividades') }}">
+      <div class="admin-home-card-titulo">
+        Relatório de Assistência Técnica Rural
+      </div>
+
+      <div class="admin-home-card-texto">
+        Visitas técnicas, orientações de campo, atendimentos produtivos,
+        manejo e suporte ao produtor.
+      </div>
+    </a>
+
+    <div class="admin-home-card" style="opacity:0.72;">
+      <div class="admin-home-card-titulo">
+        Relatório de Produção Leiteira
+      </div>
+
+      <div class="admin-home-card-texto">
+        Qualidade do leite, manejo de ordenha, mastite,
+        produtividade e indicadores do setor leiteiro.
+      </div>
+    </div>
+
+    <div class="admin-home-card" style="opacity:0.72;">
+      <div class="admin-home-card-titulo">
+        Relatório da Agricultura Familiar
+      </div>
+
+      <div class="admin-home-card-texto">
+        Acompanhamento produtivo, hortas, solo, irrigação,
+        apoio técnico e desenvolvimento rural.
+      </div>
+    </div>
+
+    <div class="admin-home-card" style="opacity:0.72;">
+      <div class="admin-home-card-titulo">
+        Relatório Aquícola e Piscicultura
+      </div>
+
+      <div class="admin-home-card-texto">
+        Produção de peixes ornamentais e alimentares,
+        manejo, mortalidade e qualidade da água.
+      </div>
+    </div>
+
+    <div class="admin-home-card" style="opacity:0.72;">
+      <div class="admin-home-card-titulo">
+        Painel Executivo Municipal
+      </div>
+
+      <div class="admin-home-card-texto">
+        Indicadores estratégicos para secretarias,
+        convênios, produtividade e tomada de decisão.
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
