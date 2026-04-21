@@ -2,85 +2,169 @@
 {% block title %}Central de Relatórios{% endblock %}
 
 {% block content %}
+
 <div class="admin-home-shell">
 
   <div class="admin-home-topo">
-    <h2 class="admin-home-titulo">Central de Relatórios</h2>
+    <span class="painel-banner-badge">
+      Inteligência rural e gestão municipal
+    </span>
+
+    <h2 class="admin-home-titulo">
+      Central de Relatórios
+    </h2>
 
     <p class="admin-home-subtitulo">
-      Painel integrado de informações rurais para acompanhamento técnico,
-      produtivo, sanitário e estratégico do município.
+      Acesse módulos estratégicos para acompanhamento técnico,
+      produtivo, sanitário e gerencial do município.
     </p>
   </div>
 
   <div class="admin-home-grid">
 
+    <!-- ATIVOS -->
+
     <a class="admin-home-card" href="{{ url_for('main.relatorio_epidemiologico') }}">
+      <div class="admin-home-card-topo">
+        <span class="status-pill ativo">Disponível</span>
+      </div>
+
       <div class="admin-home-card-titulo">
         Relatório Epidemiológico Animal
       </div>
 
       <div class="admin-home-card-texto">
-        Frequência de doenças, distribuição de ocorrências, padrões sanitários
-        e apoio à vigilância rural.
+        Frequência de doenças, distribuição de ocorrências,
+        padrões sanitários e apoio à vigilância rural.
+      </div>
+
+      <div class="admin-home-card-footer">
+        Abrir módulo →
       </div>
     </a>
 
+
     <a class="admin-home-card" href="{{ url_for('main.relatorio_atividades') }}">
+      <div class="admin-home-card-topo">
+        <span class="status-pill ativo">Disponível</span>
+      </div>
+
       <div class="admin-home-card-titulo">
         Relatório de Assistência Técnica Rural
       </div>
 
       <div class="admin-home-card-texto">
-        Visitas técnicas, orientações de campo, atendimentos produtivos,
-        manejo e suporte ao produtor.
+        Visitas técnicas, orientações de campo,
+        manejo produtivo e suporte ao produtor.
+      </div>
+
+      <div class="admin-home-card-footer">
+        Abrir módulo →
       </div>
     </a>
 
-    <div class="admin-home-card" style="opacity:0.72;">
+
+    <!-- FUTUROS -->
+
+    <div class="admin-home-card modulo-futuro">
+      <div class="admin-home-card-topo">
+        <span class="status-pill futuro">Em implantação</span>
+      </div>
+
       <div class="admin-home-card-titulo">
-        Relatório de Produção Leiteira
+        Produção Leiteira
       </div>
 
       <div class="admin-home-card-texto">
-        Qualidade do leite, manejo de ordenha, mastite,
-        produtividade e indicadores do setor leiteiro.
+        Qualidade do leite, mastite,
+        ordenha, produtividade e indicadores leiteiros.
       </div>
     </div>
 
-    <div class="admin-home-card" style="opacity:0.72;">
+
+    <div class="admin-home-card modulo-futuro">
+      <div class="admin-home-card-topo">
+        <span class="status-pill futuro">Em implantação</span>
+      </div>
+
       <div class="admin-home-card-titulo">
-        Relatório da Agricultura Familiar
+        Agricultura Familiar
       </div>
 
       <div class="admin-home-card-texto">
-        Acompanhamento produtivo, hortas, solo, irrigação,
-        apoio técnico e desenvolvimento rural.
+        Hortas, solo, irrigação,
+        produtividade e assistência rural.
       </div>
     </div>
 
-    <div class="admin-home-card" style="opacity:0.72;">
+
+    <div class="admin-home-card modulo-futuro">
+      <div class="admin-home-card-topo">
+        <span class="status-pill futuro">Em implantação</span>
+      </div>
+
       <div class="admin-home-card-titulo">
-        Relatório Aquícola e Piscicultura
+        Piscicultura e Aquícola
       </div>
 
       <div class="admin-home-card-texto">
-        Produção de peixes ornamentais e alimentares,
-        manejo, mortalidade e qualidade da água.
+        Qualidade da água, manejo,
+        mortalidade e produção de peixes.
       </div>
     </div>
 
-    <div class="admin-home-card" style="opacity:0.72;">
+
+    <div class="admin-home-card modulo-futuro">
+      <div class="admin-home-card-topo">
+        <span class="status-pill futuro">Em implantação</span>
+      </div>
+
       <div class="admin-home-card-titulo">
         Painel Executivo Municipal
       </div>
 
       <div class="admin-home-card-texto">
-        Indicadores estratégicos para secretarias,
-        convênios, produtividade e tomada de decisão.
+        Indicadores estratégicos,
+        produtividade e apoio à decisão pública.
       </div>
     </div>
 
   </div>
+
 </div>
+
+<style>
+.status-pill{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.status-pill.ativo{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.status-pill.futuro{
+  background:#f3f4f6;
+  color:#374151;
+}
+
+.admin-home-card-topo{
+  margin-bottom:14px;
+}
+
+.admin-home-card-footer{
+  margin-top:18px;
+  font-weight:700;
+  color:#1f8774;
+}
+
+.modulo-futuro{
+  opacity:.92;
+}
+</style>
+
 {% endblock %}
