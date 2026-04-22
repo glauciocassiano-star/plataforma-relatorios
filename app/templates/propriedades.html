@@ -8,7 +8,7 @@
   <div class="propriedades-topo">
     <h2 class="propriedades-titulo">Propriedades</h2>
     <p class="propriedades-subtitulo">
-      Cadastre novas propriedades, vincule-as corretamente ao cliente e acesse rapidamente os animais de cada unidade produtiva.
+      Cadastre novas propriedades, vincule-as corretamente ao cliente e acesse rapidamente os animais, o módulo agrícola e outras frentes de cada unidade produtiva.
     </p>
   </div>
 
@@ -145,6 +145,10 @@
                   <div class="propriedades-tabela-acoes">
                     <a class="btn" href="{{ url_for('main.listar_animais', propriedade_id=p.id) }}">
                       Ver animais
+                    </a>
+
+                    <a class="btn btn-secondary" href="{{ url_for('agricultura.painel_agricola', propriedade_id=p.id) }}">
+                      Módulo agrícola
                     </a>
 
                     <a

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhe da Área de Cultivo{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+
+  <div class="content-card">
+
+    <div class="agri-detalhe-topo">
+      <div>
+        <h2 class="agri-detalhe-titulo">Área de Cultivo</h2>
+        <p class="agri-detalhe-subtitulo">
+          {{ area.nome }} • {{ propriedade.nome }} • {{ propriedade.produtor }}
+        </p>
+      </div>
+
+      <div class="agri-detalhe-acoes">
+        <a
+          href="{{ url_for('agricultura.painel_agricola', propriedade_id=propriedade.id) }}"
+          class="btn btn-secondary"
+        >
+          Voltar ao painel agrícola
+        </a>
+
+        <a
+          href="{{ url_for('agricultura.novo_ciclo_cultivo', area_id=area.id) }}"
+          class="btn"
+        >
+          + Novo ciclo
+        </a>
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card">
+      <div class="agri-detalhe-card-topo">
+        <h3>Informações da área</h3>
+        <p>Resumo estrutural da área produtiva vinculada à propriedade.</p>
+      </div>
+
+      <div class="agri-info-grid">
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Nome</span>
+          <strong class="agri-info-value">{{ area.nome }}</strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Tipo</span>
+          <strong class="agri-info-value">
+            {{ area.tipo_area if area.tipo_area else "-" }}
+          </strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Área (ha)</span>
+          <strong class="agri-info-value">
+            {% if area.area_hectares is not none %}
+              {{ "%.2f"|format(area.area_hectares) }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Status</span>
+          <div class="agri-info-status">
+            {% if area.ativo %}
+              <span class="clientes-admin-status ativo">Ativa</span>
+            {% else %}
+              <span class="clientes-admin-status inativo">Inativa</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Propriedade</span>
+          <strong class="agri-info-value">{{ propriedade.nome }}</strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Produtor</span>
+          <strong class="agri-info-value">{{ propriedade.produtor }}</strong>
+        </div>
+
+      </div>
+
+      <div class="agri-info-observacoes">
+        <span class="agri-info-label">Observações</span>
+        <div class="agri-info-observacoes-box">
+          {{ area.observacoes if area.observacoes else "Nenhuma observação registrada." }}
+        </div>
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card">
+      <div class="agri-detalhe-card-topo">
+        <h3>Ciclos de cultivo</h3>
+        <p>Histórico e acompanhamento dos ciclos vinculados a esta área.</p>
+      </div>
+
+      {% if ciclos %}
+        <div class="table-wrap">
+          <table class="animais-admin-tabela">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cultura</th>
+                <th>Variedade</th>
+                <th>Plantio</th>
+                <th>Previsão</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ciclo in ciclos %}
+              <tr>
+                <td>{{ ciclo.id }}</td>
+                <td>{{ ciclo.cultura }}</td>
+                <td>{{ ciclo.variedade if ciclo.variedade else "-" }}</td>
+                <td>
+                  {% if ciclo.data_plantio %}
+                    {{ ciclo.data_plantio.strftime("%d/%m/%Y") }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>
+                  {% if ciclo.data_prevista_colheita %}
+                    {{ ciclo.data_prevista_colheita.strftime("%d/%m/%Y") }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>{{ ciclo.status if ciclo.status else "-" }}</td>
+                <td>
+                  <div class="propriedades-tabela-acoes">
+                    <a
+                      href="{{ url_for('agricultura.detalhe_ciclo_cultivo', ciclo_id=ciclo.id) }}"
+                      class="btn btn-secondary"
+                    >
+                      Abrir ciclo
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="agri-empty-state">
+          <strong>Nenhum ciclo cadastrado</strong>
+          <p>
+            Esta área ainda não possui ciclos de cultivo registrados.
+          </p>
+          <a
+            href="{{ url_for('agricultura.novo_ciclo_cultivo', area_id=area.id) }}"
+            class="btn"
+          >
+            Cadastrar primeiro ciclo
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

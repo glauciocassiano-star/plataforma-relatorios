@@ -2,6 +2,62 @@
 
 {% block title %}Painel{% endblock %}
 
+{% block extra_css %}
+<style>
+  .painel-insights-card {
+    margin-top: 18px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    padding: 22px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  }
+
+  .painel-insights-card h3 {
+    margin: 0 0 14px 0;
+    font-size: 1.08rem;
+    color: var(--cor-texto);
+  }
+
+  .painel-insights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .painel-insight-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    padding: 16px;
+    display: grid;
+    gap: 6px;
+    min-height: 96px;
+    align-content: start;
+  }
+
+  .painel-insight-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+  }
+
+  .painel-insight-item strong {
+    font-size: 1rem;
+    line-height: 1.35;
+    color: #1f2937;
+  }
+
+  @media (max-width: 920px) {
+    .painel-insights-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <div class="painel-shell">
@@ -159,6 +215,37 @@
       {% endif %}
     </div>
 
+  </div>
+
+  <div class="painel-insights-card">
+    <h3>Leitura do território</h3>
+
+    <div class="painel-insights-grid">
+      <div class="painel-insight-item">
+        <span class="painel-insight-label">Ocorrência de atenção</span>
+        <strong>{{ diagnostico_mais_comum or "Sem dados disponíveis" }}</strong>
+      </div>
+
+      <div class="painel-insight-item">
+        <span class="painel-insight-label">Propriedade mais assistida</span>
+        <strong>{{ propriedade_mais_assistida or "Sem dados disponíveis" }}</strong>
+      </div>
+
+      <div class="painel-insight-item">
+        <span class="painel-insight-label">Perfil mais atuante</span>
+        <strong>
+          {% if perfil_mais_atuante == "tecnico" %}
+            Técnico
+          {% elif perfil_mais_atuante == "veterinario" %}
+            Veterinário
+          {% elif perfil_mais_atuante %}
+            {{ perfil_mais_atuante }}
+          {% else %}
+            Sem dados disponíveis
+          {% endif %}
+        </strong>
+      </div>
+    </div>
   </div>
 
   <div class="painel-base-grid">

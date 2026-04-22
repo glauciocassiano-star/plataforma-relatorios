@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Manejo Agrícola{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+
+  <div class="content-card">
+
+    <div class="agri-detalhe-topo">
+      <div>
+        <h2 class="agri-detalhe-titulo">Novo Manejo Agrícola</h2>
+        <p class="agri-detalhe-subtitulo">
+          {{ ciclo.cultura }} • {{ area.nome }} • {{ propriedade.nome }}
+        </p>
+      </div>
+
+      <div class="agri-detalhe-acoes">
+        <a
+          href="{{ url_for('agricultura.detalhe_ciclo_cultivo', ciclo_id=ciclo.id) }}"
+          class="btn btn-secondary"
+        >
+          Voltar para ciclo
+        </a>
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card">
+
+      <div class="agri-detalhe-card-topo">
+        <h3>Cadastro de manejo</h3>
+        <p>
+          Registre atividades técnicas e operacionais executadas neste ciclo.
+        </p>
+      </div>
+
+      <form method="POST">
+
+        <div class="agri-info-grid">
+
+          <div class="agri-info-item">
+            <label for="tipo_manejo" class="agri-info-label">
+              Tipo de manejo *
+            </label>
+
+            <select
+              id="tipo_manejo"
+              name="tipo_manejo"
+              required
+            >
+              <option value="">Selecione</option>
+              <option value="Adubação">Adubação</option>
+              <option value="Irrigação">Irrigação</option>
+              <option value="Pulverização">Pulverização</option>
+              <option value="Controle de pragas">Controle de pragas</option>
+              <option value="Capina">Capina</option>
+              <option value="Monitoramento">Monitoramento</option>
+              <option value="Colheita">Colheita</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+
+          <div class="agri-info-item">
+            <label for="data_manejo" class="agri-info-label">
+              Data do manejo *
+            </label>
+
+            <input
+              type="date"
+              id="data_manejo"
+              name="data_manejo"
+              required
+              value="{{ request.form.get('data_manejo', '') }}"
+            >
+          </div>
+
+          <div class="agri-info-item" style="grid-column: span 2;">
+            <label for="responsavel" class="agri-info-label">
+              Responsável
+            </label>
+
+            <input
+              type="text"
+              id="responsavel"
+              name="responsavel"
+              placeholder="Nome do responsável"
+              value="{{ request.form.get('responsavel', '') }}"
+            >
+          </div>
+
+        </div>
+
+        <div class="agri-info-observacoes" style="margin-top:18px;">
+          <label for="descricao" class="agri-info-label">
+            Descrição / Observações
+          </label>
+
+          <textarea
+            id="descricao"
+            name="descricao"
+            rows="5"
+            placeholder="Detalhes técnicos, produtos utilizados, dosagens, condições climáticas etc."
+          >{{ request.form.get('descricao', '') }}</textarea>
+        </div>
+
+        <div class="agri-detalhe-acoes" style="margin-top:24px;">
+          <button type="submit" class="btn">
+            Salvar manejo
+          </button>
+
+          <a
+            href="{{ url_for('agricultura.detalhe_ciclo_cultivo', ciclo_id=ciclo.id) }}"
+            class="btn btn-secondary"
+          >
+            Cancelar
+          </a>
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório de Assistência Técnica Rural</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 16mm 13mm 15mm 13mm;
+    }
+
+    :root {
+      --cor-primaria: #1f8774;
+      --cor-primaria-escura: #16695a;
+      --cor-texto: #1f2937;
+      --cor-texto-suave: #6b7280;
+      --cor-borda: #dfe7e4;
+      --cor-fundo: #f8fbfa;
+      --cor-fundo-suave: #f4f8f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      color: var(--cor-texto);
+      margin: 0;
+      font-size: 11.2px;
+      line-height: 1.42;
+      background: #ffffff;
+    }
+
+    .relatorio {
+      width: 100%;
+    }
+
+    .cabecalho {
+      border-bottom: 2px solid var(--cor-primaria);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .cabecalho-topo {
+      display: table;
+      width: 100%;
+    }
+
+    .cabecalho-logo,
+    .cabecalho-texto {
+      display: table-cell;
+      vertical-align: top;
+    }
+
+    .cabecalho-logo {
+      width: 64px;
+      padding-right: 12px;
+    }
+
+    .cabecalho-logo img {
+      max-width: 54px;
+      max-height: 54px;
+      display: block;
+    }
+
+    .cabecalho-texto h1 {
+      margin: 0 0 3px 0;
+      font-size: 18px;
+      color: var(--cor-primaria-escura);
+    }
+
+    .cabecalho-texto p {
+      margin: 0;
+      color: var(--cor-texto-suave);
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+
+    .titulo-relatorio {
+      margin: 14px 0 4px 0;
+      font-size: 16px;
+      color: var(--cor-texto);
+    }
+
+    .subtitulo-relatorio {
+      margin: 0 0 4px 0;
+      color: var(--cor-texto-suave);
+      font-size: 11px;
+    }
+
+    .meta {
+      margin-top: 8px;
+      font-size: 10.5px;
+      color: var(--cor-texto-suave);
+    }
+
+    .bloco {
+      border: 1px solid var(--cor-borda);
+      border-radius: 9px;
+      padding: 12px;
+      margin-bottom: 11px;
+      background: #fff;
+      page-break-inside: avoid;
+    }
+
+    .bloco h2 {
+      margin: 0 0 3px 0;
+      font-size: 13px;
+      color: var(--cor-texto);
+    }
+
+    .bloco p.descricao {
+      margin: 0 0 10px 0;
+      color: var(--cor-texto-suave);
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+
+    .grid {
+      font-size: 0;
+      margin: 0 -5px;
+    }
+
+    .item {
+      display: inline-block;
+      width: 50%;
+      padding: 5px;
+      vertical-align: top;
+      font-size: 11.2px;
+    }
+
+    .item-box {
+      border: 1px solid var(--cor-borda);
+      border-radius: 8px;
+      background: var(--cor-fundo);
+      padding: 9px 10px;
+      min-height: 62px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 9.5px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: var(--cor-texto-suave);
+      letter-spacing: 0.03em;
+    }
+
+    .valor {
+      font-size: 12.2px;
+      font-weight: bold;
+      color: var(--cor-texto);
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .observacoes-box {
+      border: 1px solid var(--cor-borda);
+      border-radius: 8px;
+      background: var(--cor-fundo);
+      padding: 10px 11px;
+      color: var(--cor-texto);
+      line-height: 1.55;
+    }
+
+    .bloco-observacao {
+      margin-top: 9px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+    }
+
+    thead th {
+      text-align: left;
+      background: #eef5f2;
+      color: var(--cor-texto);
+      border-bottom: 1px solid var(--cor-borda);
+      padding: 8px 7px;
+    }
+
+    tbody td {
+      padding: 8px 7px;
+      border-bottom: 1px solid #edf1ef;
+      vertical-align: top;
+      line-height: 1.4;
+    }
+
+    .vazio {
+      border: 1px dashed var(--cor-borda);
+      border-radius: 8px;
+      padding: 11px;
+      color: var(--cor-texto-suave);
+      background: #fcfdfd;
+    }
+
+    .sintese {
+      background: var(--cor-fundo-suave);
+      border-left: 4px solid var(--cor-primaria);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--cor-texto);
+      line-height: 1.6;
+    }
+
+    .rodape {
+      margin-top: 12px;
+      border-top: 1px solid var(--cor-borda);
+      padding-top: 8px;
+      color: var(--cor-texto-suave);
+      font-size: 9.8px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .rodape div + div {
+      margin-top: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="relatorio">
+
+    <div class="cabecalho">
+      <div class="cabecalho-topo">
+        {% if logo_url %}
+        <div class="cabecalho-logo">
+          <img src="{{ logo_url }}" alt="Logo">
+        </div>
+        {% endif %}
+
+        <div class="cabecalho-texto">
+          <h1>
+            {{ config_sistema.nome_plataforma if config_sistema and config_sistema.nome_plataforma else "Moovet" }}
+          </h1>
+          <p>
+            {{ config_sistema.subtitulo if config_sistema and config_sistema.subtitulo else
+            "Plataforma para assistência técnica rural, saúde animal, produção e inteligência territorial para propriedades e municípios." }}
+          </p>
+        </div>
+      </div>
+
+      <h2 class="titulo-relatorio">Relatório de Assistência Técnica Rural</h2>
+      <p class="subtitulo-relatorio">
+        {{ ciclo.cultura }} • {{ area.nome }} • {{ propriedade.nome }}
+      </p>
+
+      <div class="meta">
+        Gerado em: {{ gerado_em.strftime("%d/%m/%Y %H:%M") }}
+      </div>
+    </div>
+
+    <div class="bloco">
+      <h2>Identificação</h2>
+      <p class="descricao">Dados principais da propriedade, área e emissão do relatório.</p>
+
+      <div class="grid">
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Responsável pelo acesso</span>
+            <div class="valor">{{ usuario.nome if usuario and usuario.nome else "Usuário do sistema" }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Propriedade</span>
+            <div class="valor">{{ propriedade.nome }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Produtor</span>
+            <div class="valor">{{ propriedade.produtor }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Cidade / UF</span>
+            <div class="valor">{{ (propriedade.cidade or "-") ~ " / " ~ (propriedade.estado or "-") }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Área de cultivo</span>
+            <div class="valor">{{ area.nome }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Tipo de área</span>
+            <div class="valor">{{ area.tipo_area if area.tipo_area else "-" }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <h2>Caracterização da área</h2>
+      <p class="descricao">Informações estruturais da área produtiva vinculada ao ciclo.</p>
+
+      <div class="grid">
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Nome da área</span>
+            <div class="valor">{{ area.nome }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Área (ha)</span>
+            <div class="valor">
+              {% if area.area_hectares is not none %}
+                {{ "%.2f"|format(area.area_hectares) }}
+              {% else %}
+                -
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Status da área</span>
+            <div class="valor">{% if area.ativo %}Ativa{% else %}Inativa{% endif %}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bloco-observacao">
+        <span class="label">Observações da área</span>
+        <div class="observacoes-box">
+          {{ area.observacoes if area.observacoes else "Nenhuma observação registrada para a área." }}
+        </div>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <h2>Dados do ciclo de cultivo</h2>
+      <p class="descricao">Informações técnicas e produtivas relacionadas ao ciclo acompanhado.</p>
+
+      <div class="grid">
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Cultura</span>
+            <div class="valor">{{ ciclo.cultura }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Variedade</span>
+            <div class="valor">{{ ciclo.variedade if ciclo.variedade else "-" }}</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Data de plantio</span>
+            <div class="valor">
+              {% if ciclo.data_plantio %}
+                {{ ciclo.data_plantio.strftime("%d/%m/%Y") }}
+              {% else %}
+                -
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Previsão de colheita</span>
+            <div class="valor">
+              {% if ciclo.data_prevista_colheita %}
+                {{ ciclo.data_prevista_colheita.strftime("%d/%m/%Y") }}
+              {% else %}
+                -
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Status do ciclo</span>
+            <div class="valor">
+              {% if ciclo.status == "em_andamento" %}
+                Em andamento
+              {% elif ciclo.status == "planejado" %}
+                Planejado
+              {% elif ciclo.status == "colhido" %}
+                Colhido
+              {% elif ciclo.status == "cancelado" %}
+                Cancelado
+              {% else %}
+                {{ ciclo.status if ciclo.status else "-" }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="item">
+          <div class="item-box">
+            <span class="label">Produtividade estimada</span>
+            <div class="valor">
+              {% if ciclo.produtividade_estimada is not none %}
+                {{ "%.2f"|format(ciclo.produtividade_estimada) }}
+              {% else %}
+                -
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bloco-observacao">
+        <span class="label">Observações do ciclo</span>
+        <div class="observacoes-box">
+          {{ ciclo.observacoes if ciclo.observacoes else "Nenhuma observação registrada para o ciclo." }}
+        </div>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <h2>Histórico de manejos agrícolas</h2>
+      <p class="descricao">Relação das ações operacionais e técnicas registradas para este ciclo.</p>
+
+      {% if manejos %}
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tipo de manejo</th>
+              <th>Data</th>
+              <th>Responsável</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for manejo in manejos %}
+            <tr>
+              <td>{{ manejo.id }}</td>
+              <td>{{ manejo.tipo_manejo }}</td>
+              <td>
+                {% if manejo.data_manejo %}
+                  {{ manejo.data_manejo.strftime("%d/%m/%Y") }}
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <td>{{ manejo.responsavel if manejo.responsavel else "-" }}</td>
+              <td>{{ manejo.descricao if manejo.descricao else "-" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="vazio">
+          Nenhum manejo registrado para este ciclo até o momento.
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="bloco">
+      <h2>Síntese técnica</h2>
+      <p class="descricao">Resumo consolidado do acompanhamento realizado.</p>
+
+      <div class="sintese">
+        Este relatório consolida as informações da propriedade, da área de cultivo,
+        do ciclo agrícola e dos manejos registrados no sistema, servindo como
+        documento técnico de assistência rural.
+      </div>
+    </div>
+
+    <div class="rodape">
+      <div>
+        {{ config_sistema.rodape if config_sistema and config_sistema.rodape else
+        "Moovet • Uso técnico, institucional e estratégico" }}
+      </div>
+      <div>
+        Documento gerado automaticamente pelo sistema.
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

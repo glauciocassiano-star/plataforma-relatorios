@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Nova Área de Cultivo{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+
+  <div class="content-card">
+
+    <div class="animais-admin-topo" style="margin-bottom: 20px;">
+      <h2 class="animais-admin-titulo">Nova Área de Cultivo</h2>
+      <p class="animais-admin-subtitulo">
+        {{ propriedade.nome }} • {{ propriedade.produtor }}
+      </p>
+    </div>
+
+    <div class="animais-admin-card" style="max-width: 900px;">
+      <h3 class="animais-admin-card-titulo">Cadastro da área</h3>
+
+      <form method="POST" class="animais-admin-form">
+
+        <div class="animais-admin-form-grid">
+          <div class="animais-admin-form-grupo">
+            <label for="nome">Nome da área</label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              placeholder="Ex.: Talhão 1, Horta principal, Estufa A"
+              value="{{ request.form.get('nome', '') }}"
+              required
+            >
+          </div>
+
+          <div class="animais-admin-form-grupo">
+            <label for="tipo_area">Tipo de área</label>
+            <input
+              type="text"
+              id="tipo_area"
+              name="tipo_area"
+              placeholder="Ex.: talhão, horta, viveiro, estufa"
+              value="{{ request.form.get('tipo_area', '') }}"
+            >
+          </div>
+        </div>
+
+        <div class="animais-admin-form-grid">
+          <div class="animais-admin-form-grupo">
+            <label for="area_hectares">Área em hectares</label>
+            <input
+              type="text"
+              id="area_hectares"
+              name="area_hectares"
+              placeholder="Ex.: 1,5"
+              value="{{ request.form.get('area_hectares', '') }}"
+            >
+            <small class="form-help">
+              Você pode usar ponto ou vírgula.
+            </small>
+          </div>
+
+          <div class="animais-admin-form-grupo">
+            <label>&nbsp;</label>
+            <label class="checkbox-field">
+              <input
+                type="checkbox"
+                name="ativo"
+                {% if request.method == "GET" or request.form.get("ativo") == "on" %}checked{% endif %}
+              >
+              Área ativa
+            </label>
+            <small class="form-help">
+              Marque esta opção se a área estiver em uso atualmente.
+            </small>
+          </div>
+        </div>
+
+        <div class="animais-admin-form-grupo animais-admin-form-grupo-full">
+          <label for="observacoes">Observações</label>
+          <textarea
+            id="observacoes"
+            name="observacoes"
+            rows="5"
+            placeholder="Informações complementares sobre a área, localização, manejo ou uso."
+          >{{ request.form.get('observacoes', '') }}</textarea>
+        </div>
+
+        <div class="animais-admin-acoes">
+          <button type="submit" class="btn">Salvar área</button>
+          <a
+            href="{{ url_for('agricultura.painel_agricola', propriedade_id=propriedade.id) }}"
+            class="btn btn-secondary"
+          >
+            Cancelar
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

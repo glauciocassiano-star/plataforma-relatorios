@@ -144,6 +144,13 @@ class Propriedade(db.Model):
         back_populates="propriedade",
         lazy=True,
     )
+    areas_cultivo = db.relationship(
+        "AreaCultivo",
+        back_populates="propriedade",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="desc(AreaCultivo.criado_em)",
+    )
 
     def __repr__(self):
         return f"<Propriedade {self.id} {self.nome}>"
@@ -221,6 +228,7 @@ class Formulario(db.Model):
     perfil_alvo = db.Column(db.String(20), default="tecnico", nullable=False)
     ativo = db.Column(db.Boolean, default=True, nullable=False)
     tipo_contexto = db.Column(db.String(30), default="rural", index=True)
+    categoria = db.Column(db.String(50), nullable=True, index=True)
     template_base = db.Column(db.Boolean, default=False, index=True)
     usa_sensor_mastite = db.Column(db.Boolean, default=False, nullable=False)
     sensor_obrigatorio = db.Column(db.Boolean, default=False, nullable=False)
@@ -247,6 +255,24 @@ class Formulario(db.Model):
         order_by="CampoFormulario.ordem.asc(), CampoFormulario.id.asc()",
     )
     atendimentos = db.relationship("Atendimento", back_populates="formulario", lazy=True)
+    ciclos_cultivo = db.relationship(
+        "CicloCultivo",
+        back_populates="formulario",
+        lazy=True,
+        foreign_keys="CicloCultivo.formulario_id",
+    )
+    manejos_agricolas = db.relationship(
+        "ManejoAgricola",
+        back_populates="formulario",
+        lazy=True,
+        foreign_keys="ManejoAgricola.formulario_id",
+    )
+    ocorrencias_agricolas = db.relationship(
+        "OcorrenciaAgricola",
+        back_populates="formulario",
+        lazy=True,
+        foreign_keys="OcorrenciaAgricola.formulario_id",
+    )
 
     def __repr__(self):
         return f"<Formulario {self.id} {self.nome}>"
@@ -338,6 +364,169 @@ class Atendimento(db.Model):
 
     def __repr__(self):
         return f"<Atendimento {self.id} animal={self.animal_id}>"
+
+
+class AreaCultivo(db.Model):
+    __tablename__ = "areas_cultivo"
+
+    id = db.Column(db.Integer, primary_key=True)
+    propriedade_id = db.Column(
+        db.Integer,
+        db.ForeignKey("propriedades.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    nome = db.Column(db.String(120), nullable=False)
+    tipo_area = db.Column(db.String(80), nullable=True)
+    area_hectares = db.Column(db.Float, nullable=True)
+    observacoes = db.Column(db.Text, nullable=True)
+
+    ativo = db.Column(db.Boolean, default=True, nullable=False)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    propriedade = db.relationship("Propriedade", back_populates="areas_cultivo")
+    ciclos = db.relationship(
+        "CicloCultivo",
+        back_populates="area_cultivo",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="desc(CicloCultivo.data_plantio), desc(CicloCultivo.criado_em)",
+    )
+
+    def __repr__(self):
+        return f"<AreaCultivo {self.id} {self.nome}>"
+
+
+class CicloCultivo(db.Model):
+    __tablename__ = "ciclos_cultivo"
+
+    id = db.Column(db.Integer, primary_key=True)
+    area_cultivo_id = db.Column(
+        db.Integer,
+        db.ForeignKey("areas_cultivo.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    formulario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("formularios.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    cultura = db.Column(db.String(120), nullable=False)
+    variedade = db.Column(db.String(120), nullable=True)
+    data_plantio = db.Column(db.Date, nullable=False, index=True)
+    data_prevista_colheita = db.Column(db.Date, nullable=True)
+    data_colheita = db.Column(db.Date, nullable=True)
+
+    status = db.Column(db.String(40), default="em_andamento", nullable=False, index=True)
+    produtividade_estimada = db.Column(db.Float, nullable=True)
+    produtividade_real = db.Column(db.Float, nullable=True)
+
+    observacoes = db.Column(db.Text, nullable=True)
+    dados_personalizados = db.Column(db.JSON, default=dict, nullable=True)
+
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    area_cultivo = db.relationship("AreaCultivo", back_populates="ciclos")
+    formulario = db.relationship(
+        "Formulario",
+        back_populates="ciclos_cultivo",
+        foreign_keys=[formulario_id],
+    )
+    manejos = db.relationship(
+        "ManejoAgricola",
+        back_populates="ciclo_cultivo",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="desc(ManejoAgricola.data_manejo), desc(ManejoAgricola.criado_em)",
+    )
+    ocorrencias = db.relationship(
+        "OcorrenciaAgricola",
+        back_populates="ciclo_cultivo",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="desc(OcorrenciaAgricola.data_ocorrencia), desc(OcorrenciaAgricola.criado_em)",
+    )
+
+    def __repr__(self):
+        return f"<CicloCultivo {self.id} {self.cultura}>"
+
+
+class ManejoAgricola(db.Model):
+    __tablename__ = "manejos_agricolas"
+
+    id = db.Column(db.Integer, primary_key=True)
+    ciclo_cultivo_id = db.Column(
+        db.Integer,
+        db.ForeignKey("ciclos_cultivo.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    formulario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("formularios.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    tipo_manejo = db.Column(db.String(80), nullable=False, index=True)
+    data_manejo = db.Column(db.Date, nullable=False, index=True)
+    descricao = db.Column(db.Text, nullable=True)
+    responsavel = db.Column(db.String(120), nullable=True)
+
+    dados_personalizados = db.Column(db.JSON, default=dict, nullable=True)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    ciclo_cultivo = db.relationship("CicloCultivo", back_populates="manejos")
+    formulario = db.relationship(
+        "Formulario",
+        back_populates="manejos_agricolas",
+        foreign_keys=[formulario_id],
+    )
+
+    def __repr__(self):
+        return f"<ManejoAgricola {self.id} {self.tipo_manejo}>"
+
+
+class OcorrenciaAgricola(db.Model):
+    __tablename__ = "ocorrencias_agricolas"
+
+    id = db.Column(db.Integer, primary_key=True)
+    ciclo_cultivo_id = db.Column(
+        db.Integer,
+        db.ForeignKey("ciclos_cultivo.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    formulario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("formularios.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    data_ocorrencia = db.Column(db.Date, nullable=False, index=True)
+    tipo_ocorrencia = db.Column(db.String(80), nullable=False, index=True)
+    gravidade = db.Column(db.String(30), nullable=True, index=True)
+    descricao = db.Column(db.Text, nullable=True)
+    acao_adotada = db.Column(db.Text, nullable=True)
+    resultado = db.Column(db.Text, nullable=True)
+
+    dados_personalizados = db.Column(db.JSON, default=dict, nullable=True)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    ciclo_cultivo = db.relationship("CicloCultivo", back_populates="ocorrencias")
+    formulario = db.relationship(
+        "Formulario",
+        back_populates="ocorrencias_agricolas",
+        foreign_keys=[formulario_id],
+    )
+
+    def __repr__(self):
+        return f"<OcorrenciaAgricola {self.id} {self.tipo_ocorrencia}>"
 
 
 class LeituraSensor(db.Model):

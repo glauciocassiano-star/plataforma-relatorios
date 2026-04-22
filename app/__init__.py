@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, redirect, flash, session
+
+from flask import Flask, flash, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 
@@ -81,7 +82,10 @@ def create_app():
     # ===============================
 
     from .routes import main
+    from .routes.agricultura import agricultura_bp
+
     app.register_blueprint(main)
+    app.register_blueprint(agricultura_bp)
 
     # ===============================
     # CONTEXTO GLOBAL DOS TEMPLATES
@@ -99,7 +103,7 @@ def create_app():
 
         return dict(
             config_sistema=config,
-            usuario_logado=usuario_logado
+            usuario_logado=usuario_logado,
         )
 
     # ===============================

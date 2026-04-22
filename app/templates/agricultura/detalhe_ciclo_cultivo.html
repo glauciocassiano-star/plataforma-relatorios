@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhe do Ciclo de Cultivo{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+
+  <div class="content-card">
+
+    <div class="agri-detalhe-topo">
+      <div>
+        <h2 class="agri-detalhe-titulo">Ciclo de Cultivo</h2>
+        <p class="agri-detalhe-subtitulo">
+          {{ ciclo.cultura }} • {{ area.nome }} • {{ propriedade.nome }}
+        </p>
+      </div>
+
+      <div class="agri-detalhe-acoes">
+        <a
+          href="{{ url_for('agricultura.detalhe_area_cultivo', area_id=area.id) }}"
+          class="btn btn-secondary"
+        >
+          Voltar para área
+        </a>
+
+        <a
+          href="{{ url_for('agricultura.relatorio_assistencia_tecnica_rural_pdf', ciclo_id=ciclo.id) }}"
+          class="btn btn-secondary"
+        >
+          Gerar relatório
+        </a>
+
+        <a
+          href="{{ url_for('agricultura.novo_manejo_agricola', ciclo_id=ciclo.id) }}"
+          class="btn"
+        >
+          + Novo manejo
+        </a>
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card">
+      <div class="agri-detalhe-card-topo">
+        <h3>Informações do ciclo</h3>
+        <p>Resumo operacional e produtivo do ciclo cadastrado.</p>
+      </div>
+
+      <div class="agri-info-grid">
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Cultura</span>
+          <strong class="agri-info-value">{{ ciclo.cultura }}</strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Variedade</span>
+          <strong class="agri-info-value">
+            {{ ciclo.variedade if ciclo.variedade else "-" }}
+          </strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Área</span>
+          <strong class="agri-info-value">{{ area.nome }}</strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Propriedade</span>
+          <strong class="agri-info-value">{{ propriedade.nome }}</strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Data de plantio</span>
+          <strong class="agri-info-value">
+            {% if ciclo.data_plantio %}
+              {{ ciclo.data_plantio.strftime("%d/%m/%Y") }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Previsão de colheita</span>
+          <strong class="agri-info-value">
+            {% if ciclo.data_prevista_colheita %}
+              {{ ciclo.data_prevista_colheita.strftime("%d/%m/%Y") }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Status</span>
+          <strong class="agri-info-value">
+            {{ ciclo.status if ciclo.status else "-" }}
+          </strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Produtividade estimada</span>
+          <strong class="agri-info-value">
+            {% if ciclo.produtividade_estimada is not none %}
+              {{ "%.2f"|format(ciclo.produtividade_estimada) }}
+            {% else %}
+              -
+            {% endif %}
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="agri-info-observacoes">
+        <span class="agri-info-label">Observações</span>
+        <div class="agri-info-observacoes-box">
+          {{ ciclo.observacoes if ciclo.observacoes else "Nenhuma observação registrada." }}
+        </div>
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card">
+      <div class="agri-detalhe-card-topo">
+        <h3>Manejos agrícolas</h3>
+        <p>Registros operacionais e técnicos executados durante o ciclo.</p>
+      </div>
+
+      {% if manejos %}
+        <div class="table-wrap">
+          <table class="animais-admin-tabela">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tipo de manejo</th>
+                <th>Data</th>
+                <th>Responsável</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for manejo in manejos %}
+              <tr>
+                <td>{{ manejo.id }}</td>
+                <td>{{ manejo.tipo_manejo }}</td>
+                <td>
+                  {% if manejo.data_manejo %}
+                    {{ manejo.data_manejo.strftime("%d/%m/%Y") }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>{{ manejo.responsavel if manejo.responsavel else "-" }}</td>
+                <td>{{ manejo.descricao if manejo.descricao else "-" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="agri-empty-state">
+          <strong>Nenhum manejo cadastrado</strong>
+          <p>
+            Este ciclo ainda não possui registros operacionais.
+          </p>
+          <a
+            href="{{ url_for('agricultura.novo_manejo_agricola', ciclo_id=ciclo.id) }}"
+            class="btn"
+          >
+            Cadastrar primeiro manejo
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

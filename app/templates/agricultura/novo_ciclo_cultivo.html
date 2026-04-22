@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Ciclo de Cultivo{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+
+  <div class="content-card">
+
+    <div class="animais-admin-topo" style="margin-bottom: 20px;">
+      <h2 class="animais-admin-titulo">Novo Ciclo de Cultivo</h2>
+      <p class="animais-admin-subtitulo">
+        {{ area.nome }} • {{ propriedade.nome }}
+      </p>
+    </div>
+
+    <div class="form-actions" style="margin-bottom: 22px;">
+      <a
+        href="{{ url_for('agricultura.detalhe_area_cultivo', area_id=area.id) }}"
+        class="btn btn-secondary"
+      >
+        Voltar para área
+      </a>
+    </div>
+
+    <div class="animais-admin-card" style="max-width: 980px;">
+      <h3 class="animais-admin-card-titulo">Cadastro do ciclo</h3>
+
+      <form method="POST" class="animais-admin-form">
+
+        <div class="animais-admin-form-grid">
+
+          <div class="animais-admin-form-grupo">
+            <label for="cultura">Cultura *</label>
+            <input
+              type="text"
+              id="cultura"
+              name="cultura"
+              value="{{ request.form.get('cultura', '') }}"
+              placeholder="Ex.: Milho, Soja, Alface"
+              required
+            >
+          </div>
+
+          <div class="animais-admin-form-grupo">
+            <label for="variedade">Variedade</label>
+            <input
+              type="text"
+              id="variedade"
+              name="variedade"
+              value="{{ request.form.get('variedade', '') }}"
+              placeholder="Ex.: Híbrido X, Cultivar Y"
+            >
+          </div>
+
+        </div>
+
+        <div class="animais-admin-form-grid">
+
+          <div class="animais-admin-form-grupo">
+            <label for="data_plantio">Data de plantio *</label>
+            <input
+              type="date"
+              id="data_plantio"
+              name="data_plantio"
+              value="{{ request.form.get('data_plantio', '') }}"
+              required
+            >
+          </div>
+
+          <div class="animais-admin-form-grupo">
+            <label for="data_prevista_colheita">Previsão de colheita</label>
+            <input
+              type="date"
+              id="data_prevista_colheita"
+              name="data_prevista_colheita"
+              value="{{ request.form.get('data_prevista_colheita', '') }}"
+            >
+          </div>
+
+        </div>
+
+        <div class="animais-admin-form-grid">
+
+          <div class="animais-admin-form-grupo">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              <option value="em_andamento">Em andamento</option>
+              <option value="planejado">Planejado</option>
+              <option value="colhido">Colhido</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+
+          <div class="animais-admin-form-grupo">
+            <label for="produtividade_estimada">
+              Produtividade estimada
+            </label>
+            <input
+              type="text"
+              id="produtividade_estimada"
+              name="produtividade_estimada"
+              value="{{ request.form.get('produtividade_estimada', '') }}"
+              placeholder="Ex.: 65.5"
+            >
+          </div>
+
+        </div>
+
+        <div class="animais-admin-form-grupo animais-admin-form-grupo-full">
+          <label for="observacoes">Observações</label>
+          <textarea
+            id="observacoes"
+            name="observacoes"
+            rows="5"
+            placeholder="Informações adicionais sobre o ciclo."
+          >{{ request.form.get('observacoes', '') }}</textarea>
+        </div>
+
+        <div class="animais-admin-acoes">
+          <button type="submit" class="btn">
+            Salvar ciclo
+          </button>
+
+          <a
+            href="{{ url_for('agricultura.detalhe_area_cultivo', area_id=area.id) }}"
+            class="btn btn-secondary"
+          >
+            Cancelar
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

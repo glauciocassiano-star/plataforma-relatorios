@@ -4,265 +4,370 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=6">
 </head>
 
-<body class="landing-page{% if modo_login %} landing-page-login{% endif %}">
+<body class="landing-page">
 
-  <header class="landing-topbar">
-    <div class="container landing-topbar-inner">
+<header class="landing-topbar">
+  <div class="container landing-topbar-inner">
 
-      <div class="landing-brand">
-        <div class="landing-brand-text">
-          <strong>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</strong>
-          <span>{{ config.subtitulo if config and config.subtitulo else "Gestão clínica e inteligência epidemiológica" }}</span>
-        </div>
+    <div class="landing-brand">
+      {% if config and config.logo %}
+      <img
+        src="{{ config.logo }}"
+        alt="Logo da plataforma"
+        class="landing-logo-img"
+      >
+      {% endif %}
+
+      <div class="landing-brand-text">
+        <strong>{{ config.nome_plataforma if config and config.nome_plataforma else "Moovet" }}</strong>
+        <span>
+          {{ config.subtitulo if config and config.subtitulo else
+          "Assistência técnica rural, produção e inteligência territorial" }}
+        </span>
+      </div>
+    </div>
+
+    <div class="landing-actions landing-actions-topbar">
+      <a class="btn-outline" href="#funcionalidades">
+        {{ config.botao_secundario_texto if config and config.botao_secundario_texto else "Funcionalidades" }}
+      </a>
+    </div>
+
+  </div>
+</header>
+
+<main>
+
+<section class="landing-hero">
+  <div class="container landing-hero-grid">
+
+    <div class="landing-hero-copy landing-hero-panel">
+
+      <div class="landing-badge">
+        {{ config.aviso_sanitario if config and config.aviso_sanitario else
+        "Plataforma para gestão rural e assistência técnica municipal" }}
       </div>
 
-      <div class="landing-actions landing-actions-topbar">
-        <a class="btn-outline" href="#funcionalidades">
-          {{ config.botao_secundario_texto if config and config.botao_secundario_texto else "Funcionalidades" }}
+      <h1>
+        {{ config.titulo_banner if config and config.titulo_banner else
+        "Gestão rural integrada para assistência técnica, produção e saúde animal" }}
+      </h1>
+
+      <p class="landing-hero-description">
+        {{ config.texto_banner if config and config.texto_banner else
+        "O Moovet organiza a assistência técnica rural, integra registros produtivos, sanitários e operacionais e transforma dados de campo em informação estratégica para propriedades e municípios." }}
+      </p>
+
+      <div class="landing-hero-bullets">
+
+        <div class="landing-hero-bullet">
+          <strong>Assistência técnica integrada</strong>
+          <span>Registro de visitas, orientações e manejo em diferentes cadeias produtivas.</span>
+        </div>
+
+        <div class="landing-hero-bullet">
+          <strong>Produção rural</strong>
+          <span>Acompanhamento agrícola, leiteiro, pecuário e aquícola em um único sistema.</span>
+        </div>
+
+        <div class="landing-hero-bullet">
+          <strong>Inteligência territorial</strong>
+          <span>Indicadores e relatórios para apoio à decisão municipal.</span>
+        </div>
+
+      </div>
+
+      <div class="landing-contact-inline">
+
+        <div class="landing-contact-inline-copy">
+          <strong>Solicite uma apresentação</strong>
+          <span>Conheça como o Moovet pode apoiar seu município ou propriedade.</span>
+        </div>
+
+        <div class="landing-contact-inline-form">
+          <input
+            type="email"
+            id="email_contato"
+            name="email_contato"
+            placeholder="seuemail@exemplo.com"
+          >
+
+          <a href="#contato" class="btn-outline">
+            Solicitar contato
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+    <aside class="landing-hero-showcase">
+
+      <div class="landing-showcase-card landing-access-card" id="acesso">
+
+        <div class="landing-access-card-header">
+
+          <div>
+            <div class="landing-showcase-label">Acesso seguro</div>
+
+            <h2>Entrar no sistema</h2>
+
+            <p>
+              Acesso institucional para equipes técnicas,
+              gestores e operação de campo.
+            </p>
+          </div>
+
+          {% if config and config.logo %}
+          <img
+            src="{{ config.logo }}"
+            alt="Logo"
+            class="landing-access-logo"
+          >
+          {% endif %}
+
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          <div class="landing-alert-stack">
+            {% for category, message in messages %}
+            <div class="landing-alert landing-alert-{{ category }}">
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST"
+              action="{{ url_for('main.login') }}"
+              class="landing-login-form"
+              id="landing-login-form">
+
+          <div class="landing-form-grid">
+
+            <div class="landing-form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Digite seu email"
+                required
+              >
+            </div>
+
+            <div class="landing-form-group">
+              <label for="senha">Senha</label>
+              <input
+                type="password"
+                id="senha"
+                name="senha"
+                placeholder="Digite sua senha"
+                required
+              >
+            </div>
+
+          </div>
+
+          <div class="landing-login-actions">
+            <button type="submit"
+                    class="btn landing-login-submit"
+                    id="landing-login-button">
+
+              <span class="landing-login-submit-text">
+                Entrar no sistema
+              </span>
+
+              <span class="landing-login-submit-loader"></span>
+
+            </button>
+          </div>
+
+        </form>
+
+        <div class="landing-login-footnote">
+          <span>
+            Ambiente seguro para operação técnica e gestão rural.
+          </span>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+</section>
+
+<section class="landing-section landing-feature-band" id="funcionalidades">
+
+  <div class="container">
+
+    <div class="landing-section-header landing-section-header-wide">
+      <span class="landing-section-tag">Funcionalidades</span>
+
+      <h2>
+        Estrutura completa para assistência técnica,
+        produção rural e gestão municipal
+      </h2>
+
+      <p>
+        Uma base única para organizar propriedades,
+        atendimentos, relatórios e cadeias produtivas.
+      </p>
+    </div>
+
+    <div class="landing-feature-grid">
+
+      <article class="landing-feature-panel">
+        <div class="landing-card-icon">🏡</div>
+        <h3>Propriedades</h3>
+        <p>Gestão por unidade produtiva com histórico organizado.</p>
+      </article>
+
+      <article class="landing-feature-panel">
+        <div class="landing-card-icon">🐄</div>
+        <h3>Saúde Animal</h3>
+        <p>Cadastro, rastreabilidade e assistência sanitária.</p>
+      </article>
+
+      <article class="landing-feature-panel">
+        <div class="landing-card-icon">🌱</div>
+        <h3>Agricultura</h3>
+        <p>Produção agrícola, manejo, solo e irrigação.</p>
+      </article>
+
+      <article class="landing-feature-panel">
+        <div class="landing-card-icon">🐟</div>
+        <h3>Piscicultura</h3>
+        <p>Controle produtivo, manejo e qualidade da água.</p>
+      </article>
+
+      <article class="landing-feature-panel landing-feature-panel-accent">
+        <div class="landing-card-icon">📈</div>
+        <h3>Relatórios</h3>
+        <p>Indicadores estratégicos e apoio à decisão pública.</p>
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="landing-section landing-section-soft">
+
+  <div class="container landing-practical-shell">
+
+    <div class="landing-practical-copy">
+      <span class="landing-section-tag">Aplicação prática</span>
+
+      <h2>
+        Feito para organizar o campo,
+        apoiar o técnico e orientar a gestão
+      </h2>
+
+      <p>
+        Do registro operacional ao painel executivo,
+        o Moovet transforma dados em ação.
+      </p>
+    </div>
+
+    <div class="landing-practical-list">
+
+      <div class="landing-practical-item">
+        <strong>Assistência em campo</strong>
+        <span>Registro rápido de visitas e orientações.</span>
+      </div>
+
+      <div class="landing-practical-item">
+        <strong>Produção rural</strong>
+        <span>Acompanhamento agrícola, leiteiro e aquícola.</span>
+      </div>
+
+      <div class="landing-practical-item">
+        <strong>Gestão municipal</strong>
+        <span>Indicadores para tomada de decisão pública.</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="landing-cta" id="contato">
+
+  <div class="container">
+
+    <div class="landing-cta-card">
+
+      <div class="landing-cta-copy">
+
+        <span class="landing-section-tag landing-section-tag-light">
+          Pronto para usar
+        </span>
+
+        <h2>
+          Leve organização, eficiência e inteligência
+          para a gestão rural do seu município.
+        </h2>
+
+        <p>
+          Integre equipes técnicas, registros de campo
+          e relatórios estratégicos em um único ambiente.
+        </p>
+
+      </div>
+
+      <div class="landing-actions landing-actions-center">
+        <a class="btn landing-btn-light" href="#acesso">
+          Entrar no sistema
         </a>
       </div>
 
     </div>
-  </header>
 
-  <main>
-    <section class="landing-hero">
-      <div class="container landing-hero-grid">
-        <div class="landing-hero-copy landing-hero-panel">
-          <div class="landing-badge">
-            {{ config.aviso_sanitario if config and config.aviso_sanitario else "Plataforma veterinária para uso técnico em campo" }}
-          </div>
+  </div>
 
-          <h1>
-            {{ config.titulo_banner if config and config.titulo_banner else "Gestão clínica e monitoramento epidemiológico para propriedades rurais" }}
-          </h1>
+</section>
 
-          <p class="landing-hero-description">
-            {{ config.texto_banner if config and config.texto_banner else "O Moovet centraliza prontuários veterinários, atendimentos clínicos, organização de rotina e base de dados para análise epidemiológica em um único ambiente." }}
-          </p>
+</main>
 
-          <div class="landing-hero-bullets">
-            <div class="landing-hero-bullet">
-              <strong>Prontuário veterinário</strong>
-              <span>Histórico clínico individual com organização por animal e propriedade.</span>
-            </div>
-            <div class="landing-hero-bullet">
-              <strong>Operação em campo</strong>
-              <span>Fluxo pensado para rotina técnica, clínica e apoio à decisão.</span>
-            </div>
-            <div class="landing-hero-bullet">
-              <strong>Base para inteligência sanitária</strong>
-              <span>Registros consistentes para leitura epidemiológica e pesquisa aplicada.</span>
-            </div>
-          </div>
+<footer class="landing-footer">
 
-          <div class="landing-contact-inline">
-            <div class="landing-contact-inline-copy">
-              <strong>Solicite uma apresentação</strong>
-              <span>Deixe seu email para conhecer melhor a plataforma e suas possibilidades.</span>
-            </div>
+  <div class="container landing-footer-inner">
 
-            <form class="landing-contact-inline-form" action="#contato" method="GET">
-              <label class="sr-only" for="email_contato">Email para contato</label>
-              <input
-                type="email"
-                id="email_contato"
-                name="email_contato"
-                placeholder="seuemail@exemplo.com"
-              >
-              <button type="submit" class="btn-outline">Solicitar contato</button>
-            </form>
-          </div>
-        </div>
-
-        <aside class="landing-hero-showcase">
-          <div class="landing-showcase-card landing-access-card" id="acesso">
-            <div class="landing-access-card-header">
-              <div>
-                <div class="landing-showcase-label">Acesso seguro</div>
-                <h2>Entrar no sistema</h2>
-                <p>Use seu email e senha para acessar a plataforma e continuar a rotina de campo, clínica e gestão.</p>
-              </div>
-
-              {% if config and config.logo %}
-                <img
-                  src="{{ config.logo }}"
-                  alt="Logo {{ config.nome_plataforma if config and config.nome_plataforma else 'Moovet' }}"
-                  class="landing-access-logo"
-                >
-              {% endif %}
-            </div>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-              {% if messages %}
-                <div class="landing-alert-stack">
-                  {% for category, message in messages %}
-                    <div class="landing-alert landing-alert-{{ category }}">
-                      {{ message }}
-                    </div>
-                  {% endfor %}
-                </div>
-              {% endif %}
-            {% endwith %}
-
-            <form method="POST" action="{{ url_for('main.login') }}" class="landing-login-form" id="landing-login-form">
-              <div class="landing-form-grid">
-                <div class="landing-form-group">
-                  <label for="email">Email</label>
-                  <input type="email" id="email" name="email" autocomplete="username" placeholder="glaucio@exemplo.com" required>
-                </div>
-
-                <div class="landing-form-group">
-                  <label for="senha">Senha</label>
-                  <input type="password" id="senha" name="senha" autocomplete="current-password" placeholder="Sua senha" required>
-                </div>
-              </div>
-
-              <div class="landing-login-actions">
-                <button type="submit" class="btn landing-login-submit" id="landing-login-button">
-                  <span class="landing-login-submit-text">Entrar no sistema</span>
-                  <span class="landing-login-submit-loader" aria-hidden="true"></span>
-                </button>
-              </div>
-            </form>
-
-            <div class="landing-login-footnote">
-              <span>Acesso institucional para equipe técnica, administração e operação clínica.</span>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="landing-section landing-feature-band" id="funcionalidades">
-      <div class="container">
-        <div class="landing-section-header landing-section-header-wide">
-          <span class="landing-section-tag">Funcionalidades</span>
-          <h2>Estrutura completa para rotina veterinária, operação clínica e acompanhamento sanitário</h2>
-          <p>
-            Uma base única para organizar propriedades, animais, atendimentos, relatórios e novas camadas técnicas como sensores e validação laboratorial.
-          </p>
-        </div>
-
-        <div class="landing-feature-grid">
-          <article class="landing-feature-panel">
-            <div class="landing-card-icon">🏡</div>
-            <h3>Propriedades</h3>
-            <p>Gestão por unidade produtiva com contexto, acesso e histórico organizados.</p>
-          </article>
-
-          <article class="landing-feature-panel">
-            <div class="landing-card-icon">🐄</div>
-            <h3>Animais</h3>
-            <p>Cadastro individual, rastreabilidade e organização clínica por propriedade.</p>
-          </article>
-
-          <article class="landing-feature-panel">
-            <div class="landing-card-icon">🩺</div>
-            <h3>Atendimentos</h3>
-            <p>Registro padronizado para rotina veterinária, campo e hospital.</p>
-          </article>
-
-          <article class="landing-feature-panel landing-feature-panel-accent">
-            <div class="landing-card-icon">📈</div>
-            <h3>Relatórios</h3>
-            <p>Leitura epidemiológica, monitoramento de padrões e apoio à decisão técnica.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="landing-section landing-section-soft">
-      <div class="container landing-practical-shell">
-        <div class="landing-practical-copy">
-          <span class="landing-section-tag">Aplicação prática</span>
-          <h2>Feito para registrar, acompanhar e interpretar dados com clareza</h2>
-          <p>
-            Do atendimento individual ao acompanhamento populacional, a plataforma transforma registros dispersos em informação organizada e útil para a rotina técnica.
-          </p>
-        </div>
-
-        <div class="landing-practical-list">
-          <div class="landing-practical-item">
-            <strong>Uso em campo</strong>
-            <span>Fluxo adequado à rotina técnica, com navegação clara e registro objetivo.</span>
-          </div>
-
-          <div class="landing-practical-item">
-            <strong>Padronização clínica</strong>
-            <span>Estrutura consistente para melhorar qualidade dos registros e comparabilidade.</span>
-          </div>
-
-          <div class="landing-practical-item">
-            <strong>Inteligência epidemiológica</strong>
-            <span>Base organizada para leitura de padrões, tendências e distribuição de ocorrências.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="landing-cta" id="contato">
-      <div class="container">
-        <div class="landing-cta-card">
-          <div class="landing-cta-copy">
-            <span class="landing-section-tag landing-section-tag-light">Pronto para usar</span>
-            <h2>Leve mais organização, consistência e inteligência para sua rotina veterinária.</h2>
-            <p>
-              Centralize dados, acompanhe atendimentos e fortaleça a leitura sanitária
-              com uma plataforma feita para uso técnico real.
-            </p>
-          </div>
-
-          <div class="landing-actions landing-actions-center">
-            <a class="btn landing-btn-light" href="#acesso">
-              {{ config.botao_principal_texto if config and config.botao_principal_texto else "Entrar no sistema" }}
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="landing-footer">
-    <div class="container landing-footer-inner">
-      <div>
-        {{ config.rodape if config and config.rodape else "Moovet • Plataforma veterinária" }}
-      </div>
-
-      <div>
-        {{ config.subtitulo if config and config.subtitulo else "Gestão clínica • Monitoramento sanitário • Inteligência epidemiológica" }}
-      </div>
+    <div>
+      {{ config.rodape if config and config.rodape else
+      "Moovet • Gestão Rural Integrada" }}
     </div>
-  </footer>
+
+    <div>
+      Assistência técnica • Produção • Indicadores • Gestão territorial
+    </div>
+
+  </div>
+
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("landing-login-form");
+  const button = document.getElementById("landing-login-button");
+
+  if (form && button) {
+    form.addEventListener("submit", () => {
+      button.classList.add("is-loading");
+      button.disabled = true;
+    });
+  }
+});
+</script>
 
 </body>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("landing-login-form");
-    const button = document.getElementById("landing-login-button");
-    const email = document.getElementById("email");
-    const accessSection = document.getElementById("acesso");
-
-    {% if modo_login %}
-    if (accessSection) {
-      accessSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    if (email) {
-      email.focus();
-    }
-    {% endif %}
-
-    if (form && button) {
-      form.addEventListener("submit", () => {
-        button.classList.add("is-loading");
-        button.disabled = true;
-      });
-    }
-  });
-</script>
 </html>

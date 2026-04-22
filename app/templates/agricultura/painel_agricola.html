@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Painel Agrícola{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+
+  <div class="content-card">
+
+    <div class="agri-detalhe-topo">
+      <div>
+        <h2 class="agri-detalhe-titulo">Painel Agrícola</h2>
+        <p class="agri-detalhe-subtitulo">
+          {{ propriedade.nome }} • {{ propriedade.produtor }}
+        </p>
+      </div>
+
+      <div class="agri-detalhe-acoes">
+        <a
+          href="{{ url_for('agricultura.nova_area_cultivo', propriedade_id=propriedade.id) }}"
+          class="btn"
+        >
+          + Nova Área
+        </a>
+
+        <a
+          href="{{ url_for('main.painel') }}"
+          class="btn btn-secondary"
+        >
+          Voltar
+        </a>
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card" style="margin-bottom: 20px;">
+      <div class="agri-detalhe-card-topo">
+        <h3>Visão geral do módulo</h3>
+        <p>Resumo operacional das áreas produtivas vinculadas a esta propriedade.</p>
+      </div>
+
+      <div class="agri-info-grid">
+        <div class="agri-info-item">
+          <span class="agri-info-label">Áreas cadastradas</span>
+          <strong class="agri-info-value">{{ areas|length }}</strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Áreas ativas</span>
+          <strong class="agri-info-value">
+            {{ areas|selectattr("ativo", "equalto", True)|list|length }}
+          </strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Módulo</span>
+          <strong class="agri-info-value">Agrícola</strong>
+        </div>
+
+        <div class="agri-info-item">
+          <span class="agri-info-label">Navegação</span>
+          <strong class="agri-info-value">Áreas → Ciclos → Manejos</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card" style="margin-bottom: 20px;">
+      <div class="agri-detalhe-card-topo">
+        <h3>Atalhos do módulo</h3>
+        <p>Acessos rápidos para as ações mais importantes desta propriedade.</p>
+      </div>
+
+      <div class="agri-modulo-links">
+        <a
+          href="{{ url_for('agricultura.nova_area_cultivo', propriedade_id=propriedade.id) }}"
+          class="agri-modulo-link-card"
+        >
+          <span class="agri-modulo-link-titulo">Cadastrar nova área</span>
+          <span class="agri-modulo-link-texto">
+            Crie um novo setor produtivo para iniciar o acompanhamento agrícola.
+          </span>
+        </a>
+
+        {% if areas %}
+          <a
+            href="{{ url_for('agricultura.detalhe_area_cultivo', area_id=areas[0].id) }}"
+            class="agri-modulo-link-card"
+          >
+            <span class="agri-modulo-link-titulo">Ciclos de cultivo</span>
+            <span class="agri-modulo-link-texto">
+              Acesse a primeira área cadastrada para visualizar e cadastrar ciclos.
+            </span>
+          </a>
+
+          <a
+            href="{{ url_for('agricultura.detalhe_area_cultivo', area_id=areas[0].id) }}"
+            class="agri-modulo-link-card"
+          >
+            <span class="agri-modulo-link-titulo">Manejos agrícolas</span>
+            <span class="agri-modulo-link-texto">
+              Os manejos são acessados a partir dos ciclos de cultivo dentro de cada área.
+            </span>
+          </a>
+        {% else %}
+          <a
+            href="{{ url_for('agricultura.nova_area_cultivo', propriedade_id=propriedade.id) }}"
+            class="agri-modulo-link-card"
+          >
+            <span class="agri-modulo-link-titulo">Ciclos de cultivo</span>
+            <span class="agri-modulo-link-texto">
+              Cadastre primeiro uma área para começar a registrar ciclos.
+            </span>
+          </a>
+
+          <a
+            href="{{ url_for('agricultura.nova_area_cultivo', propriedade_id=propriedade.id) }}"
+            class="agri-modulo-link-card"
+          >
+            <span class="agri-modulo-link-titulo">Manejos agrícolas</span>
+            <span class="agri-modulo-link-texto">
+              Cadastre primeiro uma área para depois avançar para ciclos e manejos.
+            </span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="agri-detalhe-card">
+      <div class="agri-detalhe-card-topo">
+        <h3>Áreas de cultivo</h3>
+        <p>Setores produtivos vinculados a esta propriedade.</p>
+      </div>
+
+      {% if areas %}
+        <div class="table-wrap">
+          <table class="animais-admin-tabela">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Área (ha)</th>
+                <th>Status</th>
+                <th>Criado em</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for area in areas %}
+              <tr>
+                <td>{{ area.nome }}</td>
+                <td>{{ area.tipo_area if area.tipo_area else "-" }}</td>
+                <td>
+                  {% if area.area_hectares is not none %}
+                    {{ "%.2f"|format(area.area_hectares) }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>
+                  {% if area.ativo %}
+                    <span class="clientes-admin-status ativo">Ativa</span>
+                  {% else %}
+                    <span class="clientes-admin-status inativo">Inativa</span>
+                  {% endif %}
+                </td>
+                <td>{{ area.criado_em.strftime("%d/%m/%Y") }}</td>
+                <td>
+                  <div class="propriedades-tabela-acoes">
+                    <a
+                      href="{{ url_for('agricultura.detalhe_area_cultivo', area_id=area.id) }}"
+                      class="btn btn-secondary"
+                    >
+                      Abrir área
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="agri-empty-state">
+          <strong>Nenhuma área cadastrada</strong>
+          <p>
+            Cadastre a primeira área produtiva para iniciar o módulo agrícola.
+          </p>
+          <a
+            href="{{ url_for('agricultura.nova_area_cultivo', propriedade_id=propriedade.id) }}"
+            class="btn"
+          >
+            + Nova Área
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
